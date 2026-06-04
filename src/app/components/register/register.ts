@@ -10,9 +10,25 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './register.css',
 })
 export class Register {
-  public user:User
+  public user:User  
   constructor(private userService:UserService){
     this.user=new User(1,"","","","","user_role","")
+  }
+  uploadImage(e:any){
+      const file:File =e.target.files[0]
+      if(file){        
+        const formData=new FormData()        
+        formData.append('file0',file)
+        this.userService.uploadImage(formData).subscribe({
+          next:(response)=>{
+            console.log(response)
+            this.user.image=response.filename
+          },
+          error:(err:Error)=>{
+            console.log("Error al cargar la imagen",err)
+          }
+        })
+      }
   }
 
   onSubmit(form:any){

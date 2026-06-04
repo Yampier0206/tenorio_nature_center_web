@@ -16,8 +16,8 @@
         </div>
         <div class="form-group">
             <label for="image">Imagen</label>
-            <input type="file" class="form-control" name="image" #image="ngModel"
-                [(ngModel)]="user.image" required>
+            <input type="file" class="form-control" name="image" 
+                #fileUpload (change)="uploadImage($event)" required>
         </div>
         <div class="form-group">
             <label for="email">Email</label>

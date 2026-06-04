@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { User } from '../../models/user';
 import { Router } from '@angular/router';
 import { AuthService, LoginResponse } from '../../services/auth.service';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -32,14 +33,23 @@ export class Login {
           this._router.navigate([''])
         }else{
           console.log("Error")
-          this.status=0
+          this.changeStatus(0)
         }
       },
       error:(err:Error)=>{
         console.log("Error Server")
-        this.status=1
+        this.changeStatus(1)
       }
     })
 
+  }
+  changeStatus(value:number){
+    console.log("Estado>",value)
+    this.status=value
+    let countdown=timer(4000)
+    countdown.subscribe(n=>{
+      this.status=-1
+      console.log("Estado inicial")
+    })
   }
 }

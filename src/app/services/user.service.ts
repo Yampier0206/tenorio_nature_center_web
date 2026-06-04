@@ -18,4 +18,7 @@ export class UserService{
         let options={headers}
         return this._http.post(this.url+'user/register',data,options)
     }
+    uploadImage(data:any):Observable<any>{        
+        return this._http.post(this.url+'user/upload',data)
+    }
 }
