@@ -6,6 +6,7 @@ import { VehiculoService } from './services/vehiculo.service';
 import { GuiaService } from './services/guia.service';
 import { UbicacionService } from './services/ubicacion.service';
 import { AuthService } from './services/auth.service';
+import { enviroment } from './enviroments';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class App {
   public ubicaciones:any
   protected readonly title = signal('TenorioNatureCenterWeb');
   public currentUser
+  public url:string = enviroment.apiUrl;
   constructor(
     private choferService: ChoferService,
     private tourService: TourService,
@@ -98,8 +100,7 @@ export class App {
       error:(err:Error)=>{
         console.log('Error --->', err);
       }
-
-     });
+    });
   }
   
 

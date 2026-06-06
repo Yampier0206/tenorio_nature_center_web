@@ -13,11 +13,13 @@ import { Guias } from './components/guias/guias';
 import { Ubicaciones } from './components/ubicaciones/ubicaciones';
 import { ReservasAdmin } from './components/admin/reservas-admin/reservas-admin';
 import { Registro } from './components/registro/registro';
+import { UsuariosAdmin } from './components/admin/usuarios-admin/usuarios-admin';
+import { UbicacionesAdmin } from './components/admin/ubicaciones-admin/ubicaciones-admin';
 
 export const routes: Routes = [
     //Público
-    {path:'',component:Home},
-    {path:'login',component:Login},
+    { path: '',component:Home},
+    { path: 'login',component:Login},
     //Navegación principal
     { path: 'tour/:id', component: Tours},
     { path: 'vehiculo/:id', component: Vehiculos},
@@ -29,12 +31,14 @@ export const routes: Routes = [
     { path: 'reservas', component: Reservas},
     //Admin
     { path: 'admin', component: Admin},
-    { path:'admin/tours', component: ToursAdmin},
+    { path: 'admin/tours', component: ToursAdmin},
     { path: 'admin/reservas', component: ReservasAdmin},
+    { path: 'admin/usuarios', component: UsuariosAdmin },
+    { path: 'admin/ubicaciones', component: UbicacionesAdmin },
     //Registro
-    {path:'',component:Home},
-    {path:'login',component:Login},
-    {path:'register',component:Registro},
+    { path: '',component:Home},
+    { path: 'login',component:Login},
+    { path: 'register',component:Registro},
     //Error
-    {path:'**',component:Error}
+    { path: '**',component:Error}
 ];

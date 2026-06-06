@@ -15,33 +15,37 @@ export class UbicacionService{
     }
 
     getUbicaciones():Observable<any>{
-
-        const token = sessionStorage.getItem('token');
-
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-
-        return this._http.get(
-            this.url + 'ubicacion',
-            { headers }
-        );
+    return this._http.get(this.url + 'ubicacion');
     }
 
     getUbicacionById(id:number):Observable<any>{
+        return this._http.get(this.url + 'ubicacion/' + id);
+    }
 
+    createUbicacion(ubicacion:any):Observable<any>{
         const token = sessionStorage.getItem('token');
-
         const headers = new HttpHeaders({
             'Content-Type':'application/json',
             'Authorization':'Bearer ' + token
         });
-
-        return this._http.get(
-            this.url + 'ubicacion/' + id,
-            { headers }
-        );
+        return this._http.post(this.url + 'ubicacion', ubicacion, { headers });
     }
 
+    updateUbicacion(ubicacion:any):Observable<any>{
+        const token = sessionStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+        return this._http.put(this.url + 'ubicacion', ubicacion, { headers });
+    }
+
+    deleteUbicacion(id:number):Observable<any>{
+        const token = sessionStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+        return this._http.delete(this.url + 'ubicacion/' + id, { headers });
+    }
 }

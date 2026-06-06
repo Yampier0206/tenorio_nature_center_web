@@ -19,7 +19,7 @@ export class Registro {
     private _usuarioService: UsuarioService,
     private _router: Router
   ){
-    this.user = new User(0, "", "", "", "", "user_role", "", "");
+    this.user = new User(0, "", "", "", "", "Cliente", "", "");
   }
 
   uploadImage(e: any){
