@@ -1,0 +1,25 @@
+<div class="col-md-12 mt-4">
+    <!--Sweet Alert-->
+   @if(status===0){
+        <p>Usuario y/o contraseña incorrecta!</p>
+    }@else if (status===1) {
+        <p>Error inesperado del servidor</p>
+    }
+    
+    <div class="col-md-4 mx-auto">
+        <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+            <h3 class="text-center">Inicio de sesión</h3>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" name="email" #email="ngModel" [(ngModel)]="user.email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password" #password="ngModel" [(ngModel)]="user.password" required>
+            </div>
+            <div>
+                <input class="btn btn-primary mt-3" type="submit" value="Iniciar">
+            </div>
+        </form>        
+    </div>
+</div>

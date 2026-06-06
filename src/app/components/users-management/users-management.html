@@ -1,0 +1,87 @@
+<div class="container mt-4">
+  <div class="mb-4">
+    <h2>Administración de Usuarios</h2>
+    <p class="text-muted">Gestion de los roles de los usuarios del sistema</p>
+  </div>
+ 
+  <div class="mb-3">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Buscar por nombre, apellido, email o rol..."
+      (input)="onSearch($event)"
+    />
+  </div>
+ 
+  @if(loading()){
+    <div class="d-flex align-items-center gap-2 text-muted my-3">
+      <div class="spinner-border spinner-border-sm" role="status"></div>
+      <span>Cargando usuarios...</span>
+    </div>
+  }
+ 
+  @if(!loading()){
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Rol actual</th>
+            <th>Cambiar rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if(filteredUsers().length === 0){
+            <tr>
+              <td colspan="6" class="text-center text-muted">No se encontraron usuarios</td>
+            </tr>
+          }
+          @for(user of filteredUsers(); track user.id){
+            <tr [class.table-primary]="isCurrentUser(user.id)">
+              <td>{{ user.id }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.last_name }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                @if(isAdmin(user.role)){
+                  <span class="badge bg-primary">Admin</span>
+                } @else {
+                  <span class="badge bg-secondary">Usuario</span>
+                }
+              </td>
+              <td>
+                <div class="form-check form-switch"
+                     [title]="isCurrentUser(user.id) ? 'No puedes cambiar tu propio rol' : ''">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [checked]="isAdmin(user.role)"
+                    [disabled]="isCurrentUser(user.id) || updatingUserId() === user.id"
+                    (change)="toggleRole(user)"
+                  />
+                  <label class="form-check-label">
+                    @if(updatingUserId() === user.id){
+                      <span class="text-muted">...</span>
+                    } @else {
+                      {{ getRoleLabel(user.role) }}
+                    }
+                  </label>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+ 
+    <p class="text-muted text-end small">
+      Total: <strong>{{ filteredUsers().length }}</strong> usuario(s)
+      @if(searchTerm()){
+        encontrado(s) para "<em>{{ searchTerm() }}</em>"
+      }
+    </p>
+  }
+</div>
