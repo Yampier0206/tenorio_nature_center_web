@@ -1,8 +1,8 @@
 import { Component, Signal } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
-import { User } from 'src/app/models/user';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user';
 import { audit } from 'rxjs';
-import { enviroment } from 'src/app/enviroments';
+import { enviroment } from '../../enviroments';
 
 @Component({
   selector: 'app-home',
