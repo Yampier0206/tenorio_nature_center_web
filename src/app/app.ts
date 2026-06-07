@@ -1,7 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { Router, RouterLink, RouterOutlet, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';  
-import { ChoferService } from './services/chofer.service';
+import { Router, RouterLink, RouterOutlet } from '@angular/router'; 
+import { ChoferService } from './services/chofer.service';         
 import { TourService } from './services/tour.service';
 import { VehiculoService } from './services/vehiculo.service';
 import { GuiaService } from './services/guia.service';
@@ -16,13 +15,11 @@ import { AuthService } from './services/auth.service';
 })
 export class App {
 
-  public isAdminRoute = false;
-
-  public choferes:any
-  public tours:any
-  public vehiculos:any
-  public guias:any
-  public ubicaciones:any
+  public choferes: any        
+  public tours: any
+  public vehiculos: any
+  public guias: any
+  public ubicaciones: any
   protected readonly title = signal('TenorioNatureCenterWeb');
   public currentUser
 
@@ -42,13 +39,7 @@ export class App {
     this.loadGuias()
     this.loadUbicaciones()
     this.currentUser = _auth.currentUser
-
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
-      const rutasAdmin = ['/admin/facturas', '/admin/reservas'];
-      this.isAdminRoute = rutasAdmin.includes(event.url);
-    });
+    // ← quitar el bloque router.events
   }
 
   loadChoferes(){

@@ -3,10 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { FacturaService } from '../../../services/factura.service';
 import { EstadoPagoService } from '../../../services/estadopago.service';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-facturas-admin',
   standalone: true,
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, RouterLink],
   templateUrl: './facturas-admin.html',
   styleUrl: './facturas-admin.css'
 })
@@ -16,6 +18,7 @@ export class FacturasAdmin implements OnInit {
   public estadosPago: any[] = [];
   public mensaje: string = '';
   public modoEdicion: boolean = false;
+  public facturaIdEliminar: number = 0;
 
   public metodosPago: string[] = ['Efectivo', 'Tarjeta', 'Transferencia'];
   public monedas: string[] = ['CRC', 'USD'];
@@ -79,25 +82,36 @@ export class FacturasAdmin implements OnInit {
 
   editarFactura(f: any) {
     this.modoEdicion = true;
-    this.factura = { ...f }; 
+    this.factura = {
+        idFactura:     f.idfactura,
+        idEstadoPago:  f.idestadopago,
+        numeroFactura: f.numerofactura,
+        fechaFactura:  f.fechafactura ? f.fechafactura.substring(0, 10) : '', 
+        metodoPago:    f.metodopago, 
+        moneda:        f.moneda,
+        fechaPago:     f.fechapago ? f.fechapago.substring(0, 10) : '', 
+        subtotal:      f.subtotal,
+        impuesto:      f.impuesto,
+        descuento:     f.descuento,
+        precioTotal:   f.preciototal  
+    };
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+  seleccionarFacturaEliminar(id: number) {
+    this.facturaIdEliminar = id;
   }
-
-  eliminarFactura(id: number) {
-    if (!confirm('¿Está seguro de eliminar esta factura?')) return;
-
-    this.facturaService.deleteFactura(id)
+  confirmarEliminarFactura() {
+    this.facturaService.deleteFactura(this.facturaIdEliminar)
     .subscribe({
-      next: () => {
-        this.mensaje = 'Factura eliminada correctamente';
-        this.loadFacturas();
-        setTimeout(() => { this.mensaje = ''; }, 3000);
-      },
-      error: (err) => {
-        console.log(err);
-      }
+        next: () => {
+            this.mensaje = 'Factura eliminada correctamente';
+            this.loadFacturas();
+            setTimeout(() => { this.mensaje = ''; }, 3000);
+        },
+        error: (err) => { console.log(err); }
     });
-  }
+}
 
   guardarFactura() {
     if (this.modoEdicion) {

@@ -13,6 +13,7 @@ import { Guias } from './components/guias/guias';
 import { Ubicaciones } from './components/ubicaciones/ubicaciones';
 import { ReservasAdmin } from './components/admin/reservas-admin/reservas-admin';
 import { FacturasAdmin } from './components/admin/facturas-admin/facturas-admin';
+import { ChoferAdmin } from './components/admin/chofer-admin/chofer-admin';
 
 export const routes: Routes = [
     //Público
@@ -32,6 +33,7 @@ export const routes: Routes = [
     { path:'admin/tours', component: ToursAdmin},
     { path: 'admin/reservas', component: ReservasAdmin},
     { path: 'admin/facturas', component: FacturasAdmin },
+    { path: 'admin/choferes', component: ChoferAdmin },
     //Error
     {path:'**',component:Error}
 ];
