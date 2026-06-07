@@ -1,5 +1,6 @@
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+@if(!isAdminRoute){
+    <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
 
     <div class="container">
         <!-- LOGO -->
@@ -258,7 +259,7 @@
     </div>
 
 </nav>
-
+} 
 
 <!-- CONTENIDO -->
 <main>

@@ -92,7 +92,6 @@
                 <div class="col-md-6 mb-3">
                     <select class="form-select"
                         [(ngModel)]="reserva.idTour">
-
                         <option [ngValue]="null">
                             Seleccione Tour
                         </option>
@@ -118,9 +117,9 @@
                 <div class="col-md-6 mb-3">
                     <select class="form-select"
                         [(ngModel)]="reserva.idGuia">
-
+                        <option [ngValue]="null">Seleccione Guía</option>
                         @for(guia of guias; track guia.idguia){
-
+                            
                             <option [value]="guia.idguia">
                                 {{guia.nombre}}
                             </option>
@@ -133,7 +132,7 @@
                 <div class="col-md-6 mb-3">
                     <select class="form-select"
                         [(ngModel)]="reserva.idChofer">
-
+                        <option [ngValue]="null">Seleccione Chofer</option>
                         @for(chofer of choferes; track chofer.idchofer){
 
                             <option [value]="chofer.idchofer">
@@ -148,7 +147,7 @@
                 <div class="col-md-6 mb-3">
                     <select class="form-select"
                         [(ngModel)]="reserva.idUbicacion">
-
+                        <option [ngValue]="null">Seleccione Ubicación</option> 
                         @for(ubicacion of ubicaciones; track ubicacion.idubicacion){
 
                             <option [value]="ubicacion.idubicacion">
@@ -163,7 +162,7 @@
                 <div class="col-md-6 mb-3">
                     <select class="form-select"
                         [(ngModel)]="reserva.idIdioma">
-
+                        <option [ngValue]="null">Seleccione Idioma</option>
                         @for(idioma of idiomas; track idioma.ididioma){
 
                             <option [value]="idioma.ididioma">
@@ -178,7 +177,7 @@
                 <div class="col-md-6 mb-3">
                     <select class="form-select"
                         [(ngModel)]="reserva.idEstadoReserva">
-
+                        <option [ngValue]="null">Seleccione Estado</option>
                         @for(estado of estadosReserva; track estado.idestadoreserva){
 
                             <option [value]="estado.idestadoreserva">

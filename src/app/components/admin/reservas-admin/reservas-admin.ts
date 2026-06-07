@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ReservaService } from '../../../services/reserva.service';
@@ -66,7 +66,8 @@ export class ReservasAdmin implements OnInit {
     private choferService:ChoferService,
     private ubicacionService:UbicacionService,
     private idiomaService:IdiomaService,
-    private estadoReservaService:EstadoReservaService
+    private estadoReservaService:EstadoReservaService,
+    private cdr: ChangeDetectorRef
   ){}
 
   ngOnInit(): void {
@@ -89,6 +90,7 @@ export class ReservasAdmin implements OnInit {
     .subscribe({
       next:(response:any)=>{
         this.reservas = response;
+        this.cdr.detectChanges();
       },
       error:(err)=>{
         console.log(err);
@@ -102,6 +104,7 @@ export class ReservasAdmin implements OnInit {
     .subscribe({
       next:(response:any)=>{
         this.tours = response;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -111,6 +114,7 @@ export class ReservasAdmin implements OnInit {
     .subscribe({
       next:(response:any)=>{
         this.guias = response;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -120,6 +124,7 @@ export class ReservasAdmin implements OnInit {
     .subscribe({
       next:(response:any)=>{
         this.choferes = response;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -129,6 +134,7 @@ export class ReservasAdmin implements OnInit {
     .subscribe({
       next:(response:any)=>{
         this.ubicaciones = response;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -138,6 +144,7 @@ export class ReservasAdmin implements OnInit {
     .subscribe({
       next:(response:any)=>{
         this.idiomas = response;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -147,6 +154,7 @@ export class ReservasAdmin implements OnInit {
     .subscribe({
       next:(response:any)=>{
         this.estadosReserva = response;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -156,6 +164,7 @@ export class ReservasAdmin implements OnInit {
     .subscribe({
       next:(response:any)=>{
         this.empresas = response;
+        this.cdr.detectChanges();
       }
     });
   }

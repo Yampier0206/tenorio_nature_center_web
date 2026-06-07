@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { RouterLink, RouterOutlet,Router } from '@angular/router';
+import { Router, RouterLink, RouterOutlet, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';  
 import { ChoferService } from './services/chofer.service';
 import { TourService } from './services/tour.service';
 import { VehiculoService } from './services/vehiculo.service';
@@ -14,6 +15,9 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.css'
 })
 export class App {
+
+  public isAdminRoute = false;
+
   public choferes:any
   public tours:any
   public vehiculos:any
@@ -21,6 +25,7 @@ export class App {
   public ubicaciones:any
   protected readonly title = signal('TenorioNatureCenterWeb');
   public currentUser
+
   constructor(
     private choferService: ChoferService,
     private tourService: TourService,
@@ -29,7 +34,7 @@ export class App {
     private ubicacionService: UbicacionService,
     private _auth: AuthService,
     public authService: AuthService,
-    public router:Router
+    public router: Router
   ){
     this.loadChoferes()
     this.loadTours()
@@ -37,8 +42,14 @@ export class App {
     this.loadGuias()
     this.loadUbicaciones()
     this.currentUser = _auth.currentUser
-  }
 
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      const rutasAdmin = ['/admin/facturas', '/admin/reservas'];
+      this.isAdminRoute = rutasAdmin.includes(event.url);
+    });
+  }
 
   loadChoferes(){
     this.choferService.getChoferes().subscribe({
@@ -86,7 +97,6 @@ export class App {
         console.log('Error --->', err);
       }
     });
-
   }
 
   loadUbicaciones(){
@@ -98,9 +108,7 @@ export class App {
       error:(err:Error)=>{
         console.log('Error --->', err);
       }
-
-     });
+    });
   }
-  
 
 }

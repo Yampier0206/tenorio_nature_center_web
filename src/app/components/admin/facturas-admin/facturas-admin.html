@@ -1,0 +1,184 @@
+<div class="container py-4">
+
+    <h2 class="mb-4">Gestión de Facturas</h2>
+
+    @if(mensaje != ''){
+        <div class="alert alert-success">
+            {{mensaje}}
+        </div>
+    }
+
+    <!-- FORMULARIO -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            {{modoEdicion ? 'Editar Factura' : 'Nueva Factura'}}
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Número de Factura"
+                        [(ngModel)]="factura.numeroFactura">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <input
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="factura.fechaFactura">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <select class="form-select"
+                        [(ngModel)]="factura.metodoPago">
+                        <option [ngValue]="null">Seleccione Método de Pago</option>
+                        @for(metodo of metodosPago; track $index){
+                            <option [value]="metodo">{{metodo}}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <select class="form-select"
+                        [(ngModel)]="factura.moneda">
+                        <option [ngValue]="null">Seleccione Moneda</option>
+                        @for(moneda of monedas; track $index){
+                            <option [value]="moneda">{{moneda}}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <select class="form-select"
+                        [(ngModel)]="factura.idEstadoPago">
+                        <option [ngValue]="null">Seleccione Estado de Pago</option>
+                        @for(estado of estadosPago; track estado.idestadopago){
+                            <option [value]="estado.idestadopago">{{estado.nombre}}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-muted small">Fecha de Pago (opcional)</label>
+                    <input
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="factura.fechaPago">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Subtotal"
+                        [(ngModel)]="factura.subtotal"
+                        (ngModelChange)="calcularTotal()">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Impuesto"
+                        [(ngModel)]="factura.impuesto"
+                        (ngModelChange)="calcularTotal()">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Descuento"
+                        [(ngModel)]="factura.descuento"
+                        (ngModelChange)="calcularTotal()">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Precio Total"
+                        [(ngModel)]="factura.precioTotal"
+                        [readOnly]="true">
+                </div>
+
+            </div>
+
+            <button class="btn btn-primary me-2" (click)="guardarFactura()">
+                {{modoEdicion ? 'Actualizar Factura' : 'Guardar Factura'}}
+            </button>
+
+            <button class="btn btn-secondary" (click)="cancelar()">
+                Limpiar
+            </button>
+
+        </div>
+    </div>
+
+    <!-- TABLA -->
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            Facturas Registradas
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>N° Factura</th>
+                        <th>Fecha</th>
+                        <th>Método Pago</th>
+                        <th>Moneda</th>
+                        <th>Subtotal</th>
+                        <th>Impuesto</th>
+                        <th>Descuento</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(f of facturas; track f.idfactura){
+                        <tr>
+                            <td>{{f.idfactura}}</td>
+                            <td>{{f.numerofactura}}</td>
+                            <td>{{f.fechafactura | date:'dd/MM/yyyy'}}</td>
+                            <td>{{f.metodopago}}</td>
+                            <td>{{f.moneda}}</td>
+                            <td>{{f.subtotal}}</td>
+                            <td>{{f.impuesto}}</td>
+                            <td>{{f.descuento}}</td>
+                            <td>{{f.preciototal}}</td>
+                            <td>
+                                <button class="btn btn-edit btn-sm me-1"
+                                    (click)="editarFactura(f)">
+                                    Editar
+                                </button>
+                                <button class="btn btn-delete btn-sm"
+                                    (click)="eliminarFactura(f.idfactura)">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    @empty {
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-3">
+                                No hay facturas registradas
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
