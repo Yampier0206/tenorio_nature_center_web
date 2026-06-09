@@ -1,11 +1,12 @@
 import { Component, signal } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router'; 
-import { ChoferService } from './services/chofer.service';         
+import { RouterLink, RouterOutlet,Router } from '@angular/router';
+import { ChoferService } from './services/chofer.service';
 import { TourService } from './services/tour.service';
 import { VehiculoService } from './services/vehiculo.service';
 import { GuiaService } from './services/guia.service';
 import { UbicacionService } from './services/ubicacion.service';
 import { AuthService } from './services/auth.service';
+import { enviroment } from './enviroments';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,7 @@ import { AuthService } from './services/auth.service';
 })
 export class App {
 
-  public choferes: any        
+  public choferes: any
   public tours: any
   public vehiculos: any
   public guias: any
@@ -23,6 +24,7 @@ export class App {
   protected readonly title = signal('TenorioNatureCenterWeb');
   public currentUser
 
+  public url:string = enviroment.apiUrl;
   constructor(
     private choferService: ChoferService,
     private tourService: TourService,

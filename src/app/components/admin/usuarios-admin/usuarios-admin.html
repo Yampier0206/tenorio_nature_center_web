@@ -1,0 +1,139 @@
+<section class="admin-header">
+    <div class="container">
+        <h1>Administración de Usuarios</h1>
+    </div>
+</section>
+
+<div class="container py-5">
+
+    @if(mensaje){
+        <div class="alert alert-success shadow-sm mb-4">
+            {{mensaje}}
+        </div>
+    }
+
+    <div class="card shadow p-4 mb-5">
+        <h3>
+            @if(editando){ Editar Usuario }@else{ Nuevo Usuario }
+        </h3>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <input class="form-control" name="nombre" placeholder="Nombre"
+                    [(ngModel)]="usuario.nombre">
+            </div>
+
+            <div class="col-md-6">
+                <input class="form-control" name="apellido" placeholder="Apellido"
+                    [(ngModel)]="usuario.apellido">
+            </div>
+
+            <div class="col-md-6">
+                <input type="email" class="form-control" name="correo" placeholder="Correo"
+                    [(ngModel)]="usuario.correo">
+            </div>
+
+            <div class="col-md-6">
+                <input type="password" class="form-control" name="contrasena" placeholder="Contraseña"
+                    [(ngModel)]="usuario.contrasena">
+            </div>
+
+            <div class="col-md-6">
+                <select class="form-control" name="rol" [(ngModel)]="usuario.rol">
+                    <option value="Cliente">Cliente</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <input type="file" class="form-control" name="imagen"
+                    (change)="uploadImage($event)">
+            </div>
+
+            <div class="col-12">
+                <textarea class="form-control" name="descripcion" rows="2"
+                    placeholder="Descripción" [(ngModel)]="usuario.descripcion">
+                </textarea>
+            </div>
+
+            <div class="col-12">
+                <button class="btn btn-success me-2" (click)="guardarUsuario()">
+                    Guardar
+                </button>
+                @if(editando){
+                    <button class="btn btn-secondary" (click)="cancelar()">
+                        Cancelar
+                    </button>
+                }
+            </div>
+
+        </div>
+    </div>
+
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(item of usuarios; track $index){
+                <tr>
+                    <td>{{item.idusuario}}</td>
+                    <td>{{item.nombre}}</td>
+                    <td>{{item.apellido?.String}}</td>
+                    <td>{{item.correo}}</td>
+                    <td>{{item.rol?.String}}</td>
+                    <td>
+                        <button class="btn btn-edit btn-sm me-2"
+                            (click)="editarUsuario(item)">
+                            Editar
+                        </button>
+                        <button class="btn btn-delete btn-sm"
+                            (click)="seleccionarUsuarioEliminar(item.idusuario)"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalEliminarUsuario">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mb-4">
+        <a class="btn btn-back" [routerLink]="['/admin']">
+            Regresar al panel
+        </a>
+    </div>
+
+    <div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Desea eliminar este usuario?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                        (click)="confirmarEliminarUsuario()">
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
