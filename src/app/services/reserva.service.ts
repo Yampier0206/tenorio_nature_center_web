@@ -91,4 +91,29 @@ export class ReservaService{
 
     }
 
+    getReservasCompletas(){
+        const token = sessionStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+        return this._http.get(
+            this.url + 'reserva/completa',
+            {headers}
+        );
+    }
+
+    updateReservaCompleta(data:any):Observable<any>{
+        const token = sessionStorage.getItem('token');
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+        return this._http.put(
+            this.url + 'reserva/completa',
+            data,
+            {headers}
+        );
+    }
+
 }

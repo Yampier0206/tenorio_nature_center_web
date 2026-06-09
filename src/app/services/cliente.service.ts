@@ -61,4 +61,51 @@ export class ClienteService{
         );
     }
 
+    createCliente(data:any):Observable<any>{
+
+        const token = sessionStorage.getItem('token');
+
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+
+        return this._http.post(
+            this.url + 'cliente',
+            data,
+            { headers }
+        );
+    }
+
+    updateCliente(data:any):Observable<any>{
+
+        const token = sessionStorage.getItem('token');
+
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+
+        return this._http.put(
+            this.url + 'cliente',
+            data,
+            { headers }
+        );
+    }
+
+    deleteCliente(id:number):Observable<any>{
+
+        const token = sessionStorage.getItem('token');
+
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+
+        return this._http.delete(
+            this.url + 'cliente/' + id,
+            { headers }
+        );
+    }
+
 }
