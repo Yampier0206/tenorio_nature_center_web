@@ -1,278 +1,628 @@
-<div class="container py-4">
+<section class="admin-header">
+    <div class="container">
+        <h1>Administración de Reservas</h1>
+        <p>Crear reservas completas y gestionar participantes</p>
+    </div>
+</section>
 
-    <h2 class="mb-4">
-        Gestión de Reservas
-    </h2>
+@if(mensaje){
+    <div class="alert alert-success shadow-sm mb-4">
+        {{mensaje}}
+    </div>
+}
 
-    @if(mensaje!=''){
-        <div class="alert alert-success">
-            {{mensaje}}
-        </div>
-    }
+<div class="card shadow p-4 mb-5">
 
-    <div class="card shadow-sm mb-4">
+            <h3 class="mb-4">
+                Nueva Reserva
+            </h3>
 
-        <div class="card-header">
-            Nueva Reserva
-        </div>
+            @if(editando){
 
-        <div class="card-body">
+            <div class="alert alert-warning">
 
-            <h5>Cliente Principal</h5>
+                Editando reserva #{{ reserva.idReserva }}
+
+                <br>
+
+                Cliente, empresa y participantes no pueden modificarse.
+
+            </div>
+
+            }
+
+            <!-- CLIENTE -->
+
+            <div class="mb-4">
+
+                <label class="form-label fw-bold">
+                    Tipo de cliente
+                </label>
+
+                <select
+                    class="form-control"
+                    [(ngModel)]="modoCliente"
+                    [disabled]="editando">
+
+                    <option value="existente">
+                        Cliente existente
+                    </option>
+
+                    <option value="nuevo">
+                        Cliente nuevo
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- CLIENTE EXISTENTE -->
+
+            @if(modoCliente === 'existente'){
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    Cliente
+                </label>
+
+                <select
+                    class="form-control"
+                    [(ngModel)]="reserva.idCliente"
+                    [disabled]="editando">
+
+                    <option [ngValue]="null">
+                        Seleccione un cliente
+                    </option>
+
+                    @for(cliente of clientes; track $index){
+
+                    <option [ngValue]="cliente.idcliente">
+
+                        {{ cliente.nombre }}
+                        -
+                        {{ cliente.identificador }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+            }
+
+            <!-- CLIENTE NUEVO -->
+
+            @if(modoCliente === 'nuevo'){
 
             <div class="row">
 
                 <div class="col-md-6 mb-3">
+                    <label>Nombre</label>
+
                     <input
-                        type="text"
                         class="form-control"
-                        placeholder="Nombre"
-                        [(ngModel)]="reserva.nombreCliente">
+                        [(ngModel)]="reserva.nombreCliente"
+                        [disabled]="editando">
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    <label>Identificación</label>
+
                     <input
-                        type="text"
                         class="form-control"
-                        placeholder="Identificación"
-                        [(ngModel)]="reserva.identificadorCliente">
+                        [(ngModel)]="reserva.identificadorCliente"
+                        [disabled]="editando">
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
+                    <label>Fecha Nacimiento</label>
+
                     <input
                         type="date"
                         class="form-control"
-                        [(ngModel)]="reserva.fechaNacCliente">
+                        [(ngModel)]="reserva.fechaNacCliente"
+                        [disabled]="editando">
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
+                    <label>Teléfono</label>
+
                     <input
-                        type="text"
                         class="form-control"
-                        placeholder="Teléfono"
-                        [(ngModel)]="reserva.telefonoCliente">
+                        [(ngModel)]="reserva.telefonoCliente"
+                        [disabled]="editando">
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
+                    <label>Nacionalidad</label>
+
                     <input
-                        type="text"
                         class="form-control"
-                        placeholder="Nacionalidad"
-                        [(ngModel)]="reserva.nacionalidadCliente">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <select
-                        class="form-select"
-                        [(ngModel)]="reserva.idEmpresaCliente">
-
-                        <option [ngValue]="null">
-                            Sin empresa
-                        </option>
-
-                        @for(empresa of empresas; track empresa.idempresacliente){
-
-                            <option [value]="empresa.idempresacliente">
-                                {{empresa.razonsocial}}
-                            </option>
-
-                        }
-
-                    </select>
+                        [(ngModel)]="reserva.nacionalidadCliente"
+                        [disabled]="editando">
                 </div>
 
             </div>
 
-            <hr>
+            }
 
-            <h5>Detalle Reserva</h5>
+            <!-- EMPRESA -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    Empresa Cliente (opcional)
+                </label>
+
+                <select
+                    class="form-control"
+                    [(ngModel)]="reserva.idEmpresaCliente"
+                    [disabled]="editando">
+
+                    <option [ngValue]="null">
+                        Seleccione
+                    </option>
+
+                    @for(empresa of empresas; track $index){
+
+                    <option [ngValue]="empresa.idempresacliente">
+
+                        {{ empresa.razonsocial }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+            <!-- RESERVA -->
 
             <div class="row">
 
                 <div class="col-md-6 mb-3">
-                    <select class="form-select"
-                        [(ngModel)]="reserva.idTour">
+
+                    <label>Estado Reserva</label>
+
+                    <select
+                        class="form-control"
+                        [(ngModel)]="reserva.idEstadoReserva">
 
                         <option [ngValue]="null">
-                            Seleccione Tour
+                            Seleccione
                         </option>
 
-                        @for(tour of tours; track tour.idtour){
+                        @for(estado of estadosReserva; track $index){
 
-                            <option [value]="tour.idtour">
-                                {{tour.nombre}}
-                            </option>
+                        <option [ngValue]="estado.idestadoreserva">
+
+                            {{ estado.nombre }}
+
+                        </option>
 
                         }
 
                     </select>
+
                 </div>
 
                 <div class="col-md-6 mb-3">
+
+                    <label>Fecha Tour</label>
+
                     <input
                         type="date"
                         class="form-control"
                         [(ngModel)]="reserva.fechaTour">
-                </div>
 
-                <div class="col-md-6 mb-3">
-                    <select class="form-select"
-                        [(ngModel)]="reserva.idGuia">
-
-                        @for(guia of guias; track guia.idguia){
-
-                            <option [value]="guia.idguia">
-                                {{guia.nombre}}
-                            </option>
-
-                        }
-
-                    </select>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <select class="form-select"
-                        [(ngModel)]="reserva.idChofer">
-
-                        @for(chofer of choferes; track chofer.idchofer){
-
-                            <option [value]="chofer.idchofer">
-                                {{chofer.nombre}}
-                            </option>
-
-                        }
-
-                    </select>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <select class="form-select"
-                        [(ngModel)]="reserva.idUbicacion">
-
-                        @for(ubicacion of ubicaciones; track ubicacion.idubicacion){
-
-                            <option [value]="ubicacion.idubicacion">
-                                {{ubicacion.nombre}}
-                            </option>
-
-                        }
-
-                    </select>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <select class="form-select"
-                        [(ngModel)]="reserva.idIdioma">
-
-                        @for(idioma of idiomas; track idioma.ididioma){
-
-                            <option [value]="idioma.ididioma">
-                                {{idioma.nombre}}
-                            </option>
-
-                        }
-
-                    </select>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <select class="form-select"
-                        [(ngModel)]="reserva.idEstadoReserva">
-
-                        @for(estado of estadosReserva; track estado.idestadoreserva){
-
-                            <option [value]="estado.idestadoreserva">
-                                {{estado.nombre}}
-                            </option>
-
-                        }
-
-                    </select>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Precio"
-                        [(ngModel)]="reserva.precio">
                 </div>
 
             </div>
 
-            <hr>
+            <!-- TOUR -->
 
-            <h5>Participantes</h5>
+            <div class="row">
 
-            <button
-                type="button"
-                class="btn btn-success mb-3"
-                (click)="agregarParticipante()">
+                <div class="col-md-6 mb-3">
 
-                Agregar Participante
+                    <label>Tour</label>
 
-            </button>
+                    <select
+                        class="form-control"
+                        [(ngModel)]="reserva.idTour">
 
-            @for(participante of participantes; track $index){
+                        <option [ngValue]="null">
+                            Seleccione
+                        </option>
 
-                <div class="border rounded p-3 mb-3">
+                        @for(tour of tours; track $index){
 
-                    <input
-                        class="form-control mb-2"
-                        placeholder="Nombre"
-                        [(ngModel)]="participante.nombre">
+                        <option [ngValue]="tour.idtour">
 
-                    <input
-                        class="form-control mb-2"
-                        placeholder="Identificación"
-                        [(ngModel)]="participante.identificador">
+                            {{ tour.nombre }}
 
-                    <input
-                        type="date"
-                        class="form-control mb-2"
-                        [(ngModel)]="participante.fechaNac">
+                        </option>
 
-                    <input
-                        class="form-control mb-2"
-                        placeholder="Teléfono"
-                        [(ngModel)]="participante.telefono">
+                        }
 
-                    <input
-                        class="form-control mb-2"
-                        placeholder="Nacionalidad"
-                        [(ngModel)]="participante.nacionalidad">
-
-                    <button
-                        type="button"
-                        class="btn btn-danger"
-                        (click)="eliminarParticipante($index)">
-
-                        Eliminar
-
-                    </button>
+                    </select>
 
                 </div>
 
+                <div class="col-md-6 mb-3">
+
+                    <label>Precio</label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        [(ngModel)]="reserva.precio">
+
+                </div>
+
+            </div>
+
+            <!-- GUIA / CHOFER -->
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Guía</label>
+
+                    <select
+                        class="form-control"
+                        [(ngModel)]="reserva.idGuia">
+
+                        <option [ngValue]="null">
+                            Seleccione
+                        </option>
+
+                        @for(guia of guias; track $index){
+
+                        <option [ngValue]="guia.idguia">
+
+                            {{ guia.nombre }}
+
+                        </option>
+
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Chofer</label>
+
+                    <select
+                        class="form-control"
+                        [(ngModel)]="reserva.idChofer">
+
+                        <option [ngValue]="null">
+                            Seleccione
+                        </option>
+
+                        @for(chofer of choferes; track $index){
+
+                        <option [ngValue]="chofer.idchofer">
+
+                            {{ chofer.nombre }}
+
+                        </option>
+
+                        }
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- UBICACION / IDIOMA -->
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Ubicación</label>
+
+                    <select
+                        class="form-control"
+                        [(ngModel)]="reserva.idUbicacion">
+
+                        <option [ngValue]="null">
+                            Seleccione
+                        </option>
+
+                        @for(ubicacion of ubicaciones; track $index){
+
+                        <option [ngValue]="ubicacion.idubicacion">
+
+                            {{ ubicacion.nombre }}
+
+                        </option>
+
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Idioma</label>
+
+                    <select
+                        class="form-control"
+                        [(ngModel)]="reserva.idIdioma">
+
+                        <option [ngValue]="null">
+                            Seleccione
+                        </option>
+
+                        @for(idioma of idiomas; track $index){
+
+                        <option [ngValue]="idioma.ididioma">
+
+                            {{ idioma.nombre }}
+
+                        </option>
+
+                        }
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- PARTICIPANTES -->
+            @if(!editando){
+
+            <hr>
+
+            <div class="d-flex justify-content-between mb-3">
+
+                <h4>Participantes Adicionales</h4>
+
+                <button
+                    class="btn btn-success"
+                    (click)="agregarParticipante()">
+
+                    Agregar Participante
+
+                </button>
+
+            </div>
+
+            @for(participante of participantes; track $index){
+
+            <div class="card p-3 mb-3">
+
+                <div class="row">
+
+                    <div class="col-md-4">
+
+                        <input
+                            class="form-control"
+                            placeholder="Nombre"
+                            [(ngModel)]="participante.nombre">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <input
+                            class="form-control"
+                            placeholder="Identificación"
+                            [(ngModel)]="participante.identificador">
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            [(ngModel)]="participante.fechaNac">
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <input
+                            class="form-control"
+                            placeholder="Teléfono"
+                            [(ngModel)]="participante.telefono">
+
+                    </div>
+
+                    <div class="col-md-1">
+
+                        <button
+                            class="btn btn-danger w-100"
+                            (click)="eliminarParticipante($index)">
+
+                            X
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-2">
+
+                    <input
+                        class="form-control"
+                        placeholder="Nacionalidad"
+                        [(ngModel)]="participante.nacionalidad">
+
+                </div>
+
+            </div>
+
             }
+        }
 
-            <button
-                class="btn btn-primary me-2"
-                (click)="guardarReserva()">
+            <div class="mt-4">
 
-                Guardar Reserva
+                <button
+                    class="btn btn-success me-2"
+                    (click)="guardarReserva()">
 
-            </button>
+                    {{ editando ? 'Actualizar Reserva' : 'Guardar Reserva' }}
 
-            <button
-                class="btn btn-secondary"
-                (click)="cancelar()">
+                </button>
 
-                Limpiar
+                <button
+                    class="btn btn-secondary"
+                    (click)="cancelar()">
 
-            </button>
+                    Cancelar
+
+                </button>
+
+            </div>
 
         </div>
 
-    </div>
+        <!-- TABLA -->
+
+        <div class="card shadow p-4">
+
+            <h3 class="mb-4">
+                Reservas Registradas
+            </h3>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover">
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Tour</th>
+                            <th>Fecha Tour</th>
+                            <th>Estado</th>
+                            <th>Precio</th>
+                            <th>Guía</th>
+                            <th>Chofer</th>
+                            <th></th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for(reserva of reservas; track $index){
+                            <tr>
+                                <td>{{ reserva.idreserva }}</td>
+                                <td>{{ reserva.clientes?.String }}</td>
+                                <td>{{ reserva.tour }}</td>
+                                <td>{{ reserva.fechatour | date:'dd/MM/yyyy' }}</td>
+                                <td>{{ reserva.estadoreserva }}</td>
+                                <td>₡{{ reserva.preciounitario }}</td>
+                                <td>{{ reserva.guia?.String }}</td>
+                                <td>{{ reserva.chofer?.String }}</td>
+
+                                <td>
+
+                                    <button
+                                        class="btn btn-edit btn-sm me-2"
+                                        (click)="editarReserva(reserva)">
+
+                                        Editar
+
+                                    </button>
+                                    <button
+                                        class="btn btn-delete btn-sm"
+                                        (click)="seleccionarReservaEliminar(reserva.idreserva)"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEliminarReserva">
+
+                                        Eliminar
+
+                                    </button>
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+                <div class="mb-4">
+                    <a
+                    class="btn btn-back"
+                    [routerLink]="['/admin']"
+                    >
+                    Regresar al panel
+                    </a>
+
+                </div>
+
+            </div>
+            <div
+            class="modal fade"
+            id="modalEliminarReserva"
+            tabindex="-1">
+
+            <div class="modal-dialog">
+
+                <div class="modal-content">
+
+                    <div class="modal-header">
+
+                        <h5 class="modal-title">
+
+                            Confirmar eliminación
+
+                        </h5>
+
+                    </div>
+
+                    <div class="modal-body">
+
+                        ¿Desea eliminar esta reserva?
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+                            Cancelar
+
+                        </button>
+
+                        <button
+                            class="btn btn-danger"
+                            data-bs-dismiss="modal"
+                            (click)="confirmarEliminarReserva()">
+
+                            Eliminar
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
 
 </div>

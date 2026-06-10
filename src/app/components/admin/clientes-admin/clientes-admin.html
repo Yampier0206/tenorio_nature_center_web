@@ -1,0 +1,298 @@
+<section class="admin-header">
+
+<div class="container">
+
+    <h1>Administración de Clientes</h1>
+
+</div>
+</section>
+
+<div class="container py-5">
+
+@if(mensaje){
+
+<div class="alert alert-success shadow-sm mb-4">
+
+    {{mensaje}}
+
+</div>
+
+}
+
+<div class="card shadow p-4 mb-5">
+
+    <h3>
+
+        @if(editando){
+
+            Editar Cliente
+
+        }@else{
+
+            Nuevo Cliente
+
+        }
+
+    </h3>
+
+    <div class="row g-3">
+
+        <div class="col-md-6">
+
+            <label>Empresa Cliente</label>
+
+            <select
+                class="form-control"
+                [(ngModel)]="cliente.idEmpresaCliente">
+
+                <option [ngValue]="null">
+
+                    Ninguna
+
+                </option>
+
+                @for(
+                    empresa of empresas;
+                    track $index
+                ){
+
+                <option
+                    [ngValue]="empresa.idempresacliente">
+
+                    {{empresa.razonsocial}}
+
+                </option>
+
+                }
+
+            </select>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <label>Nombre</label>
+
+            <input
+                class="form-control"
+                [(ngModel)]="cliente.nombre">
+
+        </div>
+
+        <div class="col-md-6">
+
+            <label>Identificación</label>
+
+            <input
+                class="form-control"
+                [(ngModel)]="cliente.identificador">
+
+        </div>
+
+        <div class="col-md-6">
+
+            <label>Teléfono</label>
+
+            <input
+                class="form-control"
+                [(ngModel)]="cliente.telefono">
+
+        </div>
+
+        <div class="col-md-6">
+
+            <label>Fecha Nacimiento</label>
+
+            <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="cliente.fechaNac">
+
+        </div>
+
+        <div class="col-md-6">
+
+            <label>Fecha Registro</label>
+
+            <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="cliente.fechaRegistro">
+
+        </div>
+
+        <div class="col-md-6">
+
+            <label>Nacionalidad</label>
+
+            <input
+                class="form-control"
+                [(ngModel)]="cliente.nacionalidad">
+
+        </div>
+
+        <div class="col-12">
+
+            <button
+                class="btn btn-success me-2"
+                (click)="guardarCliente()">
+
+                Guardar
+
+            </button>
+
+            @if(editando){
+
+            <button
+                class="btn btn-secondary"
+                (click)="cancelar()">
+
+                Cancelar
+
+            </button>
+
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+<table class="table table-hover table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Identificación</th>
+            <th>Teléfono</th>
+            <th>Nacionalidad</th>
+            <th></th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @for(cliente of clientes; track $index){
+
+        <tr>
+
+            <td>{{cliente.idcliente}}</td>
+
+            <td>{{cliente.nombre}}</td>
+
+            <td>{{cliente.identificador}}</td>
+
+            <td>{{cliente.telefono}}</td>
+
+            <td>{{cliente.nacionalidad}}</td>
+
+            <td>
+
+                <button
+                    class="btn btn-edit btn-sm me-2"
+                    (click)="editarCliente(cliente)">
+
+                    Editar
+
+                </button>
+
+                <button
+                    class="btn btn-delete btn-sm"
+                    (click)="seleccionarClienteEliminar(cliente.idcliente)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalEliminarCliente">
+
+                    Eliminar
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        }
+
+    </tbody>
+
+</table>
+
+<div class="mb-4">
+
+    <a
+        class="btn btn-back"
+        [routerLink]="['/admin']">
+
+        Regresar al panel
+
+    </a>
+
+</div>
+
+</div>
+
+<div
+    class="modal fade"
+    id="modalEliminarCliente"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Confirmar eliminación
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                ¿Desea eliminar este cliente?
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-bs-dismiss="modal"
+                    (click)="confirmarEliminarCliente()">
+
+                    Eliminar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

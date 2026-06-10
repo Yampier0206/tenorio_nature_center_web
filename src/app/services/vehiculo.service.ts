@@ -46,4 +46,51 @@ export class VehiculoService{
         );
     }
 
+    createVehiculo(data:any):Observable<any>{
+
+        const token = sessionStorage.getItem('token');
+
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+
+        return this._http.post(
+            this.url + 'vehiculo',
+            data,
+            { headers }
+        );
+    }
+
+    updateVehiculo(data:any):Observable<any>{
+
+        const token = sessionStorage.getItem('token');
+
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+
+        return this._http.put(
+            this.url + 'vehiculo',
+            data,
+            { headers }
+        );
+    }
+
+    deleteVehiculo(id:number):Observable<any>{
+
+        const token = sessionStorage.getItem('token');
+
+        const headers = new HttpHeaders({
+            'Content-Type':'application/json',
+            'Authorization':'Bearer ' + token
+        });
+
+        return this._http.delete(
+            this.url + 'vehiculo/' + id,
+            { headers }
+        );
+    }
+
 }

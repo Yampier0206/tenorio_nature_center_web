@@ -1,0 +1,255 @@
+<section class="admin-header">
+
+    <div class="container">
+
+        <h1>Administración de Vehículos</h1>
+
+    </div>
+
+</section>
+
+<div class="container py-5">
+
+    @if(mensaje){
+
+    <div class="alert alert-success shadow-sm mb-4">
+
+        {{mensaje}}
+
+    </div>
+
+    }
+
+    <div class="card shadow p-4 mb-5">
+
+        <h3>
+
+            @if(editando){
+
+                Editar Vehículo
+
+            }@else{
+
+                Nuevo Vehículo
+
+            }
+
+        </h3>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+
+                <label>Chofer</label>
+
+                <select
+                    class="form-control"
+                    [(ngModel)]="vehiculo.idChofer">
+
+                    <option [ngValue]="null">
+
+                        Seleccione
+
+                    </option>
+
+                    @for(chofer of choferes; track $index){
+
+                    <option [ngValue]="chofer.idchofer">
+
+                        {{chofer.nombre}}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label>Matrícula</label>
+
+                <input
+                    class="form-control"
+                    [(ngModel)]="vehiculo.matricula">
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label>Capacidad</label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="vehiculo.capacidad">
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label>Modelo</label>
+
+                <input
+                    class="form-control"
+                    [(ngModel)]="vehiculo.modelo">
+
+            </div>
+
+            <div class="col-12">
+
+                <button
+                    class="btn btn-success me-2"
+                    (click)="guardarVehiculo()">
+
+                    Guardar
+
+                </button>
+
+                @if(editando){
+
+                <button
+                    class="btn btn-secondary"
+                    (click)="cancelar()">
+
+                    Cancelar
+
+                </button>
+
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <table class="table table-hover table-striped">
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Matrícula</th>
+                <th>Modelo</th>
+                <th>Capacidad</th>
+                <th>Chofer</th>
+                <th></th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @for(item of vehiculos; track $index){
+
+            <tr>
+
+                <td>{{item.idvehiculo}}</td>
+
+                <td>{{item.matricula}}</td>
+
+                <td>{{item.modelo}}</td>
+
+                <td>{{item.capacidad}}</td>
+
+                <td>{{item.nombre_chofer}}</td>
+
+                <td>
+
+                    <button
+                        class="btn btn-edit btn-sm me-2"
+                        (click)="editarVehiculo(item)">
+
+                        Editar
+
+                    </button>
+
+                    <button
+                        class="btn btn-delete btn-sm"
+                        (click)="seleccionarVehiculoEliminar(item.idvehiculo)"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEliminarVehiculo">
+
+                        Eliminar
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+            }
+
+        </tbody>
+
+    </table>
+
+    <div class="mb-4">
+
+        <a
+            class="btn btn-back"
+            [routerLink]="['/admin']">
+
+            Regresar al panel
+
+        </a>
+
+    </div>
+
+</div>
+
+<div
+    class="modal fade"
+    id="modalEliminarVehiculo"
+    tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Confirmar eliminación
+
+                </h5>
+
+            </div>
+
+            <div class="modal-body">
+
+                ¿Desea eliminar este vehículo?
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    data-bs-dismiss="modal"
+                    (click)="confirmarEliminarVehiculo()">
+
+                    Eliminar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
