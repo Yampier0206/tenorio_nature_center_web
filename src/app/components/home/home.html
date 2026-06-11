@@ -1,5 +1,28 @@
-<p>home works!</p>
+@if(!posts){
+    <div class="loading">
+        <p>Cargando los datos...</p>
+    </div>
+}@else {
+    <div class="container mt-5">
+        <h4>Publicaciones de usuarios</h4>
+        <div class="row d-flex">
+            <span>
+                <div class="col">
+                  @for(post of posts; track $index){
+                    <div class="card mb-4" style="width: 18rem;">
+                        <!--Agregar un img del post-->
+                        <div class="card-body">
+                            <h5 class="card-title">{{post.title}}</h5>
+                            <p>Creado: {{post.created_at}}</p>
+                            <a class="btn btn-primary" [routerLink]="['/detalle/'+post.id]">Ver</a>
+                            <!--Mostar el boton de editar y borrar al usuario
+                            dueño del post-->
 
-@if(user && user.image!=null){
-    <img style="height: 100px;" src="{{url+'user/download/'+user.image}}">
+                        </div>
+                    </div>
+                  }  
+                </div>
+            </span>
+        </div>
+    </div>
 }

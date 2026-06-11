@@ -43,5 +43,12 @@ export class AuthService{
     getToken():any{
         return sessionStorage.getItem('token')
     }
+    getIdentity():any{
+        let identity=sessionStorage.getItem('identity')
+        if(identity){
+            return JSON.parse(identity)
+        }
+        return null
+    }
 
 }
