@@ -71,15 +71,13 @@ export class GuiasAdmin implements OnInit {
   }
 
   guardarGuia(){
-  const fecha = this.guia.fechanac;
-  
-  // Convierte "2020-06-03" → "2020-06-03T00:00:00Z"
-  const fechaISO = fecha ? fecha + 'T00:00:00Z' : null;
+  const fecha = this.guia.fechanac ? this.guia.fechanac.toString().substring(0, 10): null;
 
   const payload = {
     ...this.guia,
-    fechanac: fechaISO,
-    telefono: Number(this.guia.telefono)
+    fechanac: fecha,
+    telefono: String(this.guia.telefono),
+    identificador: this.guia.identificador || 'DOC-DEFAULT'
   };
 
   console.log('PAYLOAD:', JSON.stringify(payload)); // verifica en consola
@@ -205,7 +203,7 @@ export class GuiasAdmin implements OnInit {
   }
 
   eliminarIdioma(idIdiomaguia: number) {
-    this.idiomaguiaService.deleteIdiomaFromGuia(idIdiomaguia).subscribe({
+    this.idiomaguiaService.deleteIdiomaGuia(idIdiomaguia).subscribe({
       next: () => {
         this.mensaje = 'Idioma eliminado correctamente';
         this.gestionarIdiomas(this.guiaSeleccionado);
