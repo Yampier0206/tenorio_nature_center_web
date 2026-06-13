@@ -2,9 +2,9 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { manejarErrorGuardado } from '../../../helpers/error.helper';
 import { FacturaService } from '../../../services/factura.service';
 import { EstadoPagoService } from '../../../services/estadopago.service';
-import { ReservaService } from '../../../services/reserva.service';
 import { ParticipanteService } from '../../../services/participante.service';
 import { FacturaParticipanteService } from '../../../services/facturaparticipante.service';
 import { NgClass } from '@angular/common';
@@ -24,6 +24,7 @@ export class FacturasAdmin implements OnInit {
   public participantesReserva: any[] = [];
   public participantesSeleccionados: number[] = [];
   public mensaje: string = '';
+  public mensajeError: string = '';
   public modoEdicion: boolean = false;
   public facturaIdEliminar: number = 0;
  
@@ -162,7 +163,13 @@ export class FacturasAdmin implements OnInit {
           this.loadReservas();
           setTimeout(() => { this.mensaje = ''; }, 3000);
         },
-        error: (err) => { console.log(err); }
+        error: (err) => manejarErrorGuardado(
+                  err,
+                  'CREATE',
+                  (msg) => this.mensajeError = msg,
+                  this.cdr,
+                  'Ya existe una Factura con ese número'
+                )
       });
  
     } else {
@@ -183,7 +190,13 @@ export class FacturasAdmin implements OnInit {
             setTimeout(() => { this.mensaje = ''; }, 3000);
           });
         },
-        error: (err) => { console.log(err); }
+        error: (err) => manejarErrorGuardado(
+                  err,
+                  'CREATE',
+                  (msg) => this.mensajeError = msg,
+                  this.cdr,
+                  'Ya existe una Factura con ese número'
+                )
       });
     }
   }

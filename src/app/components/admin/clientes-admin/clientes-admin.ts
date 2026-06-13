@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-
+import { manejarErrorGuardado } from '../../../helpers/error.helper';
 import { ClienteService } from '../../../services/cliente.service';
 import { EmpresaClienteService } from '../../../services/empresacliente.service';
 
@@ -18,6 +18,7 @@ export class ClientesAdmin implements OnInit {
   public empresas:any[] = [];
 
   public mensaje:string = '';
+  public mensajeError:string = '';
   public idClienteEliminar:number = 0;
 
   public editando:boolean = false;
@@ -114,11 +115,12 @@ export class ClientesAdmin implements OnInit {
 
         },
 
-        error:(err)=>{
-
-          console.log('ERROR UPDATE', err);
-
-        }
+        error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr
+        )
 
       });
 
@@ -142,11 +144,12 @@ export class ClientesAdmin implements OnInit {
 
         },
 
-        error:(err)=>{
-
-          console.log('ERROR CREATE', err);
-
-        }
+        error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr
+        )
 
       });
 

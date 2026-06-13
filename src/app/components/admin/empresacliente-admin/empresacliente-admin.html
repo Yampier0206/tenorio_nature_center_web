@@ -18,6 +18,15 @@
 </div>
 
 }
+@if(mensajeError){
+
+  <div class="alert alert-danger shadow-sm mb-4">
+
+    {{ mensajeError }}
+
+  </div>
+
+}
 
 <div class="card shadow p-4 mb-5">
 
@@ -112,7 +121,7 @@
                     #telefono="ngModel"
                     [(ngModel)]="empresa.telefono"
                     placeholder="+506 2222-0000"
-                    pattern="^[+]?[\d\s\-().]{7,20}$">
+                    pattern="^[+]?[\d\s\-\(\)\.]{7,20}$">
                 @if(telefono.invalid && telefono.touched){
                     <small class="invalid-feedback d-block">
                        Formato inválido. Ej: +506 2222-0000

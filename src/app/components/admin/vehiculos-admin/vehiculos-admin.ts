@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
-
+import { manejarErrorGuardado } from '../../../helpers/error.helper';
 import { VehiculoService } from '../../../services/vehiculo.service';
 import { ChoferService } from '../../../services/chofer.service';
 
@@ -22,6 +22,7 @@ export class VehiculosAdmin implements OnInit {
   public choferes:any[] = [];
 
   public mensaje:string = '';
+  public mensajeError: string = '';
   public editando:boolean = false;
 
   public idVehiculoEliminar:number = 0;
@@ -114,11 +115,13 @@ export class VehiculosAdmin implements OnInit {
 
         },
 
-        error:(err)=>{
-
-          console.log(err);
-
-        }
+        error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr,
+          'Ya existe un vehiculo con esa matricula'
+        )
 
       });
 
@@ -141,11 +144,13 @@ export class VehiculosAdmin implements OnInit {
 
         },
 
-        error:(err)=>{
-
-          console.log(err);
-
-        }
+        error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr,
+          'Ya existe un vehiculo con esa matricula'
+        )
 
       });
 

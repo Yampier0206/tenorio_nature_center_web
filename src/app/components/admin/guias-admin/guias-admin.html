@@ -11,6 +11,11 @@
     {{ mensaje }}
   </div>
   }
+  @if(mensajeError){
+  <div class="alert alert-danger shadow-sm mb-4">
+    {{ mensajeError }}
+  </div>
+  }
 
   <!-- FORMULARIO -->
   <div class="card shadow p-4 mb-5">
@@ -36,7 +41,7 @@
             [(ngModel)]="guia.nombre"
             placeholder="Ej. Andrea Morales"
             required
-            pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,45}$">
+            pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,100}$">
           @if(nombre.invalid && nombre.touched){
             <small class="invalid-feedback d-block">
               @if(nombre.errors?.['required']){ El nombre es obligatorio. }
@@ -88,7 +93,7 @@
             [(ngModel)]="guia.telefono"
             placeholder="+506 8888 0000"
             required
-            pattern="^[+]?[\d\s\-().]{7,20}$">
+            pattern="^[+]?[\d\s\-\(\)\.]{7,20}$">
           @if(telefono.invalid && telefono.touched){
             <small class="invalid-feedback d-block">
               @if(telefono.errors?.['required']){ El teléfono es obligatorio. }

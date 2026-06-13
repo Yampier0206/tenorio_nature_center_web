@@ -55,7 +55,7 @@
             placeholder="Dirección completa"
             required
             minlength="5"
-            maxlength="150">
+            maxlength="200">
           @if(direccion.invalid && direccion.touched){
             <small class="invalid-feedback d-block">
               @if(direccion.errors?.['required']){ La dirección es obligatoria. }

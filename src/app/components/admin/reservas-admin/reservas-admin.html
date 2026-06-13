@@ -123,7 +123,7 @@
             [disabled]="editando"
             placeholder="+506 8888 0000"
             [required]="!editando"
-            pattern="^[+]?[\d\s\-().]{7,20}$">
+            pattern="^[+]?[\d\s\-\(\)\.]{7,20}$">
           @if(telefonoCliente.invalid && telefonoCliente.touched){
             <small class="invalid-feedback d-block">
               @if(telefonoCliente.errors?.['required']){ El teléfono es obligatorio. }

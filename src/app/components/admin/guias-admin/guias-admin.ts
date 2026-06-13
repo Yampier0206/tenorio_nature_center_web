@@ -3,10 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { GuiaService } from '../../../services/guia.service';
 import { RouterLink } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
-import { email } from '@angular/forms/signals';
 import { DatePipe } from '@angular/common';
 import { IdiomaService } from '../../../services/idioma.service';
 import { IdiomaGuiaService } from '../../../services/idioma-guia.service';
+import { manejarErrorGuardado } from '../../../helpers/error.helper';
 
 @Component({
   selector: 'app-guias-admin',
@@ -19,6 +19,7 @@ export class GuiasAdmin implements OnInit {
 
   public guias:any[] = [];
   public mensaje:string='';
+  public mensajeError:string='';
   public idGuiaEliminar:number = 0;
 
   public idiomas: any[] = [];      
@@ -28,6 +29,7 @@ export class GuiasAdmin implements OnInit {
 
   public guia:any = {
     nombre:'',
+    identificador:'',
     fechanac:'',
     telefono:'',
     nacionalidad:'',
@@ -57,7 +59,6 @@ export class GuiasAdmin implements OnInit {
         console.log('GUIAS RECARGADOS', response);
         this.guias = response;
         this.cdr.detectChanges();
-    
       },
 
       error:(err)=>{
@@ -80,7 +81,7 @@ export class GuiasAdmin implements OnInit {
     identificador: this.guia.identificador || 'DOC-DEFAULT'
   };
 
-  console.log('PAYLOAD:', JSON.stringify(payload)); // verifica en consola
+  console.log('PAYLOAD:', JSON.stringify(payload)); 
 
   if(this.editando){
     this.guiaService.updateGuia(payload).subscribe({
@@ -90,7 +91,12 @@ export class GuiasAdmin implements OnInit {
         this.loadGuias();
         setTimeout(()=>{ this.mensaje=''; },3000);
       },
-      error:(err)=>{ console.log('ERROR UPDATE',err); }
+      error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr
+        )
     });
   }else{
     this.guiaService.createGuia(payload).subscribe({
@@ -100,7 +106,12 @@ export class GuiasAdmin implements OnInit {
         this.loadGuias();
         setTimeout(()=>{ this.mensaje = ''; },3000);
       },
-      error:(err)=>{ console.log('ERROR CREATE', err); }
+      error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr
+        )
     });
   }
 }
@@ -112,8 +123,9 @@ export class GuiasAdmin implements OnInit {
     this.guia = {
 
       idGuia: guia.idguia,
-      nombre: guia.nombre,  
-      fechanac: guia.fechanac,
+      nombre: guia.nombre,
+      identificador: guia.identificador,  
+      fechanac: guia.fechanac?.split('T')[0],
       telefono: guia.telefono,
       nacionalidad: guia.nacionalidad,
       email: guia.email
@@ -129,7 +141,7 @@ export class GuiasAdmin implements OnInit {
     this.guiaService.deleteGuia(this.idGuiaEliminar)
     .subscribe({
       next:()=>{
-        this.mensaje = 'Guia eliminada correctamente';
+        this.mensaje = 'Guia eliminado correctamente';
         this.loadGuias();
         setTimeout(()=>{
           this.mensaje = '';
@@ -148,6 +160,7 @@ export class GuiasAdmin implements OnInit {
 
     this.guia = {
       nombre:'',
+      identificador:'',
       fechanac:'',
       telefono:'',
       nacionalidad:'',
@@ -171,7 +184,10 @@ export class GuiasAdmin implements OnInit {
       next: (response: any) => {
         console.log('IDIOMAS DEL GUIA:', response);
         this.idiomasDelGuia = response|| [];
+        setTimeout(() => {
         this.cdr.detectChanges();
+      }, 0);
+      //Para que detecte los cambios hasta que se hayan aplicado en el loop, ntes salia error de deteccion.
       },
       error: (err) => { console.log(err); }
     });

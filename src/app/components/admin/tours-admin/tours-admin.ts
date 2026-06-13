@@ -59,9 +59,15 @@ export class ToursAdmin implements OnInit {
   }
 
   guardarTour(){
+
+    const payload = {
+      ...this.tour,
+      precioBase: String(this.tour.precioBase)
+    };
+
     if(this.editando){
 
-      this.tourService.updateTour(this.tour)
+      this.tourService.updateTour(payload)
       .subscribe({
 
         next:()=>{
@@ -83,7 +89,7 @@ export class ToursAdmin implements OnInit {
 
     }else{
 
-      this.tourService.createTour(this.tour)
+      this.tourService.createTour(payload)
       .subscribe({
 
         next:()=>{

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-
+import { manejarErrorGuardado } from '../../../helpers/error.helper';
 import { EmpresaClienteService } from '../../../services/empresacliente.service';
 
 @Component({
@@ -16,6 +16,7 @@ export class EmpresaClienteAdmin implements OnInit {
   public empresas:any[] = [];
 
   public mensaje:string = '';
+  public mensajeError:string = '';
   public idEmpresaEliminar:number = 0;
 
   public editando:boolean = false;
@@ -83,11 +84,13 @@ export class EmpresaClienteAdmin implements OnInit {
 
         },
 
-        error:(err)=>{
-
-          console.log('ERROR UPDATE', err);
-
-        }
+        error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr,
+          'Ya existe un empresa con esa cedula juridica'
+        )
 
       });
 

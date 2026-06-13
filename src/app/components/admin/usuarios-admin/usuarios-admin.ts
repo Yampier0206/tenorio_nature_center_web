@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { UsuarioService } from '../../../services/usuario.service';
+import { manejarErrorGuardado } from '../../../helpers/error.helper';
 
 @Component({
   selector: 'app-usuarios-admin',
@@ -14,6 +15,7 @@ export class UsuariosAdmin implements OnInit {
 
   public usuarios: any[] = [];
   public mensaje: string = '';
+  public mensajeError: string = '';
   public idUsuarioEliminar: number = 0;
 
   public usuario: any = {
@@ -74,9 +76,13 @@ export class UsuariosAdmin implements OnInit {
           this.loadUsuarios();
           setTimeout(() => { this.mensaje = ''; }, 3000);
         },
-        error:(err) => {
-          console.log('ERROR UPDATE', err);
-        }
+        error: (err) => manejarErrorGuardado(
+                  err,
+                  'CREATE',
+                  (msg) => this.mensajeError = msg,
+                  this.cdr,
+                  'Ya existe un usuario con ese correo'
+        )
       });
     } else {
       this.usuarioService.createUsuario(this.usuario).subscribe({
@@ -86,9 +92,13 @@ export class UsuariosAdmin implements OnInit {
           this.loadUsuarios();
           setTimeout(() => { this.mensaje = ''; }, 3000);
         },
-        error:(err) => {
-          console.log('ERROR CREATE', err);
-        }
+        error: (err) => manejarErrorGuardado(
+                  err,
+                  'CREATE',
+                  (msg) => this.mensajeError = msg,
+                  this.cdr,
+                  'Ya existe un usuario con ese correo'
+        )
       });
     }
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChoferService } from '../../../services/chofer.service';
+import { manejarErrorGuardado } from '../../../helpers/error.helper';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -16,6 +17,7 @@ export class ChoferAdmin implements OnInit {
  
   public choferes: any[] = [];
   public mensaje: string = '';
+  public mensajeError: string = '';
   public modoEdicion: boolean = false;
   public choferIdEliminar: number = 0;
 
@@ -95,7 +97,12 @@ export class ChoferAdmin implements OnInit {
           this.loadChoferes();
           setTimeout(() => { this.mensaje = ''; }, 3000);
         },
-        error: (err) => { console.log(err); }
+        error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr
+        )
       });
     } else {
       this.choferService.createChofer(this.chofer)
@@ -106,7 +113,18 @@ export class ChoferAdmin implements OnInit {
           this.loadChoferes();
           setTimeout(() => { this.mensaje = ''; }, 3000);
         },
-        error: (err) => { console.log(err); }
+        error:(err)=>{
+          console.log('ERROR CREATE', err);
+          if(err.status === 500 && err.error?.error?.includes('Duplicate entry')){
+            this.mensajeError = 'Ya existe un chofer con esa identificación.';
+          } else if(err.status === 0){
+            this.mensajeError = 'No se pudo conectar con el servidor.';
+          } else {
+          this.mensajeError = 'Ocurrió un error al guardar. Intentá de nuevo.';
+          }
+          this.cdr.detectChanges();
+          setTimeout(()=>{ this.mensajeError = ''; }, 3000);
+        }
       });
     }
   }

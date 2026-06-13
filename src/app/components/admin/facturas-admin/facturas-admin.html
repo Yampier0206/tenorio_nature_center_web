@@ -11,6 +11,11 @@
     {{ mensaje }}
   </div>
   }
+  @if(mensajeError){
+  <div class="alert alert-danger shadow-sm mb-4">
+    {{ mensajeError }}
+  </div>
+}
 
   <!-- FORMULARIO -->
   <div class="card shadow p-4 mb-5">
@@ -25,6 +30,7 @@
     <form #facturaForm="ngForm" (ngSubmit)="guardarFactura()">
 
       <!-- RESERVA -->
+       @if(!modoEdicion){
       <p class="form-section-label">Reserva</p>
       <div class="row g-3 mb-3">
         <div class="col-12">
@@ -48,7 +54,7 @@
           }
         </div>
       </div>
-
+    
       @if(factura.idReserva){
       <div class="row g-3 mb-3">
         <div class="col-12">
@@ -80,7 +86,7 @@
         </div>
       </div>
       }
-
+    }
       <!-- DATOS FACTURA -->
       <p class="form-section-label">Datos de la factura</p>
       <div class="row g-3 mb-3">
