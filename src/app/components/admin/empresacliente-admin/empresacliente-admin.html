@@ -1,0 +1,297 @@
+<section class="admin-header">
+
+<div class="container">
+
+    <h1>Administración de Empresas Cliente</h1>
+
+</div>
+</section>
+
+<div class="container py-5">
+
+@if(mensaje){
+
+<div class="alert alert-success shadow-sm mb-4">
+
+    {{mensaje}}
+
+</div>
+
+}
+
+<div class="card shadow p-4 mb-5">
+
+    <h3>
+
+        @if(editando){
+
+            Editar Empresa Cliente
+
+        }@else{
+
+            Nueva Empresa Cliente
+
+        }
+
+    </h3>
+
+    <form #empresaForm="ngForm" (ngSubmit)="guardarEmpresa()">
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+
+                <label class="form-label fw-semibold">Razón Social</label>
+
+                <input
+                    class="form-control"
+                    name="razonSocial"
+                    #razonSocial="ngModel"
+                    [(ngModel)]="empresa.razonSocial"
+                    placeholder="Ej. Turismo Tropical S.A."
+                    required
+                    pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ0-9\s.,\-&()]{3,100}$">
+                @if(razonSocial.invalid && razonSocial.touched){
+                    <small class="invalid-feedback d-block">
+                        @if(razonSocial.errors?.['required']){ La razón social es obligatoria. }
+                        @else { Mínimo 3 caracteres. Solo letras, números y puntuación básica. }
+                    </small>
+                }
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label class="form-label fw-semibold">Cédula Jurídica</label>
+
+                <input
+                    class="form-control"
+                    name="cedulaJuridica"
+                    #cedulaJuridica="ngModel"
+                    [(ngModel)]="empresa.cedulaJuridica"
+                    placeholder="3-101-123456"
+                    required
+                    pattern="^[A-Za-z0-9\-]{8,25}$">
+                @if(cedulaJuridica.invalid && cedulaJuridica.touched){
+                    <small class="invalid-feedback d-block">
+                        @if(cedulaJuridica.errors?.['required']){ La cédula jurídica es obligatoria. }
+                        @else { Formato esperado: 3-101-123456 o ID fiscal extranjero }
+                    </small>
+                }
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label class="form-label fw-semibold">Email</label>
+
+                <input
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    #email="ngModel"
+                    [(ngModel)]="empresa.email"
+                    placeholder="contacto@empresa.com"
+                    required>
+                @if(email.invalid && email.touched){
+                    <small class="invalid-feedback d-block">
+                        @if(email.errors?.['required']){ El correo es obligatorio. }
+                        @else { Ingresá un correo electrónico válido. }
+                    </small>
+                }
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label class="form-label fw-semibold">Teléfono <span class="fw-normal text-muted">(opcional)</span></label>
+
+                <input
+                    class="form-control"
+                    name="telefono"
+                    #telefono="ngModel"
+                    [(ngModel)]="empresa.telefono"
+                    placeholder="+506 2222-0000"
+                    pattern="^[+]?[\d\s\-().]{7,20}$">
+                @if(telefono.invalid && telefono.touched){
+                    <small class="invalid-feedback d-block">
+                       Formato inválido. Ej: +506 2222-0000
+                    </small>
+                }
+
+            </div>
+
+            <div class="col-12">
+
+                <button
+                    type="submit"
+                    class="btn btn-success me-2"
+                    [disabled]="empresaForm.invalid">
+
+                    Guardar
+
+                </button>
+
+                @if(editando){
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="cancelar()">
+
+                    Cancelar
+
+                </button>
+
+                }
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<table class="table table-hover table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>ID</th>
+            <th>Razón Social</th>
+            <th>Cédula Jurídica</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th></th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @for(empresa of empresas; track $index){
+
+        <tr>
+
+            <td>{{empresa.idempresacliente}}</td>
+
+            <td>{{empresa.razonsocial}}</td>
+
+            <td>{{empresa.cedulajuridica}}</td>
+
+            <td>{{empresa.email}}</td>
+
+            <td>{{empresa.telefono?.String}}</td>
+
+            <td>
+
+                <button
+                    class="btn btn-edit btn-sm me-2"
+                    (click)="editarEmpresa(empresa)">
+
+                    Editar
+
+                </button>
+
+                <button
+                    class="btn btn-delete btn-sm"
+                    (click)="seleccionarEmpresaEliminar(empresa.idempresacliente)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalEliminarEmpresa">
+
+                    Eliminar
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        }
+
+    </tbody>
+
+</table>
+
+<div class="mb-4">
+
+    <a
+        class="btn btn-back"
+        [routerLink]="['/admin']">
+
+        Regresar al panel
+
+    </a>
+
+</div>
+
+</div>
+
+<div
+    class="modal fade"
+    id="modalEliminarEmpresa"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Confirmar eliminación
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                ¿Desea eliminar esta empresa cliente?
+                <br>
+                <small class="text-muted">
+                    Si existen clientes asociados a esta empresa, primero deberá
+                    reasignarlos o desvincularlos.
+                </small>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-bs-dismiss="modal"
+                    (click)="confirmarEliminarEmpresa()">
+
+                    Eliminar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

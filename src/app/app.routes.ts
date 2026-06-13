@@ -19,6 +19,7 @@ import { UsuariosAdmin } from './components/admin/usuarios-admin/usuarios-admin'
 import { UbicacionesAdmin } from './components/admin/ubicaciones-admin/ubicaciones-admin';
 import { VehiculosAdmin } from './components/admin/vehiculos-admin/vehiculos-admin';
 import { ClientesAdmin } from './components/admin/clientes-admin/clientes-admin';
+import { EmpresaClienteAdmin } from './components/admin/empresacliente-admin/empresacliente-admin';
 import { GuiasAdmin } from './components/admin/guias-admin/guias-admin';
 import { IdiomasAdmin } from './components/admin/idiomas-admin/idiomas-admin';
 
@@ -45,6 +46,7 @@ export const routes: Routes = [
     { path: 'admin/ubicaciones', component: UbicacionesAdmin },
     { path: 'admin/vehiculos', component: VehiculosAdmin },
     { path: 'admin/clientes', component: ClientesAdmin },
+    { path: 'admin/empresa-cliente', component: EmpresaClienteAdmin },
     { path: 'admin/guias', component: GuiasAdmin },
     { path: 'admin/idiomas', component: IdiomasAdmin },
     //Registro

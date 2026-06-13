@@ -161,7 +161,10 @@ export class ClientesAdmin implements OnInit {
     this.cliente = {
 
       idCliente: cliente.idcliente,
-      idEmpresaCliente: cliente.idempresacliente?.Int32 ?? null,
+      idEmpresaCliente:
+      cliente.idempresacliente?.Valid
+      ? cliente.idempresacliente.Int32
+      : null,
       idUsuario:
       cliente.idusuario?.Valid
       ? cliente.idusuario.Int32
@@ -174,6 +177,26 @@ export class ClientesAdmin implements OnInit {
       fechaRegistro: cliente.fecharegistro?.split('T')[0]
 
     };
+
+  }
+
+  getEmpresaNombre(cliente:any):string{
+
+    const idEmpresa = cliente.idempresacliente?.Valid
+      ? cliente.idempresacliente.Int32
+      : null;
+
+    if(!idEmpresa){
+
+      return '-';
+
+    }
+
+    const empresa = this.empresas.find(
+      (e:any) => e.idempresacliente === idEmpresa
+    );
+
+    return empresa ? empresa.razonsocial : '-';
 
   }
 

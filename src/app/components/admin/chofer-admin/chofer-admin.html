@@ -22,56 +22,146 @@
       @if(modoEdicion){ Modificá los datos del chofer seleccionado. } @else { Completá todos los campos para registrar un nuevo chofer. }
     </p>
 
-    <div class="row g-3 mb-3">
-      <div class="col-md-8">
-        <label class="form-label fw-semibold">Nombre completo</label>
-        <input type="text" class="form-control" placeholder="Ej. Carlos Méndez" [(ngModel)]="chofer.nombre">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Identificación</label>
-        <input type="text" class="form-control" placeholder="1-2345-6789" [(ngModel)]="chofer.identificador">
-      </div>
-    </div>
+    <form #choferForm="ngForm" (ngSubmit)="guardarChofer()">
 
-    <div class="row g-3 mb-3">
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Fecha de nacimiento</label>
-        <input type="date" class="form-control" [(ngModel)]="chofer.fechaNac">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Teléfono</label>
-        <input type="text" class="form-control" placeholder="88880000" [(ngModel)]="chofer.telefono">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Nacionalidad</label>
-        <input type="text" class="form-control" placeholder="Costarricense" [(ngModel)]="chofer.nacionalidad">
-      </div>
-    </div>
-
-    <div class="row g-3 mb-4">
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Correo electrónico</label>
-        <input type="email" class="form-control" placeholder="correo@ejemplo.com" [(ngModel)]="chofer.email">
-      </div>
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Tipo de licencia</label>
-        <select class="form-control" [(ngModel)]="chofer.tipoLicencia">
-          <option [ngValue]="null">Seleccione tipo de licencia</option>
-          @for(tipo of tiposLicencia; track $index){
-          <option [value]="tipo">{{ tipo }}</option>
+      <div class="row g-3 mb-3">
+        <div class="col-md-8">
+          <label class="form-label fw-semibold">Nombre completo</label>
+          <input
+            type="text"
+            class="form-control"
+            name="nombre"
+            #nombre="ngModel"
+            [(ngModel)]="chofer.nombre"
+            placeholder="Ej. Carlos Méndez"
+            required
+            pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,45}$">
+          @if(nombre.invalid && nombre.touched){
+            <small class="invalid-feedback d-block">
+              @if(nombre.errors?.['required']){ El nombre es obligatorio. }
+              @else { Solo letras y espacios, mínimo 3 caracteres. }
+            </small>
           }
-        </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Identificación</label>
+          <input
+            type="text"
+            class="form-control"
+            name="identificador"
+            #identificador="ngModel"
+            [(ngModel)]="chofer.identificador"
+            placeholder="1-2345-6789"
+            required
+            pattern="^[A-Za-z0-9\-]{5,25}$">
+          @if(identificador.invalid && identificador.touched){
+            <small class="invalid-feedback d-block">
+              @if(identificador.errors?.['required']){ La identificación es obligatoria. }
+              @else { Formato esperado: 1-2345-6789 o AB1234567}
+            </small>
+          }
+        </div>
       </div>
-    </div>
 
-    <div class="d-flex gap-2">
-      <button class="btn btn-success" (click)="guardarChofer()">
-        {{ modoEdicion ? 'Actualizar chofer' : 'Guardar chofer' }}
-      </button>
-      @if(modoEdicion){
-      <button class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
-      }
-    </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Fecha de nacimiento</label>
+          <input
+            type="date"
+            class="form-control"
+            name="fechaNac"
+            #fechaNac="ngModel"
+            [(ngModel)]="chofer.fechaNac"
+            required>
+          @if(fechaNac.invalid && fechaNac.touched){
+            <small class="invalid-feedback d-block">La fecha de nacimiento es obligatoria.</small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Teléfono</label>
+          <input
+            type="text"
+            class="form-control"
+            name="telefono"
+            #telefono="ngModel"
+            [(ngModel)]="chofer.telefono"
+            placeholder="+506 8888-0000"
+            required
+            pattern="^[+]?[\d\s\-().]{7,20}$">
+          @if(telefono.invalid && telefono.touched){
+            <small class="invalid-feedback d-block">
+              @if(telefono.errors?.['required']){ El teléfono es obligatorio. }
+              @else { Formato inválido. Ej: +506 8888-0000 }
+            </small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Nacionalidad</label>
+          <input
+            type="text"
+            class="form-control"
+            name="nacionalidad"
+            #nacionalidad="ngModel"
+            [(ngModel)]="chofer.nacionalidad"
+            placeholder="Costarricense"
+            required
+            pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,25}$">
+          @if(nacionalidad.invalid && nacionalidad.touched){
+            <small class="invalid-feedback d-block">
+              @if(nacionalidad.errors?.['required']){ La nacionalidad es obligatoria. }
+              @else { Solo letras, mínimo 3 caracteres. }
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Correo electrónico</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            #email="ngModel"
+            [(ngModel)]="chofer.email"
+            placeholder="correo@ejemplo.com"
+            required>
+          @if(email.invalid && email.touched){
+            <small class="invalid-feedback d-block">
+              @if(email.errors?.['required']){ El correo es obligatorio. }
+              @else { Ingresá un correo electrónico válido. }
+            </small>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Tipo de licencia</label>
+          <select
+            class="form-control"
+            name="tipoLicencia"
+            #tipoLicencia="ngModel"
+            [(ngModel)]="chofer.tipoLicencia"
+            required>
+            <option [ngValue]="null">Seleccione tipo de licencia</option>
+            @for(tipo of tiposLicencia; track $index){
+            <option [value]="tipo">{{ tipo }}</option>
+            }
+          </select>
+          @if(tipoLicencia.invalid && tipoLicencia.touched){
+            <small class="invalid-feedback d-block">Seleccioná un tipo de licencia.</small>
+          }
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success" [disabled]="choferForm.invalid">
+          {{ modoEdicion ? 'Actualizar chofer' : 'Guardar chofer' }}
+        </button>
+        @if(modoEdicion){
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+        }
+      </div>
+
+    </form>
 
   </div>
 

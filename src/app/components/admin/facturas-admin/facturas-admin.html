@@ -22,131 +22,246 @@
       @if(modoEdicion){ Modificá los datos de la factura seleccionada. } @else { Completá todos los campos para registrar una nueva factura. }
     </p>
 
-    <!-- RESERVA -->
-    <p class="form-section-label">Reserva</p>
-    <div class="row g-3 mb-3">
-      <div class="col-12">
-        <label class="form-label fw-semibold">Reserva asociada</label>
-        <select class="form-control" [(ngModel)]="factura.idReserva" (ngModelChange)="onReservaChange()">
-          <option [ngValue]="null">Seleccione una reserva</option>
-          @for(reserva of reservas; track reserva.idreserva){
-          <option [ngValue]="reserva.idreserva">
-            Reserva #{{ reserva.idreserva }} — {{ reserva.clientenombres.String }}
-          </option>
-          }
-        </select>
-      </div>
-    </div>
+    <form #facturaForm="ngForm" (ngSubmit)="guardarFactura()">
 
-    @if(factura.idReserva){
-    <div class="row g-3 mb-3">
-      <div class="col-12">
-        @if(participantesReserva.length > 0){
-        <div class="participantes-check-box">
-          <p class="fw-semibold small mb-2">Seleccione los participantes a facturar:</p>
-          <div class="row g-2">
-            @for(p of participantesReserva; track p.idparticipante){
-            <div class="col-md-4">
-              <div class="form-check participante-check-item">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  [value]="p.idparticipante"
-                  (change)="toggleParticipante(p.idparticipante, $event)">
-                <label class="form-check-label small">
-                  {{ p.nombre || 'Participante #' + p.idparticipante }}
-                </label>
-              </div>
-            </div>
+      <!-- RESERVA -->
+      <p class="form-section-label">Reserva</p>
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <label class="form-label fw-semibold">Reserva asociada</label>
+          <select
+            class="form-control"
+            name="idReserva"
+            #idReserva="ngModel"
+            [(ngModel)]="factura.idReserva"
+            (ngModelChange)="onReservaChange()"
+            required>
+            <option [ngValue]="null">Seleccione una reserva</option>
+            @for(reserva of reservas; track reserva.idreserva){
+            <option [ngValue]="reserva.idreserva">
+              Reserva #{{ reserva.idreserva }} — {{ reserva.clientenombres.String }}
+            </option>
             }
+          </select>
+          @if(idReserva.invalid && idReserva.touched){
+            <small class="invalid-feedback d-block">Seleccioná una reserva.</small>
+          }
+        </div>
+      </div>
+
+      @if(factura.idReserva){
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          @if(participantesReserva.length > 0){
+          <div class="participantes-check-box">
+            <p class="fw-semibold small mb-2">Seleccione los participantes a facturar:</p>
+            <div class="row g-2">
+              @for(p of participantesReserva; track p.idparticipante){
+              <div class="col-md-4">
+                <div class="form-check participante-check-item">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [value]="p.idparticipante"
+                    (change)="toggleParticipante(p.idparticipante, $event)">
+                  <label class="form-check-label small">
+                    {{ p.nombre || 'Participante #' + p.idparticipante }}
+                  </label>
+                </div>
+              </div>
+              }
+            </div>
           </div>
+          } @else {
+          <div class="alert alert-warning py-2 small">
+            Todos los participantes de esta reserva ya tienen factura asignada.
+          </div>
+          }
         </div>
-        } @else {
-        <div class="alert alert-warning py-2 small">
-          Todos los participantes de esta reserva ya tienen factura asignada.
+      </div>
+      }
+
+      <!-- DATOS FACTURA -->
+      <p class="form-section-label">Datos de la factura</p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Número de factura</label>
+          <input
+            type="text"
+            class="form-control"
+            name="numeroFactura"
+            #numeroFactura="ngModel"
+            [(ngModel)]="factura.numeroFactura"
+            placeholder="FAC-0001"
+            required
+            pattern="^[A-Za-z0-9\-]{3,50}$">
+          @if(numeroFactura.invalid && numeroFactura.touched){
+            <small class="invalid-feedback d-block">
+              @if(numeroFactura.errors?.['required']){ El número de factura es obligatorio. }
+              @else { Solo letras, números y guiones. Ej: FAC-0001 }
+            </small>
+          }
         </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Fecha de factura</label>
+          <input
+            type="date"
+            class="form-control"
+            name="fechaFactura"
+            #fechaFactura="ngModel"
+            [(ngModel)]="factura.fechaFactura"
+            required>
+          @if(fechaFactura.invalid && fechaFactura.touched){
+            <small class="invalid-feedback d-block">La fecha de factura es obligatoria.</small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Estado de pago</label>
+          <select
+            class="form-control"
+            name="idEstadoPago"
+            #idEstadoPago="ngModel"
+            [(ngModel)]="factura.idEstadoPago"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(estado of estadosPago; track estado.idestadopago){
+            <option [ngValue]="estado.idestadopago">{{ estado.nombre }}</option>
+            }
+          </select>
+          @if(idEstadoPago.invalid && idEstadoPago.touched){
+            <small class="invalid-feedback d-block">Seleccioná un estado de pago.</small>
+          }
+        </div>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Método de pago</label>
+          <select
+            class="form-control"
+            name="metodoPago"
+            #metodoPago="ngModel"
+            [(ngModel)]="factura.metodoPago"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(metodo of metodosPago; track $index){
+            <option [ngValue]="metodo">{{ metodo }}</option>
+            }
+          </select>
+          @if(metodoPago.invalid && metodoPago.touched){
+            <small class="invalid-feedback d-block">Seleccioná un método de pago.</small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Moneda</label>
+          <select
+            class="form-control"
+            name="moneda"
+            #moneda="ngModel"
+            [(ngModel)]="factura.moneda"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(moneda of monedas; track $index){
+            <option [ngValue]="moneda">{{ moneda }}</option>
+            }
+          </select>
+          @if(moneda.invalid && moneda.touched){
+            <small class="invalid-feedback d-block">Seleccioná una moneda.</small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Fecha de pago <span class="fw-normal text-muted">(opcional)</span></label>
+          <input
+            type="date"
+            class="form-control"
+            name="fechaPago"
+            [(ngModel)]="factura.fechaPago">
+        </div>
+      </div>
+
+      <!-- MONTOS -->
+      <p class="form-section-label">Montos</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Subtotal</label>
+          <input
+            type="number"
+            class="form-control"
+            name="subtotal"
+            #subtotal="ngModel"
+            [(ngModel)]="factura.subtotal"
+            (ngModelChange)="calcularTotal()"
+            placeholder="0.00"
+            required
+            min="0">
+          @if(subtotal.invalid && subtotal.touched){
+            <small class="invalid-feedback d-block">
+              @if(subtotal.errors?.['required']){ El subtotal es obligatorio. }
+              @else { El valor no puede ser negativo. }
+            </small>
+          }
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Impuesto</label>
+          <input
+            type="number"
+            class="form-control"
+            name="impuesto"
+            #impuesto="ngModel"
+            [(ngModel)]="factura.impuesto"
+            (ngModelChange)="calcularTotal()"
+            placeholder="0.00"
+            required
+            min="0">
+          @if(impuesto.invalid && impuesto.touched){
+            <small class="invalid-feedback d-block">
+              @if(impuesto.errors?.['required']){ El impuesto es obligatorio. }
+              @else { El valor no puede ser negativo. }
+            </small>
+          }
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Descuento</label>
+          <input
+            type="number"
+            class="form-control"
+            name="descuento"
+            #descuento="ngModel"
+            [(ngModel)]="factura.descuento"
+            (ngModelChange)="calcularTotal()"
+            placeholder="0.00"
+            required
+            min="0">
+          @if(descuento.invalid && descuento.touched){
+            <small class="invalid-feedback d-block">
+              @if(descuento.errors?.['required']){ El descuento es obligatorio. }
+              @else { El valor no puede ser negativo. }
+            </small>
+          }
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Total</label>
+          <input
+            type="number"
+            class="form-control fw-semibold"
+            name="precioTotal"
+            [(ngModel)]="factura.precioTotal"
+            placeholder="0.00"
+            [readOnly]="true"
+            style="background:#f0fdf4; border-color:#bbf7d0; color:#14532d; font-weight:600;">
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success" [disabled]="facturaForm.invalid">
+          {{ modoEdicion ? 'Actualizar factura' : 'Guardar factura' }}
+        </button>
+        @if(modoEdicion){
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
         }
       </div>
-    </div>
-    }
 
-    <!-- DATOS FACTURA -->
-    <p class="form-section-label">Datos de la factura</p>
-    <div class="row g-3 mb-3">
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Número de factura</label>
-        <input type="text" class="form-control" placeholder="FAC-0001" [(ngModel)]="factura.numeroFactura">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Fecha de factura</label>
-        <input type="date" class="form-control" [(ngModel)]="factura.fechaFactura">
-      </div>
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Estado de pago</label>
-        <select class="form-control" [(ngModel)]="factura.idEstadoPago">
-          <option [ngValue]="null">Seleccione</option>
-          @for(estado of estadosPago; track estado.idestadopago){
-          <option [ngValue]="estado.idestadopago">{{ estado.nombre }}</option>
-          }
-        </select>
-      </div>
-    </div>
-
-    <div class="row g-3 mb-3">
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Método de pago</label>
-        <select class="form-control" [(ngModel)]="factura.metodoPago">
-          <option [ngValue]="null">Seleccione</option>
-          @for(metodo of metodosPago; track $index){
-          <option [ngValue]="metodo">{{ metodo }}</option>
-          }
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Moneda</label>
-        <select class="form-control" [(ngModel)]="factura.moneda">
-          <option [ngValue]="null">Seleccione</option>
-          @for(moneda of monedas; track $index){
-          <option [ngValue]="moneda">{{ moneda }}</option>
-          }
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Fecha de pago <span class="fw-normal text-muted">(opcional)</span></label>
-        <input type="date" class="form-control" [(ngModel)]="factura.fechaPago">
-      </div>
-    </div>
-
-    <!-- MONTOS -->
-    <p class="form-section-label">Montos</p>
-    <div class="row g-3 mb-4">
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Subtotal</label>
-        <input type="number" class="form-control" placeholder="0.00" [(ngModel)]="factura.subtotal" (ngModelChange)="calcularTotal()">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Impuesto</label>
-        <input type="number" class="form-control" placeholder="0.00" [(ngModel)]="factura.impuesto" (ngModelChange)="calcularTotal()">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Descuento</label>
-        <input type="number" class="form-control" placeholder="0.00" [(ngModel)]="factura.descuento" (ngModelChange)="calcularTotal()">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Total</label>
-        <input type="number" class="form-control fw-semibold" placeholder="0.00" [(ngModel)]="factura.precioTotal" [readOnly]="true"
-          style="background:#f0fdf4; border-color:#bbf7d0; color:#14532d; font-weight:600;">
-      </div>
-    </div>
-
-    <div class="d-flex gap-2">
-      <button class="btn btn-success" (click)="guardarFactura()">
-        {{ modoEdicion ? 'Actualizar factura' : 'Guardar factura' }}
-      </button>
-      @if(modoEdicion){
-      <button class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
-      }
-    </div>
+    </form>
 
   </div>
 

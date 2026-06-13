@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgModel } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FacturaService } from '../../../services/factura.service';
@@ -7,11 +7,12 @@ import { EstadoPagoService } from '../../../services/estadopago.service';
 import { ReservaService } from '../../../services/reserva.service';
 import { ParticipanteService } from '../../../services/participante.service';
 import { FacturaParticipanteService } from '../../../services/facturaparticipante.service';
+import { NgClass } from '@angular/common';
  
 @Component({
   selector: 'app-facturas-admin',
   standalone: true,
-  imports: [FormsModule, DatePipe, RouterLink,CommonModule],
+  imports: [FormsModule, DatePipe, RouterLink,CommonModule, NgClass],
   templateUrl: './facturas-admin.html',
   styleUrl: './facturas-admin.css'
 })

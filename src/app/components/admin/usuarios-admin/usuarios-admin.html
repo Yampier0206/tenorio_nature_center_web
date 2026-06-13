@@ -1,390 +1,287 @@
 <section class="admin-header">
-    <div class="container">
-        <h1>Administración de Usuarios</h1>
-    </div>
+  <div class="container">
+    <h1>Administración de Usuarios</h1>
+  </div>
 </section>
 
 <div class="container py-5">
 
-    @if(mensaje){
-    <div class="alert alert-success shadow-sm mb-4">
-        {{ mensaje }}
+  @if(mensaje){
+  <div class="alert alert-success shadow-sm mb-4">
+    {{ mensaje }}
+  </div>
+  }
+
+  <!-- FORMULARIO -->
+  <div class="card shadow p-4 mb-5">
+
+    <h3 class="mb-1">
+      @if(editando){ Editar usuario } @else { Nuevo usuario }
+    </h3>
+    <p class="text-muted small mb-4">
+      @if(editando){ Modificá la información del usuario seleccionado. } @else { Registrá un nuevo usuario dentro del sistema. }
+    </p>
+
+    <form #usuarioForm="ngForm" (ngSubmit)="guardarUsuario()">
+
+      <!-- INFORMACIÓN PERSONAL -->
+      <p class="form-section-label">Información personal</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Nombre</label>
+          <input
+            class="form-control"
+            name="nombre"
+            #nombre="ngModel"
+            [(ngModel)]="usuario.nombre"
+            placeholder="Nombre"
+            required
+            pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{2,100}$">
+          @if(nombre.invalid && nombre.touched){
+            <small class="invalid-feedback d-block">
+              @if(nombre.errors?.['required']){ El nombre es obligatorio. }
+              @else { Solo letras y espacios, mínimo 2 caracteres. }
+            </small>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Apellido</label>
+          <input
+            class="form-control"
+            name="apellido"
+            #apellido="ngModel"
+            [(ngModel)]="usuario.apellido"
+            placeholder="Apellido"
+            required
+            pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{2,150}$">
+          @if(apellido.invalid && apellido.touched){
+            <small class="invalid-feedback d-block">
+              @if(apellido.errors?.['required']){ El apellido es obligatorio. }
+              @else { Solo letras y espacios, mínimo 2 caracteres. }
+            </small>
+          }
+        </div>
+      </div>
+
+      <!-- ACCESO -->
+      <p class="form-section-label">Credenciales de acceso</p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Correo electrónico</label>
+          <input
+            type="email"
+            class="form-control"
+            name="correo"
+            #correo="ngModel"
+            [(ngModel)]="usuario.correo"
+            placeholder="correo@ejemplo.com"
+            required
+            email>
+          @if(correo.invalid && correo.touched){
+            <small class="invalid-feedback d-block">
+              @if(correo.errors?.['required']){ El correo electrónico es obligatorio. }
+              @else { Ingresá un correo electrónico válido. }
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">
+            Contraseña
+            @if(editando){ <span class="fw-normal text-muted">(dejar en blanco para no cambiar)</span> }
+          </label>
+          <input
+            type="password"
+            class="form-control"
+            name="contrasena"
+            #contrasena="ngModel"
+            [(ngModel)]="usuario.contrasena"
+            placeholder="Contraseña"
+            [required]="!editando"
+            minlength="6"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$">
+          @if(contrasena.invalid && contrasena.touched){
+            <small class="invalid-feedback d-block">
+              @if(contrasena.errors?.['required']){ La contraseña es obligatoria. }
+              @else if(contrasena.errors?.['minlength']){ La contraseña debe tener al menos 6 caracteres. }
+              @else { La contraseña debe incluir al menos una mayúscula, una minúscula y un número. }
+            </small>
+          }
+          <small class="text-muted">Mínimo 6 caracteres, con mayúscula, minúscula y número.</small>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">
+            Confirmar contraseña
+            @if(editando){ <span class="fw-normal text-muted">(dejar en blanco para no cambiar)</span> }
+          </label>
+          <input
+            type="password"
+            class="form-control"
+            name="confirmarContrasena"
+            #confirmarContrasena="ngModel"
+            [(ngModel)]="usuario.confirmarContrasena"
+            placeholder="Confirmar contraseña"
+            [required]="!editando || (contrasena.value ?? '') !== ''">
+          @if(confirmarContrasena.touched && contrasena.value !== confirmarContrasena.value){
+            <small class="invalid-feedback d-block">
+              Las contraseñas no coinciden.
+            </small>
+          }
+          @if(confirmarContrasena.invalid && confirmarContrasena.touched && contrasena.value === confirmarContrasena.value){
+            <small class="invalid-feedback d-block">
+              Confirmá la contraseña.
+            </small>
+          }
+        </div>
+      </div>
+
+      <!-- PERFIL -->
+      <p class="form-section-label">Perfil del usuario</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Rol</label>
+          <select
+            class="form-control"
+            name="rol"
+            #rol="ngModel"
+            [(ngModel)]="usuario.rol"
+            required>
+            <option value="Cliente">Cliente</option>
+            <option value="Admin">Administrador</option>
+          </select>
+          @if(rol.invalid && rol.touched){
+            <small class="invalid-feedback d-block">Seleccioná un rol.</small>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Imagen de perfil</label>
+          <input
+            type="file"
+            class="form-control"
+            name="imagen"
+            (change)="uploadImage($event)">
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold">Descripción</label>
+          <textarea
+            class="form-control"
+            name="descripcion"
+            #descripcion="ngModel"
+            [(ngModel)]="usuario.descripcion"
+            rows="3"
+            placeholder="Descripción del usuario"
+            maxlength="300"></textarea>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success"
+          [disabled]="usuarioForm.invalid || contrasena.value !== confirmarContrasena.value">
+          {{ editando ? 'Actualizar usuario' : 'Guardar usuario' }}
+        </button>
+        @if(editando){
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+        }
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="card shadow p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="mb-0">Usuarios registrados</h3>
+        <p class="text-muted small mb-0">{{ usuarios.length }} registros</p>
+      </div>
     </div>
-    }
 
-    <!-- FORMULARIO -->
-    <div class="card shadow p-4 mb-5">
-
-        <h3 class="mb-1">
-            @if(editando){
-                Editar usuario
-            }@else{
-                Nuevo usuario
-            }
-        </h3>
-
-        <p class="text-muted small mb-4">
-            @if(editando){
-                Modificá la información del usuario seleccionado.
-            }@else{
-                Registrá un nuevo usuario dentro del sistema.
-            }
-        </p>
-
-        <!-- INFORMACIÓN PERSONAL -->
-        <p class="form-section-label">
-            Información personal
-        </p>
-
-        <div class="row g-3 mb-4">
-
-            <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Nombre
-                </label>
-
-                <input
-                    class="form-control"
-                    placeholder="Nombre"
-                    [(ngModel)]="usuario.nombre">
-
-            </div>
-
-            <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Apellido
-                </label>
-
-                <input
-                    class="form-control"
-                    placeholder="Apellido"
-                    [(ngModel)]="usuario.apellido">
-
-            </div>
-
-        </div>
-
-        <!-- ACCESO -->
-        <p class="form-section-label">
-            Credenciales de acceso
-        </p>
-
-        <div class="row g-3 mb-4">
-
-            <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Correo electrónico
-                </label>
-
-                <input
-                    type="email"
-                    class="form-control"
-                    placeholder="correo@ejemplo.com"
-                    [(ngModel)]="usuario.correo">
-
-            </div>
-
-            <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Contraseña
-                </label>
-
-                <input
-                    type="password"
-                    class="form-control"
-                    placeholder="Contraseña"
-                    [(ngModel)]="usuario.contrasena">
-
-            </div>
-
-        </div>
-
-        <!-- PERFIL -->
-        <p class="form-section-label">
-            Perfil del usuario
-        </p>
-
-        <div class="row g-3 mb-4">
-
-            <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Rol
-                </label>
-
-                <select
-                    class="form-control"
-                    [(ngModel)]="usuario.rol">
-
-                    <option value="Cliente">
-                        Cliente
-                    </option>
-
-                    <option value="Admin">
-                        Administrador
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div class="col-md-6">
-
-                <label class="form-label fw-semibold">
-                    Imagen de perfil
-                </label>
-
-                <input
-                    type="file"
-                    class="form-control"
-                    (change)="uploadImage($event)">
-
-            </div>
-
-            <div class="col-12">
-
-                <label class="form-label fw-semibold">
-                    Descripción
-                </label>
-
-                <textarea
-                    class="form-control"
-                    rows="3"
-                    placeholder="Descripción del usuario"
-                    [(ngModel)]="usuario.descripcion">
-                </textarea>
-
-            </div>
-
-        </div>
-
-        <div class="d-flex gap-2">
-
-            <button
-                class="btn btn-success"
-                (click)="guardarUsuario()">
-
-                {{ editando ? 'Actualizar usuario' : 'Guardar usuario' }}
-
-            </button>
-
-            @if(editando){
-
-            <button
-                class="btn btn-secondary"
-                (click)="cancelar()">
-
-                Cancelar
-
-            </button>
-
-            }
-
-        </div>
-
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th style="width:80px">ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(item of usuarios; track item.idusuario){
+          <tr>
+            <td class="text-muted small">{{ item.idusuario }}</td>
+            <td class="fw-semibold">{{ item.nombre }}</td>
+            <td>{{ item.apellido?.String }}</td>
+            <td class="text-muted">{{ item.correo }}</td>
+            <td>
+              <span
+                class="estado-badge"
+                [class.admin]="item.rol?.String === 'Admin'"
+                [class.cliente]="item.rol?.String === 'Cliente'">
+                {{ item.rol?.String }}
+              </span>
+            </td>
+            <td class="text-end">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn btn-edit btn-sm px-2" (click)="editarUsuario(item)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  class="btn btn-delete btn-sm px-2"
+                  (click)="seleccionarUsuarioEliminar(item.idusuario)"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEliminarUsuario"
+                  title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+          @empty{
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">
+              No hay usuarios registrados
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
     </div>
 
-    <!-- TABLA -->
-    <div class="card shadow p-4">
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <div>
-
-                <h3 class="mb-0">
-                    Usuarios registrados
-                </h3>
-
-                <p class="text-muted small mb-0">
-                    {{ usuarios.length }} registros
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="table-responsive">
-
-            <table class="table table-hover align-middle">
-
-                <thead>
-
-                    <tr>
-                        <th style="width:80px">ID</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Correo</th>
-                        <th>Rol</th>
-                        <th class="text-end">Acciones</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @for(item of usuarios; track $index){
-
-                    <tr>
-
-                        <td class="text-muted small">
-                            {{ item.idusuario }}
-                        </td>
-
-                        <td class="fw-semibold">
-                            {{ item.nombre }}
-                        </td>
-
-                        <td>
-                            {{ item.apellido?.String }}
-                        </td>
-
-                        <td class="text-muted">
-                            {{ item.correo }}
-                        </td>
-
-                        <td>
-
-                            <span
-                                class="estado-badge"
-                                [class.admin]="item.rol?.String === 'Admin'"
-                                [class.cliente]="item.rol?.String === 'Cliente'">
-
-                                {{ item.rol?.String }}
-
-                            </span>
-
-                        </td>
-
-                        <td class="text-end">
-
-                            <div class="d-flex gap-2 justify-content-end">
-
-                                <button
-                                    class="btn btn-edit btn-sm px-2"
-                                    (click)="editarUsuario(item)"
-                                    title="Editar">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </button>
-
-                                <button
-                                    class="btn btn-delete btn-sm px-2"
-                                    (click)="seleccionarUsuarioEliminar(item.idusuario)"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalEliminarUsuario"
-                                    title="Eliminar">
-
-                                    <i class="bi bi-trash"></i>
-
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                    }
-
-                    @empty{
-
-                    <tr>
-
-                        <td
-                            colspan="6"
-                            class="text-center text-muted py-4">
-
-                            No hay usuarios registrados
-
-                        </td>
-
-                    </tr>
-
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <div class="mt-3 pt-3 border-top">
-
-            <a
-                class="btn btn-back"
-                [routerLink]="['/admin']">
-
-                Regresar al panel
-
-            </a>
-
-        </div>
-
+    <div class="mt-3 pt-3 border-top">
+      <a class="btn btn-back" [routerLink]="['/admin']">Regresar al panel</a>
     </div>
+
+  </div>
 
 </div>
 
-<!-- MODAL -->
-<div
-    class="modal fade"
-    id="modalEliminarUsuario"
-    tabindex="-1"
-    aria-hidden="true">
 
-    <div class="modal-dialog modal-sm">
-
-        <div class="modal-content rounded-4">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title fw-semibold">
-                    Confirmar eliminación
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal">
-                </button>
-
-            </div>
-
-            <div class="modal-body text-muted">
-
-                ¿Desea eliminar este usuario?
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
-
-                    Cancelar
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-delete"
-                    data-bs-dismiss="modal"
-                    (click)="confirmarEliminarUsuario()">
-
-                    Eliminar
-
-                </button>
-
-            </div>
-
-        </div>
-
+<!-- MODAL: ELIMINAR USUARIO -->
+<div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-muted">
+        ¿Desea eliminar este usuario?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-delete" data-bs-dismiss="modal" (click)="confirmarEliminarUsuario()">
+          Eliminar
+        </button>
+      </div>
     </div>
-
+  </div>
 </div>
