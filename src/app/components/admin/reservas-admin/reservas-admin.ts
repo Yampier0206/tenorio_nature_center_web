@@ -537,4 +537,16 @@ ordenarPor(columna: string) {
 
 }
 
+onTourChange(){
+  const tourSeleccionado = this.tours.find(
+    t => t.idtour === this.reserva.idTour
+  );
+
+  if(tourSeleccionado){
+    this.reserva.precio = tourSeleccionado.preciobase;
+  } else {
+    this.reserva.precio = '';
+  }
+}
+
 }

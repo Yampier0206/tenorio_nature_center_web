@@ -196,33 +196,29 @@
             name="subtotal"
             #subtotal="ngModel"
             [(ngModel)]="factura.subtotal"
-            (ngModelChange)="calcularTotal()"
-            placeholder="0.00"
+            readonly
             required
             min="0">
           @if(subtotal.invalid && subtotal.touched){
             <small class="invalid-feedback d-block">
               @if(subtotal.errors?.['required']){ El subtotal es obligatorio. }
-              @else { El valor no puede ser negativo. }
             </small>
           }
         </div>
         <div class="col-md-3">
-          <label class="form-label fw-semibold">Impuesto</label>
+          <label class="form-label fw-semibold">Impuesto (13%)</label>
           <input
             type="number"
             class="form-control"
             name="impuesto"
             #impuesto="ngModel"
             [(ngModel)]="factura.impuesto"
-            (ngModelChange)="calcularTotal()"
-            placeholder="0.00"
+            readonly
             required
             min="0">
           @if(impuesto.invalid && impuesto.touched){
             <small class="invalid-feedback d-block">
               @if(impuesto.errors?.['required']){ El impuesto es obligatorio. }
-              @else { El valor no puede ser negativo. }
             </small>
           }
         </div>
@@ -253,8 +249,7 @@
             name="precioTotal"
             [(ngModel)]="factura.precioTotal"
             placeholder="0.00"
-            [readOnly]="true"
-            style="background:#f0fdf4; border-color:#bbf7d0; color:#14532d; font-weight:600;">
+            [readOnly]="true">
         </div>
       </div>
 
@@ -382,9 +377,9 @@
             <td>
               <span class="estado-badge"
                 [ngClass]="{
-                  'estado-confirmada': f.nombreestado === 'Pagada',
+                  'estado-confirmada': f.nombreestado === 'Confirmada',
                   'estado-pendiente':  f.nombreestado === 'Pendiente',
-                  'estado-cancelada':  f.nombreestado === 'Anulada'
+                  'estado-cancelada':  f.nombreestado === 'Cancelada'
                 }">
                 {{ f.nombreestado }}
               </span>

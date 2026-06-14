@@ -167,3 +167,15 @@
     border-color: #fecaca;
     color: #7f1d1d;
 }
+
+.input-readonly {
+  background-color: #e8f5e9;
+  border-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+.input-readonly:focus {
+  background-color: #e8f5e9;
+  border-color: #a5d6a7;
+  box-shadow: none;
+}

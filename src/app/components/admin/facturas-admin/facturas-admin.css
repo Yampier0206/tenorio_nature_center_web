@@ -143,3 +143,9 @@
 .estado-confirmada { background: #d1fae5; color: #14532d; }
 .estado-pendiente  { background: #fef3c7; color: #78350f; }
 .estado-cancelada  { background: #fee2e2; color: #7c2d12; }
+
+.form-control[readonly] {
+  background-color: #e8f5e9;
+  border-color: #a5d6a7;
+  cursor: not-allowed;
+}

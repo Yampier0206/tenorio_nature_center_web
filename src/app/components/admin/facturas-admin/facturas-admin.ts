@@ -151,6 +151,7 @@ export class FacturasAdmin implements OnInit {
   this.participanteService.getReservasDisponiblesParaFacturar().subscribe({
     next: (response: any) => {
       console.log('Reservas disponibles:', response);
+       console.log('Reservas disponibles:', response);
 
       this.reservas = response;
       this.cdr.detectChanges();
@@ -160,12 +161,31 @@ export class FacturasAdmin implements OnInit {
       }
     });
   } 
+
   onReservaChange() {
     this.participantesReserva = [];
     this.participantesSeleccionados = [];
- 
-    if (!this.factura.idReserva) return;
- 
+
+    if (!this.factura.idReserva) {
+      this.factura.subtotal = '';
+      this.factura.impuesto = '';
+      this.factura.precioTotal = '';
+      return;
+    }
+
+    const reservaSeleccionada = this.reservas.find(
+      r => r.idreserva === this.factura.idReserva
+    );
+
+    if (reservaSeleccionada) {
+      const precio = parseFloat(reservaSeleccionada.preciounitario) || 0;
+
+      this.factura.subtotal = precio;
+      this.factura.impuesto = parseFloat((precio * 0.13).toFixed(2));
+
+      this.calcularTotal();
+    }
+
     this.participanteService
       .getParticipantesSinFacturaByReserva(this.factura.idReserva)
       .subscribe({
