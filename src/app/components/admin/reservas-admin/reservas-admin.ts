@@ -549,4 +549,21 @@ onTourChange(){
   }
 }
 
+onClienteChange(){
+  const clienteSeleccionado = this.clientes.find(
+    c => c.idcliente === this.reserva.idCliente
+  );
+
+  if(clienteSeleccionado?.idempresacliente?.Valid){
+    this.reserva.idEmpresaCliente = clienteSeleccionado.idempresacliente.Int32;
+  } else {
+    this.reserva.idEmpresaCliente = null;
+  }
+}
+
+onModoClienteChange(){
+  this.reserva.idCliente = null;
+  this.reserva.idEmpresaCliente = null;
+}
+
 }
