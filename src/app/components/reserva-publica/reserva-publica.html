@@ -1,0 +1,479 @@
+<section class="admin-header">
+  <div class="container">
+    <h1>Reservar Tour</h1>
+    <p class="mb-0">
+      Completa la información para reservar tu experiencia.
+    </p>
+  </div>
+</section>
+
+<div class="container my-5">
+    @if(mensaje){
+    <div class="alert alert-success shadow-sm mb-4">
+    {{ mensaje }}
+    </div>
+    }
+    @if(mensajeError){
+    <div class="alert alert-danger shadow-sm mb-4">
+    {{ mensajeError }}
+    </div>
+    }
+
+  <div class="card shadow-sm p-4">
+
+    <form #reservaForm="ngForm" (ngSubmit)="guardarReserva(reservaForm)">
+
+      <!-- DATOS CLIENTE -->
+      <div>
+
+        <div class="form-section-label">
+          Información del Cliente
+        </div>
+
+        <!-- CLIENTE LOGUEADO: tarjeta de perfil -->
+        <div *ngIf="!esInvitado" class="cliente-card mb-4">
+
+          <div class="cliente-avatar">
+            {{ reserva.nombreCliente?.charAt(0) }}
+          </div>
+
+          <div class="cliente-info">
+
+            <div class="cliente-nombre">
+              {{ reserva.nombreCliente }}
+            </div>
+
+            <div class="cliente-detalle-grid">
+
+              <div class="cliente-detalle">
+                <span class="cliente-detalle-label">Identificación</span>
+                <span class="cliente-detalle-valor">{{ reserva.identificadorCliente }}</span>
+              </div>
+
+              <div class="cliente-detalle">
+                <span class="cliente-detalle-label">Teléfono</span>
+                <span class="cliente-detalle-valor">{{ reserva.telefonoCliente }}</span>
+              </div>
+
+              <div class="cliente-detalle">
+                <span class="cliente-detalle-label">Nacionalidad</span>
+                <span class="cliente-detalle-valor">{{ reserva.nacionalidadCliente }}</span>
+              </div>
+
+              <div class="cliente-detalle">
+                <span class="cliente-detalle-label">Fecha Nacimiento</span>
+                <span class="cliente-detalle-valor">{{ reserva.fechaNacCliente }}</span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- INVITADO: campos para llenar -->
+        <div *ngIf="esInvitado" class="row g-3 mb-4">
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nombre Completo</label>
+            <input
+              class="form-control"
+              name="nombreCliente"
+              #nombreCliente="ngModel"
+              [(ngModel)]="reserva.nombreCliente"
+              placeholder="Ej. Juan Pérez"
+              required
+              pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,100}$">
+            @if(nombreCliente.invalid && nombreCliente.touched){
+              <small class="invalid-feedback d-block">
+                @if(nombreCliente.errors?.['required']){ El nombre es obligatorio. }
+                @else { Solo letras y espacios, mínimo 3 caracteres. }
+              </small>
+            }
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Identificación</label>
+            <input
+              class="form-control"
+              name="identificadorCliente"
+              #identificadorCliente="ngModel"
+              [(ngModel)]="reserva.identificadorCliente"
+              placeholder="1-2345-6789"
+              required
+              pattern="^[A-Za-z0-9\-]{5,25}$">
+            @if(identificadorCliente.invalid && identificadorCliente.touched){
+              <small class="invalid-feedback d-block">
+                @if(identificadorCliente.errors?.['required']){ La identificación es obligatoria. }
+                @else { Formato esperado: 1-2345-6789 o AB1234567 }
+              </small>
+            }
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Teléfono</label>
+            <input
+              class="form-control"
+              name="telefonoCliente"
+              #telefonoCliente="ngModel"
+              [(ngModel)]="reserva.telefonoCliente"
+              placeholder="+506 8888 0000"
+              required
+              pattern="^[+]?[\d\s\-\(\)\.]{7,20}$">
+            @if(telefonoCliente.invalid && telefonoCliente.touched){
+              <small class="invalid-feedback d-block">
+                @if(telefonoCliente.errors?.['required']){ El teléfono es obligatorio. }
+                @else { Formato inválido. Ejemplo: +506 8888-0000 }
+              </small>
+            }
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nacionalidad</label>
+            <input
+              class="form-control"
+              name="nacionalidadCliente"
+              #nacionalidadCliente="ngModel"
+              [(ngModel)]="reserva.nacionalidadCliente"
+              placeholder="Costarricense"
+              required
+              pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,25}$">
+            @if(nacionalidadCliente.invalid && nacionalidadCliente.touched){
+              <small class="invalid-feedback d-block">
+                @if(nacionalidadCliente.errors?.['required']){ La nacionalidad es obligatoria. }
+                @else { Solo letras, mínimo 3 caracteres. }
+              </small>
+            }
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Fecha Nacimiento</label>
+            <input
+                type="date"
+                class="form-control"
+                name="fechaNacCliente"
+                #fechaNacCliente="ngModel"
+                [(ngModel)]="reserva.fechaNacCliente"
+                [max]="hoy"
+                [min]="fechaMinima"
+                required>
+            @if(fechaNacCliente.invalid && fechaNacCliente.touched){
+                <small class="invalid-feedback d-block">La fecha de nacimiento es obligatoria.</small>
+            }
+            </div>
+
+        </div>
+
+      </div>
+
+      <!-- RESERVA -->
+      <div class="form-section-label">
+        Información del Tour
+      </div>
+
+      <div class="row g-3">
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Tour
+          </label>
+
+          <select
+            class="form-select"
+            name="idTour"
+            #idTour="ngModel"
+            [(ngModel)]="reserva.idTour"
+            required>
+
+            <option [ngValue]="null">
+              Seleccione un tour
+            </option>
+
+            <option
+              *ngFor="let tour of tours"
+              [ngValue]="tour.idtour"
+            >
+              {{ tour.nombre }}
+            </option>
+
+          </select>
+          @if(idTour.invalid && idTour.touched){
+            <small class="invalid-feedback d-block">Debe seleccionar un tour.</small>
+          }
+
+        </div>
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Idioma
+          </label>
+
+          <select
+            class="form-select"
+            name="idIdioma"
+            #idIdioma="ngModel"
+            [(ngModel)]="reserva.idIdioma"
+            required>
+
+            <option [ngValue]="null">
+              Seleccione idioma
+            </option>
+
+            <option
+              *ngFor="let idioma of idiomas"
+              [ngValue]="idioma.ididioma"
+            >
+              {{ idioma.nombre }}
+            </option>
+
+          </select>
+          @if(idIdioma.invalid && idIdioma.touched){
+            <small class="invalid-feedback d-block">Debe seleccionar un idioma.</small>
+          }
+
+        </div>
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Guía
+          </label>
+
+          <select
+            class="form-select"
+            name="idGuia"
+            #idGuia="ngModel"
+            [(ngModel)]="reserva.idGuia"
+            required>
+
+            <option [ngValue]="null">
+              Seleccione guía
+            </option>
+
+            <option
+              *ngFor="let guia of guias"
+              [ngValue]="guia.idguia"
+            >
+              {{ guia.nombre }}
+            </option>
+
+          </select>
+          @if(idGuia.invalid && idGuia.touched){
+            <small class="invalid-feedback d-block">Debe seleccionar un guía.</small>
+          }
+
+        </div>
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Chofer
+          </label>
+
+          <select
+            class="form-select"
+            name="idChofer"
+            #idChofer="ngModel"
+            [(ngModel)]="reserva.idChofer"
+            required>
+
+            <option [ngValue]="null">
+              Seleccione chofer
+            </option>
+
+            <option
+              *ngFor="let chofer of choferes"
+              [ngValue]="chofer.idchofer"
+            >
+              {{ chofer.nombre }}
+            </option>
+
+          </select>
+          @if(idChofer.invalid && idChofer.touched){
+            <small class="invalid-feedback d-block">Debe seleccionar un chofer.</small>
+          }
+
+        </div>
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Ubicación
+          </label>
+
+          <select
+            class="form-select"
+            name="idUbicacion"
+            #idUbicacion="ngModel"
+            [(ngModel)]="reserva.idUbicacion"
+            required>
+
+            <option [ngValue]="null">
+              Seleccione ubicación
+            </option>
+
+            <option
+              *ngFor="let ubicacion of ubicaciones"
+              [ngValue]="ubicacion.idubicacion"
+            >
+              {{ ubicacion.nombre }}
+            </option>
+
+          </select>
+          @if(idUbicacion.invalid && idUbicacion.touched){
+            <small class="invalid-feedback d-block">Debe seleccionar una ubicación.</small>
+          }
+
+        </div>
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Fecha del Tour
+          </label>
+
+          <input
+            type="date"
+            class="form-control"
+            name="fechaTour"
+            #fechaTour="ngModel"
+            [(ngModel)]="reserva.fechaTour"
+            required>
+          @if(fechaTour.invalid && fechaTour.touched){
+            <small class="invalid-feedback d-block">La fecha del tour es obligatoria.</small>
+          }
+
+        </div>
+
+        <div class="col-md-6">
+
+          <label class="form-label fw-semibold">
+            Estado
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            value="Confirmada"
+            disabled
+          >
+
+        </div>
+
+      </div>
+
+      <!-- PARTICIPANTES -->
+      <div class="mt-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+          <div class="form-section-label mb-0">
+            Participantes Adicionales
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="agregarParticipante()"
+          >
+            + Agregar
+          </button>
+
+        </div>
+
+        <div
+          *ngFor="let participante of participantes; let i = index"
+          class="participante-card mb-3"
+        >
+
+          <div class="d-flex justify-content-between mb-3">
+
+            <span class="participante-num">
+              Participante {{ i + 1 }}
+            </span>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-delete"
+              (click)="eliminarParticipante(i)"
+            >
+              ✕
+            </button>
+
+          </div>
+
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <input
+                class="form-control"
+                placeholder="Nombre"
+                [(ngModel)]="participante.nombre"
+                [name]="'participanteNombre' + i"
+              >
+            </div>
+
+            <div class="col-md-6">
+              <input
+                class="form-control"
+                placeholder="Identificación"
+                [(ngModel)]="participante.identificador"
+                [name]="'participanteIdentificador' + i"
+              >
+            </div>
+
+            <div class="col-md-6">
+
+            <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="participante.fechaNac"
+                [name]="'participanteFechaNac' + i"
+                [max]="hoy"
+                [min]="fechaMinima">
+                <small class="text-muted">Selecciona tu fecha de nacimiento</small>
+
+            </div>
+
+            <div class="col-md-6">
+              <input
+                class="form-control"
+                placeholder="Teléfono"
+                [(ngModel)]="participante.telefono"
+                [name]="'participanteTelefono' + i"
+              >
+            </div>
+
+            <div class="col-md-12">
+              <input
+                class="form-control"
+                placeholder="Nacionalidad"
+                [(ngModel)]="participante.nacionalidad"
+                [name]="'participanteNacionalidad' + i"
+              >
+            </div>
+
+        </div>
+
+      </div>
+
+      <!-- BOTONES -->
+       <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+        <a class="btn btn-back" [routerLink]="['/']">
+            <i class="bi bi-arrow-left"></i> Regresar
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-success px-4"
+            [disabled]="reservaForm.invalid"
+        >
+            Confirmar Reserva
+        </button>
+
+        </div>
+
+  </div>

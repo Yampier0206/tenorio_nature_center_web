@@ -13,13 +13,21 @@
                 Descubre la magia de Tenorio con tours guiados, transporte seguro y experiencias inolvidables.
             </p>
 
+            @if(mostrarBotonReservar){
+
             <div class="hero-buttons">
 
-                <button class="btn btn-success btn-lg rounded-pill px-4">
+                <button
+                    class="btn btn-success btn-lg rounded-pill px-4"
+                    (click)="irReservar()">
+
                     Reservar
+
                 </button>
 
             </div>
+
+            }
 
         </div>
 

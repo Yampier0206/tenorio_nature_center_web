@@ -1,0 +1,384 @@
+.admin-header{
+    background: linear-gradient(
+        135deg,
+        #1f4d3a,
+        #1f3d2f
+    );
+
+    color: white;
+    padding: 100px 0 80px;
+    text-align: center;
+}
+
+.admin-header h1{
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.card{
+    border: none;
+    border-radius: 20px;
+}
+
+.form-control{
+    border-radius: 12px;
+}
+
+.btn-success{
+    background-color: #14532d;
+    border-color: #14532d;
+}
+
+.btn-success:hover{
+    background-color: #166534;
+    border-color: #166534;
+}
+
+.table{
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.table thead{
+    background-color: #1f2937;
+    color: white;
+}
+
+.table td,
+.table th{
+    vertical-align: middle;
+}
+
+.btn-warning{
+    color: white;
+}
+
+.container{
+    max-width: 1200px;
+}
+
+.btn-edit{
+    background-color: #475569;
+    border-color: #475569;
+    color: white;
+}
+
+.btn-edit:hover{
+    background-color: #334155;
+    border-color: #334155;
+    color: white;
+}
+
+.btn-delete{
+    background-color: #7c2d12;
+    border-color: #7c2d12;
+    color: white;
+}
+
+.btn-delete:hover{
+    background-color: #9a3412;
+    border-color: #9a3412;
+    color: white;
+}
+
+.btn-back{
+    background-color: #14532d;
+    border-color: #14532d;
+    color: white;
+}
+
+.btn-back:hover{
+    background-color: #1f2937;
+    border-color: #1f2937;
+    color: white;
+}
+
+.form-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0.25rem 0 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.guia-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #d1fae5;
+  color: #14532d;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.participante-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.participante-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.estado-confirmada{
+    background:#22c55e;
+    color:white;
+    font-weight:700;
+}
+
+.btn-sm.px-2 {
+  width: 34px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+.admin-header{
+    background: linear-gradient(
+        135deg,
+        #1f4d3a,
+        #1f3d2f
+    );
+
+    color: white;
+    padding: 100px 0 80px;
+    text-align: center;
+}
+
+.admin-header h1{
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.card{
+    border: none;
+    border-radius: 20px;
+}
+
+.form-control{
+    border-radius: 12px;
+}
+
+.btn-success{
+    background-color: #14532d;
+    border-color: #14532d;
+}
+
+.btn-success:hover{
+    background-color: #166534;
+    border-color: #166534;
+}
+
+.table{
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.table thead{
+    background-color: #1f2937;
+    color: white;
+}
+
+.table td,
+.table th{
+    vertical-align: middle;
+}
+
+.btn-warning{
+    color: white;
+}
+
+.container{
+    max-width: 1200px;
+}
+
+.btn-edit{
+    background-color: #475569;
+    border-color: #475569;
+    color: white;
+}
+
+.btn-edit:hover{
+    background-color: #334155;
+    border-color: #334155;
+    color: white;
+}
+
+.btn-delete{
+    background-color: #7c2d12;
+    border-color: #7c2d12;
+    color: white;
+}
+
+.btn-delete:hover{
+    background-color: #9a3412;
+    border-color: #9a3412;
+    color: white;
+}
+
+.btn-back{
+    background-color: #14532d;
+    border-color: #14532d;
+    color: white;
+}
+
+.btn-back:hover{
+    background-color: #1f2937;
+    border-color: #1f2937;
+    color: white;
+}
+
+.form-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0.25rem 0 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.guia-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #d1fae5;
+  color: #14532d;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.participante-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.participante-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.estado-confirmada{
+    background:#22c55e;
+    color:white;
+    font-weight:700;
+}
+
+.btn-sm.px-2 {
+  width: 34px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+/* TARJETA CLIENTE LOGUEADO */
+.cliente-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+
+.cliente-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #d1fae5;
+  color: #14532d;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.cliente-info {
+  flex: 1;
+}
+
+.cliente-nombre {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.6rem;
+}
+
+.cliente-detalle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.5rem 1.5rem;
+}
+
+.cliente-detalle {
+  display: flex;
+  flex-direction: column;
+}
+
+.cliente-detalle-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.15rem;
+}
+
+.cliente-detalle-valor {
+  font-size: 0.9rem;
+  color: #1f2937;
+  font-weight: 500;
+}

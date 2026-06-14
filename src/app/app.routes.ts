@@ -22,11 +22,13 @@ import { ClientesAdmin } from './components/admin/clientes-admin/clientes-admin'
 import { EmpresaClienteAdmin } from './components/admin/empresacliente-admin/empresacliente-admin';
 import { GuiasAdmin } from './components/admin/guias-admin/guias-admin';
 import { IdiomasAdmin } from './components/admin/idiomas-admin/idiomas-admin';
+import { ReservaPublica } from './components/reserva-publica/reserva-publica';
 
 export const routes: Routes = [
     //Público
     { path: '',component:Home},
     { path: 'login',component:Login},
+    { path: 'reservar',component: ReservaPublica},
     //Navegación principal
     { path: 'tour/:id', component: Tours},
     { path: 'vehiculo/:id', component: Vehiculos},
