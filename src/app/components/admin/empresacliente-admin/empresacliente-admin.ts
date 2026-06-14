@@ -85,7 +85,7 @@ export class EmpresaClienteAdmin implements OnInit {
         },
         error: (err) => manejarErrorGuardado(
           err,
-          'CREATE',
+          'UPDATE',
           (msg) => this.mensajeError = msg,
           this.cdr,
           'Ya existe un empresa con esa cedula juridica'
