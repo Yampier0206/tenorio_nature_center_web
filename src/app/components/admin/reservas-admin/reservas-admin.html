@@ -310,6 +310,18 @@
         </button>
       </div>
 
+      @if(participantes.length > 0){
+      <div class="alert alert-info py-2 mb-3 small">
+        <div class="d-flex gap-3">
+          <span>
+            <strong>Participantes agregados:</strong> {{ participantes.length + 1 }}
+          </span>
+          <span>
+            <strong>Subtotal estimado:</strong> ₡{{ (participantes.length + 1) * reserva.precio }}
+          </span>
+        </div>
+      </div>}
+
       @for(participante of participantes; track $index){
       <div class="participante-card mb-3">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -381,7 +393,7 @@
               [(ngModel)]="participante.telefono"
               placeholder="+506 8888 0000"
               required
-              pattern="^[+]?[\d\s\-().]{7,20}$">
+              pattern="^[+]?[\d\s\-\(\)\.]{7,20}$">
             @if(participanteTelefono.invalid && participanteTelefono.touched){
               <small class="invalid-feedback d-block">
                 @if(participanteTelefono.errors?.['required']){ El teléfono es obligatorio. }
@@ -410,7 +422,7 @@
       </div>
       }
       }
-
+      
       <div class="d-flex gap-2 mt-4">
         <button type="submit" class="btn btn-success" [disabled]="reservaForm.invalid">
           {{ editando ? 'Actualizar reserva' : 'Guardar reserva' }}
@@ -520,6 +532,8 @@
             <th (click)="ordenarPor('precio')" style="cursor:pointer">
               Precio
             </th>
+            <th>Personas</th>
+            <th>Total bruto</th>
             <th>Guía</th>
             <th>Chofer</th>
             <th class="text-end">Acciones</th>
@@ -538,6 +552,10 @@
               </span>
             </td>
             <td>₡{{ item.preciounitario }}</td>
+            <td class="text-muted">{{ item.cantidadpersonas }}</td>
+            <td class="fw-semibold" style="color:#14532d">
+            ₡{{ getTotalBruto(item) }}
+            </td>
             <td class="text-muted">{{ item.guia?.String || '—' }}</td>
             <td class="text-muted">{{ item.chofer?.String || '—' }}</td>
             <td class="text-end">
@@ -559,7 +577,7 @@
           }
           @empty{
           <tr>
-            <td colspan="9" class="text-center text-muted py-4">
+            <td colspan="11" class="text-center text-muted py-4">
               No hay reservas registradas
             </td>
           </tr>

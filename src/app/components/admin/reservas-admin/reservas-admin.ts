@@ -262,6 +262,8 @@ export class ReservasAdmin implements OnInit {
 
           this.cancelar();
 
+          this.cdr.detectChanges();
+
         },
 
         error:(err)=>{
@@ -549,4 +551,10 @@ onTourChange(){
   }
 }
 
+
+getTotalBruto(reserva: any): number {
+  return (reserva.preciounitario || 0) * (reserva.cantidadpersonas || 0);
 }
+
+}
+
