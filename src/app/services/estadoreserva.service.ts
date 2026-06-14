@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { enviroment } from "../enviroments";
@@ -9,11 +9,9 @@ import { enviroment } from "../enviroments";
 export class EstadoReservaService{
 
     private url:string;
-    private headers:any;
 
     constructor(private _http:HttpClient){
         this.url = enviroment.apiUrl;
-        this.headers = new HttpHeaders().set('Content-Type','application/json');
     }
 
     getEstadosReserva():Observable<any>{
@@ -31,50 +29,20 @@ export class EstadoReservaService{
     }
 
     createEstadoReserva(data:any):Observable<any>{
-
-        const token = sessionStorage.getItem('token');
-
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-
         return this._http.post(
             this.url + 'estadoreserva',
-            data,
-            { headers }
-        );
+            data);
     }
 
     updateEstadoReserva(data:any):Observable<any>{
-
-        const token = sessionStorage.getItem('token');
-
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-
         return this._http.put(
             this.url + 'estadoreserva',
-            data,
-            { headers }
-        );
+            data);
     }
 
     deleteEstadoReserva(id:number):Observable<any>{
-
-        const token = sessionStorage.getItem('token');
-
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-
         return this._http.delete(
-            this.url + 'estadoreserva/' + id,
-            { headers }
-        );
+            this.url + 'estadoreserva/' + id);
     }
 
 }

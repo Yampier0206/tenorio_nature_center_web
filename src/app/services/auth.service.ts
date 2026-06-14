@@ -56,12 +56,14 @@ return this._http.post<LoginResponse>(
     isAuthenticated():boolean{
         return !!sessionStorage.getItem('token')
     }
+    getToken(): string | null {
+        return sessionStorage.getItem('token');
+    }
     isAdmin():boolean{
 
         return this.currentUser()?.rol === 'Admin'
 
     }
-
     isClient():boolean{
 
         return this.currentUser()?.rol === 'Cliente'

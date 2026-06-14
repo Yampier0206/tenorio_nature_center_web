@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { UsuarioService } from '../../../services/usuario.service';
@@ -18,11 +18,14 @@ export class UsuariosAdmin implements OnInit {
   public mensajeError: string = '';
   public idUsuarioEliminar: number = 0;
 
+  @ViewChild('fileInput') fileInput!: ElementRef;
+
   public usuario: any = {
     nombre: '',
     apellido: '',
     correo: '',
     contrasena: '',
+    confirmarContrasena: '',
     rol: 'user_role',
     descripcion: '',
     imagen: ''
@@ -34,6 +37,7 @@ export class UsuariosAdmin implements OnInit {
     private usuarioService: UsuarioService,
     private cdr: ChangeDetectorRef
   ){}
+
 
   ngOnInit(): void {
     this.loadUsuarios();
@@ -67,41 +71,41 @@ export class UsuariosAdmin implements OnInit {
     }
   }
 
-  guardarUsuario(){
-    if(this.editando){
-      this.usuarioService.updateUsuario(this.usuario).subscribe({
-        next:() => {
-          this.mensaje = 'Usuario actualizado correctamente';
-          this.cancelar();
-          this.loadUsuarios();
-          setTimeout(() => { this.mensaje = ''; }, 3000);
-        },
-        error: (err) => manejarErrorGuardado(
-                  err,
-                  'CREATE',
-                  (msg) => this.mensajeError = msg,
-                  this.cdr,
-                  'Ya existe un usuario con ese correo'
-        )
-      });
-    } else {
-      this.usuarioService.createUsuario(this.usuario).subscribe({
-        next:() => {
-          this.mensaje = 'Usuario creado correctamente';
-          this.cancelar();
-          this.loadUsuarios();
-          setTimeout(() => { this.mensaje = ''; }, 3000);
-        },
-        error: (err) => manejarErrorGuardado(
-                  err,
-                  'CREATE',
-                  (msg) => this.mensajeError = msg,
-                  this.cdr,
-                  'Ya existe un usuario con ese correo'
-        )
-      });
-    }
+guardarUsuario(){
+  const { confirmarContrasena, ...payload } = this.usuario;
+
+  if(this.editando){
+    this.usuarioService.updateUsuario(payload).subscribe({
+      next:() => {
+        this.mensaje = 'Usuario actualizado correctamente';
+        this.cancelar();
+        this.loadUsuarios();
+        setTimeout(() => { this.mensaje = ''; }, 3000);
+      },
+      error: (err) => manejarErrorGuardado(
+        err, 'UPDATE',
+        (msg) => this.mensajeError = msg,
+        this.cdr,
+        'Ya existe un usuario con ese correo'
+      )
+    });
+  } else {
+    this.usuarioService.createUsuario(payload).subscribe({
+      next:() => {
+        this.mensaje = 'Usuario creado correctamente';
+        this.cancelar();
+        this.loadUsuarios();
+        setTimeout(() => { this.mensaje = ''; }, 3000);
+      },
+      error: (err) => manejarErrorGuardado(
+        err, 'CREATE',
+        (msg) => this.mensajeError = msg,
+        this.cdr,
+        'Ya existe un usuario con ese correo'
+      )
+    });
   }
+}
 
   editarUsuario(item: any){
     this.editando = true;
@@ -110,7 +114,8 @@ export class UsuariosAdmin implements OnInit {
       nombre: item.nombre,
       apellido: item.apellido?.String || '',
       correo: item.correo,
-      contrasena: item.contrasena,
+      contrasena: '',
+      confirmarContrasena: '',
       rol: item.rol?.String || 'user_role',
       descripcion: item.descripcion?.String || '',
       imagen: item.imagen?.String || ''
@@ -141,9 +146,13 @@ export class UsuariosAdmin implements OnInit {
       apellido: '',
       correo: '',
       contrasena: '',
+      confirmarContrasena: '',
       rol: 'user_role',
       descripcion: '',
       imagen: ''
     };
+    if(this.fileInput){
+      this.fileInput.nativeElement.value = '';
+    }
   }
 }

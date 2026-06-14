@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { enviroment } from "../enviroments";
@@ -14,19 +14,9 @@ export class FacturaParticipanteService {
         this.url = enviroment.apiUrl;
     }
 
-    private getHeaders(): HttpHeaders {
-        const token = sessionStorage.getItem('token');
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        });
-    }
-
     createFacturaParticipante(data: any): Observable<any> {
         return this._http.post(
             this.url + 'facturaparticipante',
-            data,
-            { headers: this.getHeaders() }
-        );
+            data);
     }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { enviroment } from "../enviroments";
@@ -23,29 +23,14 @@ export class UbicacionService{
     }
 
     createUbicacion(ubicacion:any):Observable<any>{
-        const token = sessionStorage.getItem('token');
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-        return this._http.post(this.url + 'ubicacion', ubicacion, { headers });
+        return this._http.post(this.url + 'ubicacion', ubicacion);
     }
 
     updateUbicacion(ubicacion:any):Observable<any>{
-        const token = sessionStorage.getItem('token');
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-        return this._http.put(this.url + 'ubicacion', ubicacion, { headers });
+        return this._http.put(this.url + 'ubicacion', ubicacion);
     }
 
     deleteUbicacion(id:number):Observable<any>{
-        const token = sessionStorage.getItem('token');
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-        return this._http.delete(this.url + 'ubicacion/' + id, { headers });
+        return this._http.delete(this.url + 'ubicacion/' + id);
     }
 }

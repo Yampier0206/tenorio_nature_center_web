@@ -95,7 +95,7 @@
         <div class="col-md-6">
           <label class="form-label fw-semibold">
             Contraseña
-            @if(editando){ <span class="fw-normal text-muted">(dejar en blanco para no cambiar)</span> }
+            @if(editando){ <span class="fw-normal text-muted"> Es necesario modificar la contraseña </span> }
           </label>
           <input
             type="password"
@@ -104,7 +104,7 @@
             #contrasena="ngModel"
             [(ngModel)]="usuario.contrasena"
             placeholder="Contraseña"
-            [required]="!editando"
+            required
             minlength="6"
             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$">
           @if(contrasena.invalid && contrasena.touched){
@@ -120,7 +120,7 @@
         <div class="col-md-6">
           <label class="form-label fw-semibold">
             Confirmar contraseña
-            @if(editando){ <span class="fw-normal text-muted">(dejar en blanco para no cambiar)</span> }
+            @if(editando){ <span class="fw-normal text-muted"> Confirme la contraseña modificada </span> }
           </label>
           <input
             type="password"
@@ -167,6 +167,7 @@
             type="file"
             class="form-control"
             name="imagen"
+            #fileInput
             (change)="uploadImage($event)">
         </div>
         <div class="col-12">
@@ -181,8 +182,8 @@
             maxlength="300"></textarea>
         </div>
       </div>
-
       <div class="d-flex gap-2">
+        
         <button type="submit" class="btn btn-success"
           [disabled]="usuarioForm.invalid || contrasena.value !== confirmarContrasena.value">
           {{ editando ? 'Actualizar usuario' : 'Guardar usuario' }}
