@@ -22,6 +22,7 @@ import { ClientesAdmin } from './components/admin/clientes-admin/clientes-admin'
 import { EmpresaClienteAdmin } from './components/admin/empresacliente-admin/empresacliente-admin';
 import { GuiasAdmin } from './components/admin/guias-admin/guias-admin';
 import { IdiomasAdmin } from './components/admin/idiomas-admin/idiomas-admin';
+import { routerGuard } from './components/guards/routes.guards';
 
 export const routes: Routes = [
     //Público
@@ -34,21 +35,21 @@ export const routes: Routes = [
     { path: 'guia/:id', component: Guias},
     { path: 'ubicacion/:id', component: Ubicaciones},
     //Usuario autenticado
-    { path: 'perfil', component: Perfil},
-    { path: 'reservas', component: Reservas},
+    { path: 'perfil', canActivate:[routerGuard], component: Perfil},
+    { path: 'reservas', canActivate:[routerGuard], component: Reservas},
     //Admin
-    { path: 'admin', component: Admin},
-    { path: 'admin/tours', component: ToursAdmin},
-    { path: 'admin/reservas', component: ReservasAdmin},
-    { path: 'admin/facturas', component: FacturasAdmin },
-    { path: 'admin/choferes', component: ChoferAdmin },
-    { path: 'admin/usuarios', component: UsuariosAdmin },
-    { path: 'admin/ubicaciones', component: UbicacionesAdmin },
-    { path: 'admin/vehiculos', component: VehiculosAdmin },
-    { path: 'admin/clientes', component: ClientesAdmin },
-    { path: 'admin/empresa-cliente', component: EmpresaClienteAdmin },
-    { path: 'admin/guias', component: GuiasAdmin },
-    { path: 'admin/idiomas', component: IdiomasAdmin },
+    { path: 'admin',canActivate:[routerGuard], component: Admin},
+    { path: 'admin/tours',canActivate:[routerGuard], component: ToursAdmin},
+    { path: 'admin/reservas',canActivate:[routerGuard], component: ReservasAdmin},
+    { path: 'admin/facturas',canActivate:[routerGuard], component: FacturasAdmin },
+    { path: 'admin/choferes',canActivate:[routerGuard], component: ChoferAdmin },
+    { path: 'admin/usuarios',canActivate:[routerGuard], component: UsuariosAdmin },
+    { path: 'admin/ubicaciones',canActivate:[routerGuard], component: UbicacionesAdmin },
+    { path: 'admin/vehiculos',canActivate:[routerGuard], component: VehiculosAdmin },
+    { path: 'admin/clientes',canActivate:[routerGuard], component: ClientesAdmin },
+    { path: 'admin/empresa-cliente',canActivate:[routerGuard], component: EmpresaClienteAdmin },
+    { path: 'admin/guias',canActivate:[routerGuard], component: GuiasAdmin },
+    { path: 'admin/idiomas',canActivate:[routerGuard], component: IdiomasAdmin },
     //Registro
     { path: '',component:Home},
     { path: 'login',component:Login},
