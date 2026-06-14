@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import {Home} from './components/home/home'
+import { Home } from './components/home/home';
 import { Login } from './components/login/login';
 import { Error } from './components/error/error';
 import { Perfil } from './components/perfil/perfil';
@@ -22,37 +22,40 @@ import { ClientesAdmin } from './components/admin/clientes-admin/clientes-admin'
 import { EmpresaClienteAdmin } from './components/admin/empresacliente-admin/empresacliente-admin';
 import { GuiasAdmin } from './components/admin/guias-admin/guias-admin';
 import { IdiomasAdmin } from './components/admin/idiomas-admin/idiomas-admin';
+import { routesGuard } from './core/guards/routes.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
-    //Público
-    { path: '',component:Home},
-    { path: 'login',component:Login},
-    //Navegación principal
-    { path: 'tour/:id', component: Tours},
-    { path: 'vehiculo/:id', component: Vehiculos},
-    { path: 'chofer/:id', component: Chofer},
-    { path: 'guia/:id', component: Guias},
-    { path: 'ubicacion/:id', component: Ubicaciones},
-    //Usuario autenticado
-    { path: 'perfil', component: Perfil},
-    { path: 'reservas', component: Reservas},
-    //Admin
-    { path: 'admin', component: Admin},
-    { path: 'admin/tours', component: ToursAdmin},
-    { path: 'admin/reservas', component: ReservasAdmin},
-    { path: 'admin/facturas', component: FacturasAdmin },
-    { path: 'admin/choferes', component: ChoferAdmin },
-    { path: 'admin/usuarios', component: UsuariosAdmin },
-    { path: 'admin/ubicaciones', component: UbicacionesAdmin },
-    { path: 'admin/vehiculos', component: VehiculosAdmin },
-    { path: 'admin/clientes', component: ClientesAdmin },
-    { path: 'admin/empresa-cliente', component: EmpresaClienteAdmin },
-    { path: 'admin/guias', component: GuiasAdmin },
-    { path: 'admin/idiomas', component: IdiomasAdmin },
-    //Registro
-    { path: '',component:Home},
-    { path: 'login',component:Login},
-    { path: 'register',component:Registro},
-    //Error
-    { path: '**',component:Error}
+    // Público
+    { path: '', component: Home },
+    { path: 'login', component: Login },
+    { path: 'register', component: Registro },
+
+    // Navegación principal — público
+    { path: 'tour/:id', component: Tours },
+    { path: 'vehiculo/:id', component: Vehiculos },
+    { path: 'chofer/:id', component: Chofer },
+    { path: 'guia/:id', component: Guias },
+    { path: 'ubicacion/:id', component: Ubicaciones },
+
+    // Usuario autenticado
+    { path: 'perfil', component: Perfil, canActivate: [routesGuard] },
+    { path: 'reservas', component: Reservas, canActivate: [routesGuard] },
+
+    // Admin — requiere rol Admin
+    { path: 'admin', component: Admin, canActivate: [adminGuard] },
+    { path: 'admin/tours', component: ToursAdmin, canActivate: [adminGuard] },
+    { path: 'admin/reservas', component: ReservasAdmin, canActivate: [adminGuard] },
+    { path: 'admin/facturas', component: FacturasAdmin, canActivate: [adminGuard] },
+    { path: 'admin/choferes', component: ChoferAdmin, canActivate: [adminGuard] },
+    { path: 'admin/usuarios', component: UsuariosAdmin, canActivate: [adminGuard] },
+    { path: 'admin/ubicaciones', component: UbicacionesAdmin, canActivate: [adminGuard] },
+    { path: 'admin/vehiculos', component: VehiculosAdmin, canActivate: [adminGuard] },
+    { path: 'admin/clientes', component: ClientesAdmin, canActivate: [adminGuard] },
+    { path: 'admin/empresa-cliente', component: EmpresaClienteAdmin, canActivate: [adminGuard] },
+    { path: 'admin/guias', component: GuiasAdmin, canActivate: [adminGuard] },
+    { path: 'admin/idiomas', component: IdiomasAdmin, canActivate: [adminGuard] },
+
+    // Error
+    { path: '**', component: Error }
 ];

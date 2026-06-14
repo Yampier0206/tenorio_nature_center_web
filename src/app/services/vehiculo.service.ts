@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { enviroment } from "../enviroments";
@@ -9,88 +9,36 @@ import { enviroment } from "../enviroments";
 export class VehiculoService{
 
     private url:string;
-    private headers:any;
 
     constructor(private _http:HttpClient){
         this.url = enviroment.apiUrl;
-        this.headers = new HttpHeaders().set('Content-Type','application/json');
     }
 
     getVehiculos():Observable<any>{
-
-        const token = sessionStorage.getItem('token');
-
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-
         return this._http.get(
-            this.url + 'vehiculo',
-            { headers }
-        );
+            this.url + 'vehiculo');
     }
 
     getVehiculoById(id:number):Observable<any>{
-
-        const token = sessionStorage.getItem('token');
-
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-
         return this._http.get(
-            this.url + 'vehiculo/' + id,
-            { headers }
-        );
+            this.url + 'vehiculo/' + id);
     }
 
     createVehiculo(data:any):Observable<any>{
-
-        const token = sessionStorage.getItem('token');
-
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-
         return this._http.post(
             this.url + 'vehiculo',
-            data,
-            { headers }
-        );
+            data);
     }
 
     updateVehiculo(data:any):Observable<any>{
-
-        const token = sessionStorage.getItem('token');
-
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-
         return this._http.put(
             this.url + 'vehiculo',
-            data,
-            { headers }
-        );
+            data);
     }
 
     deleteVehiculo(id:number):Observable<any>{
-
-        const token = sessionStorage.getItem('token');
-
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-
         return this._http.delete(
-            this.url + 'vehiculo/' + id,
-            { headers }
-        );
+            this.url + 'vehiculo/' + id);
     }
 
 }

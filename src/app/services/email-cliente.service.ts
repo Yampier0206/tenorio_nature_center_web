@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { enviroment } from "../enviroments";
@@ -14,14 +14,6 @@ export class EmailClienteService {
         this.url = enviroment.apiUrl;
     }
 
-    private getHeaders(): HttpHeaders {
-        const token = sessionStorage.getItem('token');
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        });
-    }
-
     getEmailsByCliente(idCliente: number): Observable<any> {
         return this._http.get(this.url + 'emailcliente/cliente/' + idCliente);
     }
@@ -33,23 +25,17 @@ export class EmailClienteService {
     createEmail(data: any): Observable<any> {
         return this._http.post(
             this.url + 'emailcliente',
-            data,
-            { headers: this.getHeaders() }
-        );
+            data);
     }
 
     updateEmail(data: any): Observable<any> {
         return this._http.put(
             this.url + 'emailcliente',
-            data,
-            { headers: this.getHeaders() }
-        );
+            data);
     }
 
     deleteEmail(id: number): Observable<any> {
         return this._http.delete(
-            this.url + 'emailcliente/' + id,
-            { headers: this.getHeaders() }
-        );
+            this.url + 'emailcliente/' + id);
     }
 }

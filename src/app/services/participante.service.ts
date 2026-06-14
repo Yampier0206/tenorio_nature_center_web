@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { enviroment } from "../enviroments";
@@ -9,38 +9,21 @@ import { enviroment } from "../enviroments";
 export class ParticipanteService{
  
     private url:string;
-    private headers:any;
  
     constructor(private _http:HttpClient){
         this.url = enviroment.apiUrl;
-        this.headers = new HttpHeaders().set('Content-Type','application/json');
     }
  
     getParticipantes():Observable<any>{
-        const token = sessionStorage.getItem('token');
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-        return this._http.get(this.url + 'participante', { headers });
+        return this._http.get(this.url + 'participante');
     }
  
     getParticipanteById(id:number):Observable<any>{
-        const token = sessionStorage.getItem('token');
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-        return this._http.get(this.url + 'participante/' + id, { headers });
+        return this._http.get(this.url + 'participante/' + id);
     }
  
     getReservasByCliente(id:number):Observable<any>{
-        const token = sessionStorage.getItem('token');
-        const headers = new HttpHeaders({
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-        });
-        return this._http.get(this.url + 'participante/cliente/' + id, { headers });
+        return this._http.get(this.url + 'participante/cliente/' + id);
     }
  
     getParticipantesByReserva(id:number):Observable<any>{
@@ -50,17 +33,8 @@ export class ParticipanteService{
     }
 
     getReservasDisponiblesParaFacturar(): Observable<any> {
-    const token = sessionStorage.getItem('token');
-
-    const headers = new HttpHeaders({
-        'Content-Type':'application/json',
-        'Authorization':'Bearer ' + token
-    });
-
     return this._http.get(
-        this.url + 'participante/disponibles-facturar',
-        { headers }
-    );
+        this.url + 'participante/disponibles-facturar');
     }
  
     getParticipantesSinFacturaByReserva(id:number):Observable<any>{

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { enviroment } from '../enviroments';
 
@@ -27,17 +27,7 @@ export class IdiomaGuiaService {
     };
     return this.http.post(
       this.url + 'idiomaguia',
-      payload,
-      { headers: this.getHeaders() }
-    );
-  }
-
-  private getHeaders(): HttpHeaders {
-    const token = sessionStorage.getItem('token');
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
-    });
+      payload);
   }
 
   getIdiomaGuiaById(id: number): Observable<any> {
@@ -47,15 +37,11 @@ export class IdiomaGuiaService {
   createIdiomaGuia(data: any): Observable<any> {
     return this.http.post(
       this.url + 'idiomaguia',
-      data,
-      { headers: this.getHeaders() }
-    );
+      data);
   }
 
   deleteIdiomaGuia(id: number): Observable<any> {
     return this.http.delete(
-      this.url + 'idiomaguia/' + id,
-      { headers: this.getHeaders() }
-    );
+      this.url + 'idiomaguia/' + id);
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { enviroment } from "../enviroments";
@@ -14,42 +14,28 @@ export class ChoferService {
         this.url = enviroment.apiUrl;
     }
 
-    private getHeaders(): HttpHeaders {
-        const token = sessionStorage.getItem('token');
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        });
-    }
-
     getChoferes(): Observable<any> {
-        return this._http.get(this.url + 'chofer', { headers: this.getHeaders() });
+        return this._http.get(this.url + 'chofer');
     }
 
     getChoferById(id: number): Observable<any> {
-        return this._http.get(this.url + 'chofer/' + id, { headers: this.getHeaders() });
+        return this._http.get(this.url + 'chofer/' + id);
     }
 
     createChofer(data: any): Observable<any> {
         return this._http.post(
             this.url + 'chofer',
-            data,
-            { headers: this.getHeaders() }
-        );
+            data);
     }
 
     updateChofer(data: any): Observable<any> {
         return this._http.put(
             this.url + 'chofer',
-            data,
-            { headers: this.getHeaders() }
-        );
+            data);
     }
 
     deleteChofer(id: number): Observable<any> {
         return this._http.delete(
-            this.url + 'chofer/' + id,
-            { headers: this.getHeaders() }
-        );
+            this.url + 'chofer/' + id);
     }
 }
