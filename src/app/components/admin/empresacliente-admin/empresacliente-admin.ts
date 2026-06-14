@@ -142,10 +142,9 @@ export class EmpresaClienteAdmin implements OnInit {
           },3000);
 
         },
-
         error: (err) => manejarErrorGuardado(
           err,
-          'CREATE',
+          'UPDATE',
           (msg) => this.mensajeError = msg,
           this.cdr,
           'Ya existe un empresa con esa cedula juridica'
@@ -172,12 +171,13 @@ export class EmpresaClienteAdmin implements OnInit {
           },3000);
 
         },
-
-        error:(err)=>{
-
-          console.log('ERROR CREATE', err);
-
-        }
+        error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr,
+          'Ya existe un empresa con esa cedula juridica'
+        )
 
       });
 

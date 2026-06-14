@@ -105,7 +105,7 @@ export class GuiasAdmin implements OnInit {
       },
       error: (err) => manejarErrorGuardado(
           err,
-          'CREATE',
+          'UPDATE',
           (msg) => this.mensajeError = msg,
           this.cdr
         )

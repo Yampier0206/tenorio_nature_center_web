@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { IdiomaService } from '../../../services/idioma.service';
+import { manejarErrorGuardado } from '../../../helpers/error.helper';
 
 @Component({
   selector: 'app-idiomas-admin',
@@ -15,6 +16,7 @@ export class IdiomasAdmin implements OnInit {
 
   public idiomas:any[] = [];
   public mensaje:string='';
+  public mensajeError:string='';
   public idIdiomaEliminar:number = 0;
 
   public idiomasFiltrados:any[] = [];
@@ -99,9 +101,12 @@ export class IdiomasAdmin implements OnInit {
           },3000);
 
         },
-        error:(err)=>{
-          console.log('ERROR UPDATE',err);
-        }
+        error: (err) => manejarErrorGuardado(
+          err,
+          'UPDATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr, "Ya existe este idioma"
+        )
 
       });
 
@@ -121,10 +126,12 @@ export class IdiomasAdmin implements OnInit {
           },3000);
 
         },
-        error:(err)=>{
-          console.log('ERROR CREATE', err);
-        }
-
+        error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr, "Ya existe este idioma"
+        )
       });
 
     }

@@ -174,7 +174,7 @@ ordenarPor(campo:string){
         },
         error: (err) => manejarErrorGuardado(
           err,
-          'CREATE',
+          'UPDATE',
           (msg) => this.mensajeError = msg,
           this.cdr
         )
@@ -188,18 +188,12 @@ ordenarPor(campo:string){
           this.loadChoferes();
           setTimeout(() => { this.mensaje = ''; }, 3000);
         },
-        error:(err)=>{
-          console.log('ERROR CREATE', err);
-          if(err.status === 500 && err.error?.error?.includes('Duplicate entry')){
-            this.mensajeError = 'Ya existe un chofer con esa identificación.';
-          } else if(err.status === 0){
-            this.mensajeError = 'No se pudo conectar con el servidor.';
-          } else {
-          this.mensajeError = 'Ocurrió un error al guardar. Intentá de nuevo.';
-          }
-          this.cdr.detectChanges();
-          setTimeout(()=>{ this.mensajeError = ''; }, 3000);
-        }
+        error: (err) => manejarErrorGuardado(
+          err,
+          'CREATE',
+          (msg) => this.mensajeError = msg,
+          this.cdr
+        )
       });
     }
   }
