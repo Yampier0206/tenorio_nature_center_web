@@ -180,13 +180,74 @@
       </div>
     </div>
 
+    <div class="row g-3 mb-4">
+
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">
+          Buscar por nombre
+        </label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="filtroNombre"
+          placeholder="Nombre del chofer">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">
+          Buscar por identificación
+        </label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="filtroIdentificacion"
+          placeholder="Identificación">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [(ngModel)]="ordenCampo">
+
+          <option value="nombre">
+            Nombre
+          </option>
+
+          <option value="tipolicencia">
+            Licencia
+          </option>
+
+          <option value="identificador">
+            Identificación
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
     <div class="table-responsive">
       <table class="table table-hover align-middle">
         <thead>
           <tr>
             <th style="width:42px">#</th>
-            <th>Nombre</th>
-            <th>Identificación</th>
+            <th
+              role="button"
+              (click)="ordenarPor('nombre')">
+              Nombre
+            </th>
+            <th
+              role="button"
+              (click)="ordenarPor('identificacion')">
+              Identificación
+            </th>
             <th>Nacimiento</th>
             <th>Teléfono</th>
             <th>Correo</th>
@@ -195,7 +256,7 @@
           </tr>
         </thead>
         <tbody>
-          @for(c of choferes; track c.idchofer){
+          @for(c of choferesFiltrados; track c.idchofer){
           <tr>
             <td class="text-muted small">{{ c.idchofer }}</td>
             <td>

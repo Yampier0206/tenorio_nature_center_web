@@ -17,6 +17,14 @@ export class IdiomasAdmin implements OnInit {
   public mensaje:string='';
   public idIdiomaEliminar:number = 0;
 
+  public idiomasFiltrados:any[] = [];
+
+  public filtroNombre:string = '';
+
+  public columnaOrden:string = 'nombre';
+  public ascendente:boolean = true;
+  public ordenCampo: string = 'nombre';
+
   public idioma:any = {
     nombre:''
   };
@@ -40,6 +48,9 @@ export class IdiomasAdmin implements OnInit {
       next:(response:any)=>{
         console.log('IDIOMAS RECARGADOS', response);
         this.idiomas = response;
+        this.idiomasFiltrados = [...response];
+
+        this.aplicarFiltros();
         this.cdr.detectChanges();
       },
 
@@ -50,6 +61,24 @@ export class IdiomasAdmin implements OnInit {
       }
 
     });
+
+  }
+
+  aplicarFiltros() {
+
+    this.idiomasFiltrados = this.idiomas.filter(i => {
+
+
+      const coincideNombre =
+        !this.filtroNombre ||
+        i.nombre?.toLowerCase()
+          .includes(this.filtroNombre.toLowerCase());
+
+      return coincideNombre;
+
+    });
+
+      this.ordenar(this.ordenCampo, false);
 
   }
 
@@ -145,5 +174,48 @@ export class IdiomasAdmin implements OnInit {
 
   }
   
+  ordenar(columna:string, cambiarDireccion:boolean = true){
+
+  if(cambiarDireccion){
+
+    if(this.columnaOrden === columna){
+
+      this.ascendente = !this.ascendente;
+
+    }else{
+
+      this.columnaOrden = columna;
+      this.ascendente = true;
+
+    }
+
+  }
+
+  this.idiomasFiltrados.sort((a,b)=>{
+
+    let valorA = a[columna];
+    let valorB = b[columna];
+
+    if(typeof valorA === 'string'){
+      valorA = valorA.toLowerCase();
+    }
+
+    if(typeof valorB === 'string'){
+      valorB = valorB.toLowerCase();
+    }
+
+    if(valorA < valorB){
+      return this.ascendente ? -1 : 1;
+    }
+
+    if(valorA > valorB){
+      return this.ascendente ? 1 : -1;
+    }
+
+    return 0;
+
+  });
+
+}
 
 }

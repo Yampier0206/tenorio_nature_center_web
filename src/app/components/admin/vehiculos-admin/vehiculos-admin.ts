@@ -27,6 +27,14 @@ export class VehiculosAdmin implements OnInit {
 
   public idVehiculoEliminar:number = 0;
 
+  public vehiculosFiltrados:any[] = [];
+
+  public filtroMatricula:string = '';
+  public filtroModelo:string = '';
+
+  public columnaOrden:string = 'matricula';
+  public ascendente:boolean = true;
+
   public vehiculo:any = {
 
     idVehiculo:null,
@@ -58,6 +66,10 @@ export class VehiculosAdmin implements OnInit {
       next:(response:any)=>{
 
         this.vehiculos = response;
+        this.vehiculosFiltrados = [...response];
+
+        this.aplicarFiltros();
+
         this.cdr.detectChanges();
 
       },
@@ -222,6 +234,103 @@ export class VehiculosAdmin implements OnInit {
       modelo:''
 
     };
+
+  }
+
+  aplicarFiltros() {
+
+    this.vehiculosFiltrados =
+      this.vehiculos.filter(v => {
+
+        const coincideMatricula =
+          !this.filtroMatricula ||
+          v.matricula?.toLowerCase()
+            .includes(this.filtroMatricula.toLowerCase());
+
+        const coincideModelo =
+          !this.filtroModelo ||
+          v.modelo?.toLowerCase()
+            .includes(this.filtroModelo.toLowerCase());
+
+        return coincideMatricula && coincideModelo;
+
+      });
+
+    this.ordenar(this.columnaOrden, false);
+
+  }
+
+  ordenar(
+  columna:string,
+  cambiarDireccion:boolean = true
+){
+
+  if(cambiarDireccion){
+
+    if(this.columnaOrden === columna){
+
+      this.ascendente = !this.ascendente;
+
+    }else{
+
+      this.columnaOrden = columna;
+      this.ascendente = true;
+
+    }
+
+  }
+
+    this.vehiculosFiltrados.sort((a,b)=>{
+
+      let valorA:any;
+      let valorB:any;
+
+      switch(columna){
+
+        case 'matricula':
+          valorA = a.matricula ?? '';
+          valorB = b.matricula ?? '';
+          break;
+
+        case 'modelo':
+          valorA = a.modelo ?? '';
+          valorB = b.modelo ?? '';
+          break;
+
+        case 'capacidad':
+          valorA = Number(a.capacidad);
+          valorB = Number(b.capacidad);
+          break;
+
+        case 'chofer':
+          valorA = a.nombre_chofer ?? '';
+          valorB = b.nombre_chofer ?? '';
+          break;
+
+        default:
+          return 0;
+
+      }
+
+      if(typeof valorA === 'string'){
+        valorA = valorA.toLowerCase();
+      }
+
+      if(typeof valorB === 'string'){
+        valorB = valorB.toLowerCase();
+      }
+
+      if(valorA < valorB){
+        return this.ascendente ? -1 : 1;
+      }
+
+      if(valorA > valorB){
+        return this.ascendente ? 1 : -1;
+      }
+
+      return 0;
+
+    });
 
   }
 

@@ -18,6 +18,13 @@ export class UsuariosAdmin implements OnInit {
   public mensajeError: string = '';
   public idUsuarioEliminar: number = 0;
 
+  public filtroNombre: string = '';
+  public filtroCorreo: string = '';
+
+  public columnaOrden: string = '';
+  public ascendente: boolean = true;
+  public ordenCampo: string = 'nombre';
+
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   public usuario: any = {
@@ -155,4 +162,110 @@ guardarUsuario(){
       this.fileInput.nativeElement.value = '';
     }
   }
+
+  get usuariosFiltrados() {
+
+    let resultado = this.usuarios.filter(u => {
+
+      const coincideNombre =
+        !this.filtroNombre ||
+        u.nombre?.toLowerCase().includes(
+          this.filtroNombre.toLowerCase()
+        );
+
+      const coincideCorreo =
+        !this.filtroCorreo ||
+        u.correo?.toLowerCase().includes(
+          this.filtroCorreo.toLowerCase()
+        );
+
+      return coincideNombre && coincideCorreo;
+
+    });
+
+    resultado.sort((a, b) => {
+
+      let valorA: any;
+      let valorB: any;
+
+      switch (this.ordenCampo) {
+
+        case 'nombre':
+          valorA = a.nombre ?? '';
+          valorB = b.nombre ?? '';
+          break;
+
+        case 'correo':
+          valorA = a.correo ?? '';
+          valorB = b.correo ?? '';
+          break;
+
+        case 'rol':
+          valorA = a.rol?.String ?? '';
+          valorB = b.rol?.String ?? '';
+          break;
+
+        default:
+          return 0;
+
+      }
+
+      if (valorA < valorB) return -1;
+      if (valorA > valorB) return 1;
+
+      return 0;
+
+    });
+
+    return resultado;
+  }
+
+  ordenarPor(columna: string) {
+
+    if (this.columnaOrden === columna) {
+      this.ascendente = !this.ascendente;
+    } else {
+      this.columnaOrden = columna;
+      this.ascendente = true;
+    }
+
+    this.usuarios.sort((a, b) => {
+
+      let valorA: any;
+      let valorB: any;
+
+      switch (columna) {
+
+        case 'nombre':
+          valorA = a.nombre ?? '';
+          valorB = b.nombre ?? '';
+          break;
+
+        case 'correo':
+          valorA = a.correo ?? '';
+          valorB = b.correo ?? '';
+          break;
+
+        case 'rol':
+          valorA = a.rol?.String ?? '';
+          valorB = b.rol?.String ?? '';
+          break;
+
+        default:
+          return 0;
+      }
+
+      if (valorA < valorB) {
+        return this.ascendente ? -1 : 1;
+      }
+
+      if (valorA > valorB) {
+        return this.ascendente ? 1 : -1;
+      }
+
+      return 0;
+    });
+
+  }
+
 }

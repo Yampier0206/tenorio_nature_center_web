@@ -17,6 +17,13 @@ export class ToursAdmin implements OnInit {
   public mensaje:string='';
   public idTourEliminar:number = 0;
 
+  public filtroNombre: string = '';
+  public filtroHorario: string = '';
+
+  public columnaOrden: string = '';
+  public ascendente: boolean = true;
+  public ordenCampo: string = 'nombre';
+
   public tour:any = {
     nombre:'',
     descripcion:'',
@@ -167,5 +174,126 @@ export class ToursAdmin implements OnInit {
 
   }
   
+  get toursFiltrados() {
+
+    let resultado = this.tours.filter(t => {
+
+      const coincideNombre =
+        !this.filtroNombre ||
+        t.nombre?.toLowerCase().includes(
+          this.filtroNombre.toLowerCase()
+        );
+
+      const coincideHorario =
+        !this.filtroHorario ||
+        t.horario?.toLowerCase().includes(
+          this.filtroHorario.toLowerCase()
+        );
+
+      return coincideNombre && coincideHorario;
+
+    });
+
+    resultado.sort((a, b) => {
+
+      let valorA: any;
+      let valorB: any;
+
+      switch (this.ordenCampo) {
+
+        case 'nombre':
+          valorA = a.nombre ?? '';
+          valorB = b.nombre ?? '';
+          break;
+
+        case 'horario':
+          valorA = a.horario ?? '';
+          valorB = b.horario ?? '';
+          break;
+
+        case 'duracion':
+          valorA = a.duracion ?? 0;
+          valorB = b.duracion ?? 0;
+          break;
+
+        case 'cupos':
+          valorA = a.cuposmaximos ?? 0;
+          valorB = b.cuposmaximos ?? 0;
+          break;
+
+        case 'precio':
+          valorA = a.preciobase ?? 0;
+          valorB = b.preciobase ?? 0;
+          break;
+
+        default:
+          return 0;
+      }
+
+      if (valorA < valorB) return -1;
+      if (valorA > valorB) return 1;
+
+      return 0;
+
+    });
+
+    return resultado;
+  }
+  
+  ordenarPor(columna: string) {
+    if (this.columnaOrden === columna) {
+      this.ascendente = !this.ascendente;
+    } else {
+      this.columnaOrden = columna;
+      this.ascendente = true;
+    }
+
+    this.tours.sort((a, b) => {
+
+      let valorA: any;
+      let valorB: any;
+
+      switch (columna) {
+
+        case 'nombre':
+          valorA = a.nombre ?? '';
+          valorB = b.nombre ?? '';
+          break;
+
+        case 'horario':
+          valorA = a.horario ?? '';
+          valorB = b.horario ?? '';
+          break;
+
+        case 'duracion':
+          valorA = Number(a.duracion);
+          valorB = Number(b.duracion);
+          break;
+
+        case 'cupos':
+          valorA = Number(a.cuposmaximos);
+          valorB = Number(b.cuposmaximos);
+          break;
+
+        case 'precio':
+          valorA = Number(a.preciobase);
+          valorB = Number(b.preciobase);
+          break;
+
+        default:
+          return 0;
+      }
+
+      if (valorA < valorB) {
+        return this.ascendente ? -1 : 1;
+      }
+
+      if (valorA > valorB) {
+        return this.ascendente ? 1 : -1;
+      }
+
+      return 0;
+    });
+  }
 
 }

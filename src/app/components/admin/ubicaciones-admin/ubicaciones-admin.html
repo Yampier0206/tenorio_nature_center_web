@@ -84,8 +84,60 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h3 class="mb-0">Ubicaciones registradas</h3>
-        <p class="text-muted small mb-0">{{ ubicaciones.length }} registros</p>
+        <p class="text-muted small mb-0">{{ ubicacionesFiltradas.length }} registros</p>
       </div>
+    </div>
+
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por nombre
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroNombre"
+          placeholder="Nombre de la ubicación">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por dirección
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroDireccion"
+          placeholder="Dirección">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [(ngModel)]="ordenCampo">
+
+          <option value="nombre">
+            Nombre
+          </option>
+
+          <option value="direccion">
+            Dirección
+          </option>
+
+        </select>
+
+      </div>
+
     </div>
 
     <div class="table-responsive">
@@ -93,13 +145,21 @@
         <thead>
           <tr>
             <th style="width:80px">ID</th>
-            <th>Nombre</th>
-            <th>Dirección</th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenarPor('nombre')">
+              Nombre
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenarPor('direccion')">
+              Dirección
+            </th>
             <th class="text-end">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          @for(item of ubicaciones; track item.idubicacion){
+          @for(item of ubicacionesFiltradas; track item.idubicacion){
           <tr>
             <td class="text-muted small">{{ item.idubicacion }}</td>
             <td class="fw-semibold">{{ item.nombre }}</td>

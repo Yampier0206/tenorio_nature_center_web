@@ -203,8 +203,64 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h3 class="mb-0">Usuarios registrados</h3>
-        <p class="text-muted small mb-0">{{ usuarios.length }} registros</p>
+        <p class="text-muted small mb-0">{{ usuariosFiltrados.length }} registros</p>
       </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por nombre
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroNombre"
+          placeholder="Nombre del usuario">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por correo
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroCorreo"
+          placeholder="Correo electrónico">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [(ngModel)]="ordenCampo">
+
+          <option value="nombre">
+            Nombre
+          </option>
+
+          <option value="correo">
+            Correo
+          </option>
+
+          <option value="rol">
+            Rol
+          </option>
+
+        </select>
+
+      </div>
+
     </div>
 
     <div class="table-responsive">
@@ -212,15 +268,32 @@
         <thead>
           <tr>
             <th style="width:80px">ID</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Correo</th>
-            <th>Rol</th>
+            <th
+            style="cursor:pointer"
+            (click)="ordenarPor('nombre')">
+            Nombre
+          </th>
+
+          <th>
+            Apellido
+          </th>
+
+          <th
+            style="cursor:pointer"
+            (click)="ordenarPor('correo')">
+            Correo
+          </th>
+
+          <th
+            style="cursor:pointer"
+            (click)="ordenarPor('rol')">
+            Rol
+          </th>
             <th class="text-end">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          @for(item of usuarios; track item.idusuario){
+          @for(item of usuariosFiltrados; track item.idusuario){
           <tr>
             <td class="text-muted small">{{ item.idusuario }}</td>
             <td class="fw-semibold">{{ item.nombre }}</td>

@@ -277,8 +277,75 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h3 class="mb-0">Facturas registradas</h3>
-        <p class="text-muted small mb-0">{{ facturas.length }} registros</p>
+        <p class="text-muted small mb-0">{{ facturasFiltradas.length }} registros</p>
       </div>
+    </div>
+
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por número de factura
+        </label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="FAC-0001"
+          [(ngModel)]="filtroNumeroFactura">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por estado
+        </label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Pagada, Pendiente..."
+          [(ngModel)]="filtroEstadoPago">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [ngModel]="campoOrden"
+          (ngModelChange)="ordenar($event)">
+
+          <option value="numerofactura">
+            Número de factura
+          </option>
+
+          <option value="fechafactura">
+            Fecha
+          </option>
+
+          <option value="nombreestado">
+            Estado
+          </option>
+
+          <option value="metodopago">
+            Método de pago
+          </option>
+
+          <option value="preciototal">
+            Total
+          </option>
+
+        </select>
+
+      </div>
+
     </div>
 
     <div class="table-responsive">
@@ -286,8 +353,16 @@
         <thead>
           <tr>
             <th style="width:42px">#</th>
-            <th>N° Factura</th>
-            <th>Fecha</th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenar('numerofactura')">
+              N° Factura 
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenar('fechafactura')">
+              Fecha 
+            </th>
             <th>Estado</th>
             <th>Método</th>
             <th>Moneda</th>
@@ -299,7 +374,7 @@
           </tr>
         </thead>
         <tbody>
-          @for(f of facturas; track f.idfactura){
+          @for(f of facturasFiltradas; track f.idfactura){
           <tr>
             <td class="text-muted small">{{ f.idfactura }}</td>
             <td class="fw-semibold">{{ f.numerofactura }}</td>

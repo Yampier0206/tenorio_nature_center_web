@@ -160,8 +160,71 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h3 class="mb-0">Guías registrados</h3>
-        <p class="text-muted small mb-0">{{ guias.length }} registros</p>
+        <p class="text-muted small mb-0">{{ guiasFiltrados.length }} registros</p>
       </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por nombre
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroNombre"
+          (input)="aplicarFiltros()"
+          placeholder="Nombre del guía">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por identificación
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroIdentificacion"
+          (input)="aplicarFiltros()"
+          placeholder="Identificación">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [(ngModel)]="columnaOrden"
+          (change)="ordenar(columnaOrden, false)">
+
+          <option value="nombre">
+            Nombre
+          </option>
+
+          <option value="fechanac">
+            Fecha de nacimiento
+          </option>
+
+          <option value="telefono">
+            Teléfono
+          </option>
+
+          <option value="email">
+            Correo
+          </option>
+
+        </select>
+
+      </div>
+
     </div>
 
     <div class="table-responsive">
@@ -169,15 +232,30 @@
         <thead>
           <tr>
             <th style="width:42px">#</th>
-            <th>Nombre</th>
-            <th>Nacimiento</th>
-            <th>Teléfono</th>
-            <th>Correo</th>
+            <th style="cursor:pointer"
+              (click)="ordenar('nombre')">
+            Nombre
+          </th>
+
+          <th style="cursor:pointer"
+              (click)="ordenar('fechanac')">
+            Nacimiento
+          </th>
+
+          <th style="cursor:pointer"
+              (click)="ordenar('telefono')">
+            Teléfono
+          </th>
+
+          <th style="cursor:pointer"
+              (click)="ordenar('email')">
+            Correo
+          </th>
             <th class="text-end">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          @for(item of guias; track item.idguia){
+          @for(item of guiasFiltrados; track item.idguia){
           <tr>
             <td class="text-muted small">{{ item.idguia }}</td>
             <td>

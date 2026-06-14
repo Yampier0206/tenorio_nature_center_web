@@ -23,6 +23,12 @@ export class ChoferAdmin implements OnInit {
 
   public tiposLicencia: string[] = ['B1', 'B2', 'B3', 'B4', 'C1', 'C2'];
 
+  public filtroNombre:string = '';
+  public filtroIdentificacion:string = '';
+
+  public ordenCampo:string = 'nombre';
+  public ordenAsc:boolean = true;
+
   public chofer: any = {
     nombre: '',
     identificador: '',
@@ -54,6 +60,75 @@ export class ChoferAdmin implements OnInit {
       }
     });
   }
+
+  get choferesFiltrados(){
+
+  let lista = [...this.choferes];
+
+  if(this.filtroNombre){
+
+    lista = lista.filter(c =>
+      c.nombre
+        ?.toLowerCase()
+        .includes(
+          this.filtroNombre.toLowerCase()
+        )
+    );
+
+  }
+
+  if(this.filtroIdentificacion){
+
+    lista = lista.filter(c =>
+      c.identificador
+        ?.toLowerCase()
+        .includes(
+          this.filtroIdentificacion.toLowerCase()
+        )
+    );
+
+  }
+
+  lista.sort((a,b)=>{
+
+    const valorA =
+      a[this.ordenCampo]
+      ?.toString()
+      .toLowerCase();
+
+    const valorB =
+      b[this.ordenCampo]
+      ?.toString()
+      .toLowerCase();
+
+    if(valorA < valorB)
+      return this.ordenAsc ? -1 : 1;
+
+    if(valorA > valorB)
+      return this.ordenAsc ? 1 : -1;
+
+    return 0;
+
+  });
+
+  return lista;
+
+}
+
+ordenarPor(campo:string){
+
+  if(this.ordenCampo === campo){
+
+    this.ordenAsc = !this.ordenAsc;
+
+  }else{
+
+    this.ordenCampo = campo;
+    this.ordenAsc = true;
+
+  }
+
+}
 
   editarChofer(c: any) {
     this.modoEdicion = true;

@@ -69,17 +69,58 @@
       </div>
     </div>
 
+    <div class="row g-3 mb-4">
+
+      <div class="col-md-6">
+
+        <label class="form-label fw-semibold">
+          Buscar idioma
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroNombre"
+          (input)="aplicarFiltros()"
+          placeholder="Ej. Español">
+
+      </div>
+
+      <div class="col-md-6">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [(ngModel)]="ordenCampo"
+          (change)="ordenar(ordenCampo,false)">
+
+          <option value="nombre">
+            Nombre
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
     <div class="table-responsive">
       <table class="table table-hover align-middle">
         <thead>
           <tr>
             <th style="width:80px">ID</th>
-            <th>Nombre</th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenar('nombre')">
+              Nombre
+            </th>
             <th class="text-end">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          @for(item of idiomas; track item.ididioma){
+          @for(item of idiomasFiltrados; track item.ididioma){
           <tr>
             <td class="text-muted small">{{ item.ididioma }}</td>
             <td class="fw-semibold">{{ item.nombre }}</td>

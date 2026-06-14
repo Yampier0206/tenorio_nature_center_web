@@ -36,13 +36,20 @@ export class ReservasAdmin implements OnInit {
   public modoCliente:string = 'existente';
   public clientes:any[] = [];
   public clienteSeleccionado:any = null;
-   public usuarios:any[]=[];
+  public usuarios:any[]=[];
 
   public mensaje:string = '';
   public idReservaEliminar:number=0;
   public editando:boolean = false;
   public idReservaEditar:number = 0;
   public idClienteEditar:number = 0;
+
+  public filtroCliente: string = '';
+  public filtroTour: string = '';
+
+  public columnaOrden: string = '';
+  public ascendente: boolean = true;
+  public ordenCampo: string = 'fecha';
 
   public reserva:any = {
 
@@ -406,4 +413,128 @@ export class ReservasAdmin implements OnInit {
 getEstadoClass(estado: string): string {
   return estado?.toLowerCase().replace(/ /g, '-') ?? '';
 }
+
+get reservasFiltradas() {
+
+  let resultado = this.reservas.filter(r => {
+
+    const coincideCliente =
+      !this.filtroCliente ||
+      (r.clientes?.String || '')
+        .toLowerCase()
+        .includes(this.filtroCliente.toLowerCase());
+
+    const coincideTour =
+      !this.filtroTour ||
+      (r.tour || '')
+        .toLowerCase()
+        .includes(this.filtroTour.toLowerCase());
+
+    return coincideCliente && coincideTour;
+
+  });
+
+  resultado.sort((a, b) => {
+
+    let valorA: any;
+    let valorB: any;
+
+    switch (this.ordenCampo) {
+
+      case 'cliente':
+        valorA = a.clientes?.String ?? '';
+        valorB = b.clientes?.String ?? '';
+        break;
+
+      case 'tour':
+        valorA = a.tour ?? '';
+        valorB = b.tour ?? '';
+        break;
+
+      case 'fecha':
+        valorA = new Date(a.fechatour).getTime();
+        valorB = new Date(b.fechatour).getTime();
+        break;
+
+      case 'estado':
+        valorA = a.estadoreserva ?? '';
+        valorB = b.estadoreserva ?? '';
+        break;
+
+      case 'precio':
+        valorA = Number(a.preciounitario);
+        valorB = Number(b.preciounitario);
+        break;
+
+      default:
+        return 0;
+    }
+
+    if (valorA < valorB) return -1;
+    if (valorA > valorB) return 1;
+
+    return 0;
+  });
+
+  return resultado;
+}
+
+ordenarPor(columna: string) {
+
+  if (this.columnaOrden === columna) {
+    this.ascendente = !this.ascendente;
+  } else {
+    this.columnaOrden = columna;
+    this.ascendente = true;
+  }
+
+  this.reservas.sort((a, b) => {
+
+    let valorA: any;
+    let valorB: any;
+
+    switch (columna) {
+
+      case 'cliente':
+        valorA = a.clientes?.String ?? '';
+        valorB = b.clientes?.String ?? '';
+        break;
+
+      case 'tour':
+        valorA = a.tour ?? '';
+        valorB = b.tour ?? '';
+        break;
+
+      case 'fecha':
+        valorA = new Date(a.fechatour).getTime();
+        valorB = new Date(b.fechatour).getTime();
+        break;
+
+      case 'estado':
+        valorA = a.estadoreserva ?? '';
+        valorB = b.estadoreserva ?? '';
+        break;
+
+      case 'precio':
+        valorA = Number(a.preciounitario);
+        valorB = Number(b.preciounitario);
+        break;
+
+      default:
+        return 0;
+    }
+
+    if (valorA < valorB) {
+      return this.ascendente ? -1 : 1;
+    }
+
+    if (valorA > valorB) {
+      return this.ascendente ? 1 : -1;
+    }
+
+    return 0;
+  });
+
+}
+
 }

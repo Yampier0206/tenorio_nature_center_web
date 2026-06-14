@@ -23,6 +23,12 @@ export class ClientesAdmin implements OnInit {
 
   public editando:boolean = false;
 
+  public filtroNombre:string = '';
+  public filtroIdentificacion:string = '';
+
+  public ordenCampo:string = 'nombre';
+  public ordenAsc:boolean = true;
+
   public cliente:any = {
     idEmpresaCliente: null,
     idUsuario: null,
@@ -67,6 +73,60 @@ export class ClientesAdmin implements OnInit {
       }
 
     });
+
+  }
+
+  get clientesFiltrados(){
+
+    let lista = [...this.clientes];
+
+    if(this.filtroNombre){
+
+      lista = lista.filter(c =>
+        c.nombre
+          ?.toLowerCase()
+          .includes(
+            this.filtroNombre.toLowerCase()
+          )
+      );
+
+    }
+
+    if(this.filtroIdentificacion){
+
+      lista = lista.filter(c =>
+        c.identificador
+          ?.toLowerCase()
+          .includes(
+            this.filtroIdentificacion.toLowerCase()
+          )
+      );
+
+    }
+
+    lista.sort((a,b)=>{
+
+      const valorA =
+        a[this.ordenCampo]
+        ?.toString()
+        .toLowerCase();
+
+      const valorB =
+        b[this.ordenCampo]
+        ?.toString()
+        .toLowerCase();
+
+      if(valorA < valorB)
+        return this.ordenAsc ? -1 : 1;
+
+      if(valorA > valorB)
+        return this.ordenAsc ? 1 : -1;
+
+      return 0;
+
+    });
+
+    return lista;
 
   }
 
@@ -259,5 +319,20 @@ export class ClientesAdmin implements OnInit {
     };
 
   }
+
+  ordenarPor(campo:string){
+
+  if(this.ordenCampo === campo){
+
+    this.ordenAsc = !this.ordenAsc;
+
+  }else{
+
+    this.ordenCampo = campo;
+    this.ordenAsc = true;
+
+  }
+
+}
 
 }

@@ -20,6 +20,11 @@ export class EmpresaClienteAdmin implements OnInit {
   public idEmpresaEliminar:number = 0;
 
   public editando:boolean = false;
+  public filtroRazonSocial:string = '';
+  public filtroCedula:string = '';
+
+  public ordenCampo:string = 'razonsocial';
+  public ordenAsc:boolean = true;
 
   public empresa:any = {
     razonSocial: '',
@@ -59,6 +64,60 @@ export class EmpresaClienteAdmin implements OnInit {
       }
 
     });
+
+  }
+
+  get empresasFiltradas(){
+
+    let lista = [...this.empresas];
+
+    if(this.filtroRazonSocial){
+
+      lista = lista.filter(e =>
+        e.razonsocial
+          ?.toLowerCase()
+          .includes(
+            this.filtroRazonSocial.toLowerCase()
+          )
+      );
+
+    }
+
+    if(this.filtroCedula){
+
+      lista = lista.filter(e =>
+        e.cedulajuridica
+          ?.toLowerCase()
+          .includes(
+            this.filtroCedula.toLowerCase()
+          )
+      );
+
+    }
+
+    lista.sort((a,b)=>{
+
+      const valorA =
+        a[this.ordenCampo]
+        ?.toString()
+        .toLowerCase();
+
+      const valorB =
+        b[this.ordenCampo]
+        ?.toString()
+        .toLowerCase();
+
+      if(valorA < valorB)
+        return this.ordenAsc ? -1 : 1;
+
+      if(valorA > valorB)
+        return this.ordenAsc ? 1 : -1;
+
+      return 0;
+
+    });
+
+    return lista;
 
   }
 
@@ -194,5 +253,20 @@ export class EmpresaClienteAdmin implements OnInit {
     };
 
   }
+
+  ordenarPor(campo:string){
+
+  if(this.ordenCampo === campo){
+
+    this.ordenAsc = !this.ordenAsc;
+
+  }else{
+
+    this.ordenCampo = campo;
+    this.ordenAsc = true;
+
+  }
+
+}
 
 }

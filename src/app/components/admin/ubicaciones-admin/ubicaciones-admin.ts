@@ -16,6 +16,13 @@ export class UbicacionesAdmin implements OnInit {
   public mensaje: string = '';
   public idUbicacionEliminar: number = 0;
 
+  public filtroNombre: string = '';
+  public filtroDireccion: string = '';
+
+  public columnaOrden: string = '';
+  public ascendente: boolean = true;
+  public ordenCampo: string = 'nombre';
+
   public ubicacion: any = {
     nombre: '',
     direccion: ''
@@ -105,4 +112,98 @@ export class UbicacionesAdmin implements OnInit {
       direccion: ''
     };
   }
+
+  get ubicacionesFiltradas() {
+
+    let resultado = this.ubicaciones.filter(u => {
+
+      const coincideNombre =
+        !this.filtroNombre ||
+        u.nombre?.toLowerCase().includes(
+          this.filtroNombre.toLowerCase()
+        );
+
+      const coincideDireccion =
+        !this.filtroDireccion ||
+        u.direccion?.toLowerCase().includes(
+          this.filtroDireccion.toLowerCase()
+        );
+
+      return coincideNombre && coincideDireccion;
+
+    });
+
+    resultado.sort((a, b) => {
+
+      let valorA: any;
+      let valorB: any;
+
+      switch (this.ordenCampo) {
+
+        case 'nombre':
+          valorA = a.nombre ?? '';
+          valorB = b.nombre ?? '';
+          break;
+
+        case 'direccion':
+          valorA = a.direccion ?? '';
+          valorB = b.direccion ?? '';
+          break;
+
+        default:
+          return 0;
+      }
+
+      if (valorA < valorB) return -1;
+      if (valorA > valorB) return 1;
+
+      return 0;
+
+    });
+
+    return resultado;
+  }
+
+  ordenarPor(columna: string) {
+
+    if (this.columnaOrden === columna) {
+      this.ascendente = !this.ascendente;
+    } else {
+      this.columnaOrden = columna;
+      this.ascendente = true;
+    }
+
+    this.ubicaciones.sort((a, b) => {
+
+      let valorA: any;
+      let valorB: any;
+
+      switch (columna) {
+
+        case 'nombre':
+          valorA = a.nombre ?? '';
+          valorB = b.nombre ?? '';
+          break;
+
+        case 'direccion':
+          valorA = a.direccion ?? '';
+          valorB = b.direccion ?? '';
+          break;
+
+        default:
+          return 0;
+      }
+
+      if (valorA < valorB) {
+        return this.ascendente ? -1 : 1;
+      }
+
+      if (valorA > valorB) {
+        return this.ascendente ? 1 : -1;
+      }
+
+      return 0;
+    });
+}
+
 }

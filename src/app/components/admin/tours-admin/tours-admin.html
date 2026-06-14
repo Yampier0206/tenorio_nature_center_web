@@ -166,8 +166,72 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h3 class="mb-0">Tours registrados</h3>
-        <p class="text-muted small mb-0">{{ tours.length }} registros</p>
+        <p class="text-muted small mb-0">{{ toursFiltrados.length }} registros</p>
       </div>
+    </div>
+
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por nombre
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroNombre"
+          placeholder="Nombre del tour">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por horario
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroHorario"
+          placeholder="Horario">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [(ngModel)]="ordenCampo">
+
+          <option value="nombre">
+            Nombre
+          </option>
+
+          <option value="horario">
+            Horario
+          </option>
+
+          <option value="duracion">
+            Duración
+          </option>
+
+          <option value="cupos">
+            Cupos máximos
+          </option>
+
+          <option value="precio">
+            Precio
+          </option>
+
+        </select>
+
+      </div>
+
     </div>
 
     <div class="table-responsive">
@@ -177,14 +241,26 @@
             <th style="width:80px">ID</th>
             <th>Nombre</th>
             <th>Horario</th>
-            <th>Duración</th>
-            <th>Cupos</th>
-            <th>Precio</th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenarPor('duracion')">
+              Duración
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenarPor('cupos')">
+              Cupos
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenarPor('precio')">
+              Precio
+            </th>
             <th class="text-end">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          @for(item of tours; track item.idtour){
+          @for(item of toursFiltrados; track item.idtour){
           <tr>
             <td class="text-muted small">{{ item.idtour }}</td>
             <td class="fw-semibold">{{ item.nombre }}</td>

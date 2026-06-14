@@ -30,6 +30,12 @@ export class FacturasAdmin implements OnInit {
  
   public metodosPago: string[] = ['Efectivo', 'Tarjeta', 'Transferencia'];
   public monedas: string[] = ['CRC', 'USD'];
+
+  public filtroNumeroFactura: string = '';
+  public filtroEstadoPago: string = '';
+
+  public campoOrden: string = '';
+  public direccionOrden: 'asc' | 'desc' = 'asc';
  
   public factura: any = {
     idReserva:     null,
@@ -67,6 +73,68 @@ export class FacturasAdmin implements OnInit {
       },
       error: (err) => { console.log(err); }
     });
+  }
+
+  get facturasFiltradas() {
+
+    let resultado = [...this.facturas];
+
+    if (this.filtroNumeroFactura.trim()) {
+
+      resultado = resultado.filter(f =>
+        f.numerofactura
+          ?.toLowerCase()
+          .includes(this.filtroNumeroFactura.toLowerCase())
+      );
+
+    }
+
+    if (this.filtroEstadoPago.trim()) {
+
+      resultado = resultado.filter(f =>
+        f.nombreestado
+          ?.toLowerCase()
+          .includes(this.filtroEstadoPago.toLowerCase())
+      );
+
+    }
+
+    if (this.campoOrden) {
+
+      resultado.sort((a, b) => {
+
+        let valorA = a[this.campoOrden];
+        let valorB = b[this.campoOrden];
+
+        if (this.campoOrden === 'fechafactura') {
+
+          valorA = new Date(valorA).getTime();
+          valorB = new Date(valorB).getTime();
+
+        }
+        if (typeof valorA === 'string') {
+          valorA = valorA.toLowerCase();
+        }
+
+        if (typeof valorB === 'string') {
+          valorB = valorB.toLowerCase();
+        }
+
+        if (valorA < valorB) {
+          return this.direccionOrden === 'asc' ? -1 : 1;
+        }
+
+        if (valorA > valorB) {
+          return this.direccionOrden === 'asc' ? 1 : -1;
+        }
+
+        return 0;
+
+      });
+
+    }
+
+    return resultado;
   }
  
   loadEstadosPago() {
@@ -235,5 +303,23 @@ export class FacturasAdmin implements OnInit {
       precioTotal:   ''
     };
   }
+
+  ordenar(campo: string) {
+
+  if (this.campoOrden === campo) {
+
+    this.direccionOrden =
+      this.direccionOrden === 'asc'
+        ? 'desc'
+        : 'asc';
+
+  } else {
+
+    this.campoOrden = campo;
+    this.direccionOrden = 'asc';
+
+  }
+
+}
 }
  

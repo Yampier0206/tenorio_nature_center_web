@@ -162,6 +162,66 @@
 
 </div>
 
+<div class="card shadow p-4 mb-4">
+
+  <div class="row g-3">
+
+    <div class="col-md-4">
+
+      <label class="form-label fw-semibold">
+        Buscar por razón social
+      </label>
+
+      <input
+        class="form-control"
+        [(ngModel)]="filtroRazonSocial"
+        placeholder="Razón social">
+
+    </div>
+
+    <div class="col-md-4">
+
+      <label class="form-label fw-semibold">
+        Buscar por cédula jurídica
+      </label>
+
+      <input
+        class="form-control"
+        [(ngModel)]="filtroCedula"
+        placeholder="Cédula jurídica">
+
+    </div>
+
+    <div class="col-md-4">
+
+      <label class="form-label fw-semibold">
+        Ordenar por
+      </label>
+
+      <select
+        class="form-control"
+        [(ngModel)]="ordenCampo">
+
+        <option value="razonsocial">
+          Razón Social
+        </option>
+
+        <option value="cedulajuridica">
+          Cédula Jurídica
+        </option>
+
+        <option value="email">
+          Email
+        </option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+</div>
+
 <table class="table table-hover table-striped">
 
     <thead>
@@ -169,11 +229,25 @@
         <tr>
 
             <th>ID</th>
-            <th>Razón Social</th>
-            <th>Cédula Jurídica</th>
-            <th>Email</th>
+            <th
+            role="button"
+            (click)="ordenarPor('razonsocial')">
+            Razón Social
+            </th>
+
+            <th
+            role="button"
+            (click)="ordenarPor('cedulajuridica')">
+            Cédula Jurídica
+            </th>
+
+            <th
+            role="button"
+            (click)="ordenarPor('email')">
+            Email
+            </th>
             <th>Teléfono</th>
-            <th></th>
+             <th class="text-end">Acciones</th>
 
         </tr>
 
@@ -181,7 +255,7 @@
 
     <tbody>
 
-        @for(empresa of empresas; track $index){
+        @for(empresa of empresasFiltradas; track $index){
 
         <tr>
 
@@ -195,25 +269,31 @@
 
             <td>{{empresa.telefono?.String}}</td>
 
-            <td>
+            <td class="text-end">
 
-                <button
-                    class="btn btn-edit btn-sm me-2"
-                    (click)="editarEmpresa(empresa)">
+                <div class="d-flex gap-2 justify-content-end">
 
-                    Editar
+                    <button
+                        class="btn btn-edit btn-sm px-2"
+                        (click)="editarEmpresa(empresa)"
+                        title="Editar">
 
-                </button>
+                        <i class="bi bi-pencil"></i>
 
-                <button
-                    class="btn btn-delete btn-sm"
-                    (click)="seleccionarEmpresaEliminar(empresa.idempresacliente)"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalEliminarEmpresa">
+                    </button>
 
-                    Eliminar
+                    <button
+                        class="btn btn-delete btn-sm px-2"
+                        (click)="seleccionarEmpresaEliminar(empresa.idempresacliente)"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEliminarEmpresa"
+                        title="Eliminar">
 
-                </button>
+                        <i class="bi bi-trash"></i>
+
+                    </button>
+
+                </div>
 
             </td>
 

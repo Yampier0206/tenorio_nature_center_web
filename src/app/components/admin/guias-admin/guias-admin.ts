@@ -27,6 +27,14 @@ export class GuiasAdmin implements OnInit {
   public guiaSeleccionado: any = null; 
   public idiomaSeleccionado: number = 0;
 
+  public guiasFiltrados:any[] = [];
+
+  public filtroNombre:string = '';
+  public filtroIdentificacion:string = '';
+
+  public columnaOrden:string = 'nombre';
+  public ascendente:boolean = true;
+
   public guia:any = {
     nombre:'',
     identificador:'',
@@ -58,6 +66,10 @@ export class GuiasAdmin implements OnInit {
       next:(response:any)=>{
         console.log('GUIAS RECARGADOS', response);
         this.guias = response;
+        this.guiasFiltrados = [...response];
+
+        this.aplicarFiltros();
+        
         this.cdr.detectChanges();
       },
 
@@ -154,6 +166,27 @@ export class GuiasAdmin implements OnInit {
     });
   }
 
+  aplicarFiltros() {
+
+    this.guiasFiltrados = this.guias.filter(g => {
+
+      const coincideNombre =
+        !this.filtroNombre ||
+        g.nombre?.toLowerCase()
+        .includes(this.filtroNombre.toLowerCase());
+
+      const coincideIdentificacion =
+        !this.filtroIdentificacion ||
+        g.identificador?.toLowerCase()
+        .includes(this.filtroIdentificacion.toLowerCase());
+
+      return coincideNombre && coincideIdentificacion;
+
+    });
+
+    this.ordenar(this.columnaOrden, false);
+  }
+
   cancelar(){
 
     this.editando = false;
@@ -233,5 +266,49 @@ export class GuiasAdmin implements OnInit {
   getIniciales(nombre: string): string {
   return nombre?.substring(0, 2).toUpperCase() ?? '';
   }
+
+  ordenar(columna:string, cambiarDireccion:boolean = true){
+
+  if(cambiarDireccion){
+
+    if(this.columnaOrden === columna){
+
+      this.ascendente = !this.ascendente;
+
+    }else{
+
+      this.columnaOrden = columna;
+      this.ascendente = true;
+
+    }
+
+  }
+
+  this.guiasFiltrados.sort((a,b)=>{
+
+    let valorA = a[columna];
+    let valorB = b[columna];
+
+    if(typeof valorA === 'string'){
+      valorA = valorA.toLowerCase();
+    }
+
+    if(typeof valorB === 'string'){
+      valorB = valorB.toLowerCase();
+    }
+
+    if(valorA < valorB){
+      return this.ascendente ? -1 : 1;
+    }
+
+    if(valorA > valorB){
+      return this.ascendente ? 1 : -1;
+    }
+
+    return 0;
+
+  });
+
+}
 } 
   
