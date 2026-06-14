@@ -34,6 +34,7 @@
             class="form-control"
             name="modoCliente"
             [(ngModel)]="modoCliente"
+            (ngModelChange)="onModoClienteChange()"
             [disabled]="editando">
             <option value="existente">Cliente existente</option>
             <option value="nuevo">Cliente nuevo</option>
@@ -47,6 +48,7 @@
             name="idCliente"
             #idCliente="ngModel"
             [(ngModel)]="reserva.idCliente"
+            (ngModelChange)="onClienteChange()"
             [disabled]="editando"
             [required]="!editando">
             <option [ngValue]="null">Seleccione un cliente</option>
@@ -156,17 +158,21 @@
       <p class="form-section-label">Empresa</p>
       <div class="row g-3 mb-3">
         <div class="col-md-6">
-          <label class="form-label fw-semibold">Empresa cliente <span class="fw-normal text-muted">(opcional)</span></label>
+          <label class="form-label fw-semibold">Empresa cliente</label>
           <select
             class="form-control"
+            [class.input-readonly]="modoCliente === 'existente'"
             name="idEmpresaCliente"
             [(ngModel)]="reserva.idEmpresaCliente"
-            [disabled]="editando">
+            [disabled]="editando || modoCliente === 'existente'">
             <option [ngValue]="null">Sin empresa</option>
             @for(empresa of empresas; track empresa.idempresacliente){
             <option [ngValue]="empresa.idempresacliente">{{ empresa.razonsocial }}</option>
             }
           </select>
+          @if(modoCliente === 'existente'){
+            <small class="text-muted">La empresa se toma automáticamente del cliente seleccionado.</small>
+          }
         </div>
       </div>
 
