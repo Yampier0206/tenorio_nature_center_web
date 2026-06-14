@@ -198,7 +198,8 @@
             [(ngModel)]="factura.subtotal"
             readonly
             required
-            min="0">
+            min="0"
+            [readOnly]="!modoEdicion">
           @if(subtotal.invalid && subtotal.touched){
             <small class="invalid-feedback d-block">
               @if(subtotal.errors?.['required']){ El subtotal es obligatorio. }
@@ -214,7 +215,6 @@
             #impuesto="ngModel"
             [(ngModel)]="factura.impuesto"
             readonly
-            required
             min="0">
           @if(impuesto.invalid && impuesto.touched){
             <small class="invalid-feedback d-block">
@@ -233,11 +233,12 @@
             (ngModelChange)="calcularTotal()"
             placeholder="0.00"
             required
-            min="0">
+            min="0"
+            max="100">
           @if(descuento.invalid && descuento.touched){
             <small class="invalid-feedback d-block">
               @if(descuento.errors?.['required']){ El descuento es obligatorio. }
-              @else { El valor no puede ser negativo. }
+              @else { El descuento debe ser entre 0 y 100 }
             </small>
           }
         </div>

@@ -19,4 +19,5 @@ export class FacturaParticipanteService {
             this.url + 'facturaparticipante',
             data);
     }
+    
 }

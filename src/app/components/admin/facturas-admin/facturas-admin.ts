@@ -150,7 +150,6 @@ export class FacturasAdmin implements OnInit {
   loadReservas() {
   this.participanteService.getReservasDisponiblesParaFacturar().subscribe({
     next: (response: any) => {
-      console.log('Reservas disponibles:', response);
        console.log('Reservas disponibles:', response);
 
       this.reservas = response;
@@ -165,26 +164,10 @@ export class FacturasAdmin implements OnInit {
   onReservaChange() {
     this.participantesReserva = [];
     this.participantesSeleccionados = [];
+    this.factura.subtotal = '';
+    this.factura.precioTotal = '';
 
-    if (!this.factura.idReserva) {
-      this.factura.subtotal = '';
-      this.factura.impuesto = '';
-      this.factura.precioTotal = '';
-      return;
-    }
-
-    const reservaSeleccionada = this.reservas.find(
-      r => r.idreserva === this.factura.idReserva
-    );
-
-    if (reservaSeleccionada) {
-      const precio = parseFloat(reservaSeleccionada.preciounitario) || 0;
-
-      this.factura.subtotal = precio;
-      this.factura.impuesto = parseFloat((precio * 0.13).toFixed(2));
-
-      this.calcularTotal();
-    }
+    if (!this.factura.idReserva) return;
 
     this.participanteService
       .getParticipantesSinFacturaByReserva(this.factura.idReserva)
@@ -193,24 +176,43 @@ export class FacturasAdmin implements OnInit {
           this.participantesReserva = response;
           this.cdr.detectChanges();
         },
-        error: (err) => { console.log(err); }
-      });
+      error: (err) => { console.log(err); }
+    });
   }
+
+  recalcularSubtotal() {
+  const reserva = this.reservas.find(
+    r => r.idreserva === this.factura.idReserva
+  );
+  if(reserva && reserva.preciounitario){
+    this.factura.subtotal = parseFloat(reserva.preciounitario)
+      * this.participantesSeleccionados.length;
+    this.factura.impuesto = parseFloat(
+      (this.factura.subtotal * 0.13).toFixed(2)
+    ); 
+    this.calcularTotal();
+    this.cdr.detectChanges();
+  }
+}
  
   toggleParticipante(id: number, event: any) {
     if (event.target.checked) {
       this.participantesSeleccionados.push(id);
     } else {
-      this.participantesSeleccionados =
-        this.participantesSeleccionados.filter(x => x !== id);
+      this.participantesSeleccionados = this.participantesSeleccionados.filter(x => x !== id);
     }
+      this.recalcularSubtotal();
   }
  
   calcularTotal() {
-    const subtotal  = parseFloat(this.factura.subtotal)  || 0;
-    const impuesto  = parseFloat(this.factura.impuesto)  || 0;
-    const descuento = parseFloat(this.factura.descuento) || 0;
-    this.factura.precioTotal = parseFloat((subtotal + impuesto - descuento).toFixed(2));
+    const subtotal     = parseFloat(this.factura.subtotal)  || 0;
+    const impuesto     = parseFloat(this.factura.impuesto)  || 0;
+    const porcentaje   = parseFloat(this.factura.descuento) || 0;
+    const descuento    = parseFloat(((subtotal * porcentaje) / 100).toFixed(2));
+
+    this.factura.precioTotal = parseFloat(
+      (subtotal + impuesto - descuento).toFixed(2)
+    );
   }
  
   editarFactura(f: any) {
@@ -234,11 +236,14 @@ export class FacturasAdmin implements OnInit {
   }
  
   guardarFactura() {
+    const subtotal   = parseFloat(this.factura.subtotal) || 0;
+    const porcentaje = parseFloat(this.factura.descuento) || 0;
+    const descuentoMonto = parseFloat(((subtotal * porcentaje) / 100).toFixed(2));
     const payload = {
       ...this.factura,
       subtotal:    String(this.factura.subtotal),
       impuesto:    String(this.factura.impuesto),
-      descuento:   String(this.factura.descuento),
+      descuento:   String(descuentoMonto),
       precioTotal: String(this.factura.precioTotal)
     };
  
