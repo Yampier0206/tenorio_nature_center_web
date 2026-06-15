@@ -1,4 +1,4 @@
 export const enviroment={
-    apiUrl:'http://localhost:8080/api/v1/',
-    production:false
+    apiUrl: 'https://tenorionaturecenter-production.up.railway.app/api/v1/',
+    production: true
 }
