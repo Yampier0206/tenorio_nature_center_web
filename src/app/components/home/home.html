@@ -15,8 +15,10 @@
                             <h5 class="card-title">{{post.title}}</h5>
                             <p>Creado: {{post.created_at}}</p>
                             <a class="btn btn-primary" [routerLink]="['/detalle/'+post.id]">Ver</a>
-                            <!--Mostar el boton de editar y borrar al usuario
-                            dueño del post-->
+                            @if(isOwner(post)){
+                            <a class="btn btn-warning ms-2" [routerLink]="['/editar/'+post.id]">Editar</a>
+                            <button class="btn btn-danger ms-2">Eliminar</button>
+                            }
 
                         </div>
                     </div>

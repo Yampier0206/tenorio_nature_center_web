@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from "@angular/forms";
-import { User } from 'src/app/models/user';
-import { UserServices } from 'src/app/services/user.services';
+import { User } from '../../models/user';
+import { UserServices } from '../../services/user.services';
 
 @Component({
   selector: 'app-registro',

@@ -33,7 +33,7 @@ export class App {
     this.categoryService.getCategories().subscribe({
       next:(response:any)=>{       
         this.categories.set(response)
-        console.log('Respuesta---->',this.categories)        
+        console.log('Respuesta---->',this.categories())        
       },
       error:(err:Error)=>{
         console.log('Error---->',err)

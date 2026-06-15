@@ -14,6 +14,7 @@ export const routes: Routes = [
     {path:'categoria/:id',component:Home},
     {path:'register',component:Registro},
     {path:'detalle/:id',component:PostDetail},
+    {path: 'categoria/:id', component: Home },
     {path:'nuevo-post',canActivate:[routeGuard],loadComponent:()=>{
         return NewPost
     }},
