@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { manejarErrorGuardado } from '../../../helpers/error.helper';
 import { ClienteService } from '../../../services/cliente.service';
 import { EmpresaClienteService } from '../../../services/empresacliente.service';
+import { EmailClienteService } from '../../../services/email-cliente.service';
 
 @Component({
   selector: 'app-clientes-admin',
@@ -20,6 +21,10 @@ export class ClientesAdmin implements OnInit {
   public mensaje:string = '';
   public mensajeError:string = '';
   public idClienteEliminar:number = 0;
+
+  public emailsDelCliente: any[] = [];
+  public clienteSeleccionado: any = null;
+  public nuevoEmail: string = '';
 
   public editando:boolean = false;
 
@@ -43,6 +48,7 @@ export class ClientesAdmin implements OnInit {
   constructor(
     private clienteService: ClienteService,
     private empresaClienteService: EmpresaClienteService,
+    private emailclienteService: EmailClienteService,
     private cdr: ChangeDetectorRef
   ){}
 
@@ -333,6 +339,51 @@ export class ClientesAdmin implements OnInit {
 
   }
 
+}
+
+  gestionarEmails(cliente: any) {
+    this.clienteSeleccionado = cliente;
+    this.nuevoEmail = '';
+    (document.activeElement as HTMLElement)?.blur();
+    this.emailclienteService.getEmailsByCliente(cliente.idcliente).subscribe({
+      next: (response: any) => {
+      this.emailsDelCliente = response || [];
+      this.cdr.detectChanges();
+    },
+      error: (err) => { console.log(err); }
+    });
+  }
+
+get emailValido(): boolean {
+  const pattern = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+  return pattern.test(this.nuevoEmail);
+}
+
+  agregarEmail() {
+  if(!this.nuevoEmail || !this.clienteSeleccionado) return;
+  this.emailclienteService.createEmail({
+    idCliente: this.clienteSeleccionado.idcliente,
+    email: this.nuevoEmail
+  }).subscribe({
+    next: () => {
+      this.mensaje = 'Email agregado correctamente';
+      this.nuevoEmail = '';
+      this.gestionarEmails(this.clienteSeleccionado);
+      setTimeout(() => { this.mensaje = ''; }, 3000);
+    },
+    error: (err) => { console.log('ERROR ADD EMAIL', err); }
+  });
+}
+
+  eliminarEmail(id: number) {
+  this.emailclienteService.deleteEmail(id).subscribe({
+    next: () => {
+      this.mensaje = 'Email eliminado correctamente';
+      this.gestionarEmails(this.clienteSeleccionado);
+      setTimeout(() => { this.mensaje = ''; }, 3000);
+    },
+    error: (err) => { console.log('ERROR DELETE EMAIL', err); }
+  });
 }
 
 }
