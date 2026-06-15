@@ -1,0 +1,450 @@
+<section class="admin-header">
+  <div class="container">
+    <h1>Administración de Facturas</h1>
+  </div>
+</section>
+
+<div class="container py-5">
+
+  @if(mensaje != ''){
+  <div class="alert alert-success shadow-sm mb-4">
+    {{ mensaje }}
+  </div>
+  }
+  @if(mensajeError){
+  <div class="alert alert-danger shadow-sm mb-4">
+    {{ mensajeError }}
+  </div>
+}
+
+  <!-- FORMULARIO -->
+  <div class="card shadow p-4 mb-5">
+
+    <h3 class="mb-1">
+      @if(modoEdicion){ Editar factura } @else { Nueva factura }
+    </h3>
+    <p class="text-muted small mb-4">
+      @if(modoEdicion){ Modificá los datos de la factura seleccionada. } @else { Completá todos los campos para registrar una nueva factura. }
+    </p>
+
+    <form #facturaForm="ngForm" (ngSubmit)="guardarFactura()">
+
+      <!-- RESERVA -->
+       @if(!modoEdicion){
+      <p class="form-section-label">Reserva</p>
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          <label class="form-label fw-semibold">Reserva asociada</label>
+          <select
+            class="form-control"
+            name="idReserva"
+            #idReserva="ngModel"
+            [(ngModel)]="factura.idReserva"
+            (ngModelChange)="onReservaChange()"
+            required>
+            <option [ngValue]="null">Seleccione una reserva</option>
+            @for(reserva of reservas; track reserva.idreserva){
+            <option [ngValue]="reserva.idreserva">
+              Reserva #{{ reserva.idreserva }} — {{ reserva.clientenombres.String }}
+            </option>
+            }
+          </select>
+          @if(idReserva.invalid && idReserva.touched){
+            <small class="invalid-feedback d-block">Seleccioná una reserva.</small>
+          }
+        </div>
+      </div>
+    
+      @if(factura.idReserva){
+      <div class="row g-3 mb-3">
+        <div class="col-12">
+          @if(participantesReserva.length > 0){
+          <div class="participantes-check-box">
+            <p class="fw-semibold small mb-2">Seleccione los participantes a facturar:</p>
+            <div class="row g-2">
+              @for(p of participantesReserva; track p.idparticipante){
+              <div class="col-md-4">
+                <div class="form-check participante-check-item">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    [value]="p.idparticipante"
+                    (change)="toggleParticipante(p.idparticipante, $event)">
+                  <label class="form-check-label small">
+                    {{ p.nombre || 'Participante #' + p.idparticipante }}
+                  </label>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          } @else {
+          <div class="alert alert-warning py-2 small">
+            Todos los participantes de esta reserva ya tienen factura asignada.
+          </div>
+          }
+        </div>
+      </div>
+      }
+    }
+      <!-- DATOS FACTURA -->
+      <p class="form-section-label">Datos de la factura</p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Número de factura</label>
+          <input
+            type="text"
+            class="form-control"
+            name="numeroFactura"
+            #numeroFactura="ngModel"
+            [(ngModel)]="factura.numeroFactura"
+            placeholder="FAC-0001"
+            required
+            pattern="^[A-Za-z0-9\-]{3,50}$">
+          @if(numeroFactura.invalid && numeroFactura.touched){
+            <small class="invalid-feedback d-block">
+              @if(numeroFactura.errors?.['required']){ El número de factura es obligatorio. }
+              @else { Solo letras, números y guiones. Ej: FAC-0001 }
+            </small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Fecha de factura</label>
+          <input
+            type="date"
+            class="form-control"
+            name="fechaFactura"
+            #fechaFactura="ngModel"
+            [(ngModel)]="factura.fechaFactura"
+            required>
+          @if(fechaFactura.invalid && fechaFactura.touched){
+            <small class="invalid-feedback d-block">La fecha de factura es obligatoria.</small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Estado de pago</label>
+          <select
+            class="form-control"
+            name="idEstadoPago"
+            #idEstadoPago="ngModel"
+            [(ngModel)]="factura.idEstadoPago"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(estado of estadosPago; track estado.idestadopago){
+            <option [ngValue]="estado.idestadopago">{{ estado.nombre }}</option>
+            }
+          </select>
+          @if(idEstadoPago.invalid && idEstadoPago.touched){
+            <small class="invalid-feedback d-block">Seleccioná un estado de pago.</small>
+          }
+        </div>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Método de pago</label>
+          <select
+            class="form-control"
+            name="metodoPago"
+            #metodoPago="ngModel"
+            [(ngModel)]="factura.metodoPago"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(metodo of metodosPago; track $index){
+            <option [ngValue]="metodo">{{ metodo }}</option>
+            }
+          </select>
+          @if(metodoPago.invalid && metodoPago.touched){
+            <small class="invalid-feedback d-block">Seleccioná un método de pago.</small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Moneda</label>
+          <select
+            class="form-control"
+            name="moneda"
+            #moneda="ngModel"
+            [(ngModel)]="factura.moneda"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(moneda of monedas; track $index){
+            <option [ngValue]="moneda">{{ moneda }}</option>
+            }
+          </select>
+          @if(moneda.invalid && moneda.touched){
+            <small class="invalid-feedback d-block">Seleccioná una moneda.</small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Fecha de pago <span class="fw-normal text-muted">(opcional)</span></label>
+          <input
+            type="date"
+            class="form-control"
+            name="fechaPago"
+            [(ngModel)]="factura.fechaPago">
+        </div>
+      </div>
+
+      <!-- MONTOS -->
+      <p class="form-section-label">Montos</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Subtotal</label>
+          <input
+            type="number"
+            class="form-control"
+            name="subtotal"
+            #subtotal="ngModel"
+            [(ngModel)]="factura.subtotal"
+            readonly
+            required
+            min="0"
+            [readOnly]="!modoEdicion">
+          @if(subtotal.invalid && subtotal.touched){
+            <small class="invalid-feedback d-block">
+              @if(subtotal.errors?.['required']){ El subtotal es obligatorio. }
+            </small>
+          }
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Impuesto (13%)</label>
+          <input
+            type="number"
+            class="form-control"
+            name="impuesto"
+            #impuesto="ngModel"
+            [(ngModel)]="factura.impuesto"
+            readonly
+            min="0">
+          @if(impuesto.invalid && impuesto.touched){
+            <small class="invalid-feedback d-block">
+              @if(impuesto.errors?.['required']){ El impuesto es obligatorio. }
+            </small>
+          }
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Descuento</label>
+          <input
+            type="number"
+            class="form-control"
+            name="descuento"
+            #descuento="ngModel"
+            [(ngModel)]="factura.descuento"
+            (ngModelChange)="calcularTotal()"
+            placeholder="0.00"
+            required
+            min="0"
+            max="100">
+          @if(descuento.invalid && descuento.touched){
+            <small class="invalid-feedback d-block">
+              @if(descuento.errors?.['required']){ El descuento es obligatorio. }
+              @else { El descuento debe ser entre 0 y 100 }
+            </small>
+          }
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Total</label>
+          <input
+            type="number"
+            class="form-control fw-semibold"
+            name="precioTotal"
+            [(ngModel)]="factura.precioTotal"
+            placeholder="0.00"
+            [readOnly]="true">
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success" [disabled]="facturaForm.invalid">
+          {{ modoEdicion ? 'Actualizar factura' : 'Guardar factura' }}
+        </button>
+        @if(modoEdicion){
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+        }
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="card shadow p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="mb-0">Facturas registradas</h3>
+        <p class="text-muted small mb-0">{{ facturasFiltradas.length }} registros</p>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por número de factura
+        </label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="FAC-0001"
+          [(ngModel)]="filtroNumeroFactura">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por estado
+        </label>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Pagada, Pendiente..."
+          [(ngModel)]="filtroEstadoPago">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [ngModel]="campoOrden"
+          (ngModelChange)="ordenar($event)">
+
+          <option value="numerofactura">
+            Número de factura
+          </option>
+
+          <option value="fechafactura">
+            Fecha
+          </option>
+
+          <option value="nombreestado">
+            Estado
+          </option>
+
+          <option value="metodopago">
+            Método de pago
+          </option>
+
+          <option value="preciototal">
+            Total
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th style="width:42px">#</th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenar('numerofactura')">
+              N° Factura 
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenar('fechafactura')">
+              Fecha 
+            </th>
+            <th>Estado</th>
+            <th>Método</th>
+            <th>Moneda</th>
+            <th>Subtotal</th>
+            <th>Imp.</th>
+            <th>Desc.</th>
+            <th>Total</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(f of facturasFiltradas; track f.idfactura){
+          <tr>
+            <td class="text-muted small">{{ f.idfactura }}</td>
+            <td class="fw-semibold">{{ f.numerofactura }}</td>
+            <td class="text-muted">{{ f.fechafactura | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="estado-badge"
+                [ngClass]="{
+                  'estado-confirmada': f.nombreestado === 'Confirmada',
+                  'estado-pendiente':  f.nombreestado === 'Pendiente',
+                  'estado-cancelada':  f.nombreestado === 'Cancelada'
+                }">
+                {{ f.nombreestado }}
+              </span>
+            </td>
+            <td class="text-muted">{{ f.metodopago }}</td>
+            <td class="text-muted">{{ f.moneda }}</td>
+            <td>{{ f.subtotal }}</td>
+            <td class="text-muted">{{ f.impuesto }}</td>
+            <td class="text-muted">{{ f.descuento }}</td>
+            <td class="fw-semibold" style="color:#14532d">{{ f.preciototal }}</td>
+            <td class="text-end">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn btn-edit btn-sm px-2" (click)="editarFactura(f)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  class="btn btn-delete btn-sm px-2"
+                  (click)="seleccionarFacturaEliminar(f.idfactura)"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEliminarFactura"
+                  title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+          @empty{
+          <tr>
+            <td colspan="11" class="text-center text-muted py-4">
+              No hay facturas registradas
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3 pt-3 border-top">
+      <a class="btn btn-back" [routerLink]="['/admin']">Regresar al panel</a>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL: ELIMINAR FACTURA -->
+<div class="modal fade" id="modalEliminarFactura" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-muted">
+        ¿Desea eliminar esta factura?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-delete" data-bs-dismiss="modal" (click)="confirmarEliminarFactura()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

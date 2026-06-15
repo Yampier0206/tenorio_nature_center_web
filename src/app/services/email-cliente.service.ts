@@ -1,0 +1,41 @@
+import { HttpClient} from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { enviroment } from "../enviroments";
+
+@Injectable({
+    providedIn: 'root'
+})
+export class EmailClienteService {
+
+    private url: string;
+
+    constructor(private _http: HttpClient) {
+        this.url = enviroment.apiUrl;
+    }
+
+    getEmailsByCliente(idCliente: number): Observable<any> {
+        return this._http.get(this.url + 'emailcliente/cliente/' + idCliente);
+    }
+
+    getEmailById(id: number): Observable<any> {
+        return this._http.get(this.url + 'emailcliente/' + id);
+    }
+
+    createEmail(data: any): Observable<any> {
+        return this._http.post(
+            this.url + 'emailcliente',
+            data);
+    }
+
+    updateEmail(data: any): Observable<any> {
+        return this._http.put(
+            this.url + 'emailcliente',
+            data);
+    }
+
+    deleteEmail(id: number): Observable<any> {
+        return this._http.delete(
+            this.url + 'emailcliente/' + id);
+    }
+}

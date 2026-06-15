@@ -1,0 +1,621 @@
+<section class="admin-header">
+  <div class="container">
+    <h1>Administración de Reservas</h1>
+    <p>Crear reservas completas y gestionar participantes</p>
+  </div>
+</section>
+
+<div class="container py-5">
+
+  @if(mensaje){
+  <div class="alert alert-success shadow-sm mb-4">
+    {{ mensaje }}
+  </div>
+  }
+
+  <!-- FORMULARIO -->
+  <div class="card shadow p-4 mb-5">
+
+    <h3 class="mb-1">
+      @if(editando){ Editando reserva #{{ reserva.idReserva }} } @else { Nueva reserva }
+    </h3>
+    <p class="text-muted small mb-4">
+      @if(editando){ Cliente, empresa y participantes no pueden modificarse. } @else { Completá todos los campos para crear la reserva. }
+    </p>
+
+    <form #reservaForm="ngForm" (ngSubmit)="guardarReserva()">
+
+      <!-- CLIENTE -->
+      <p class="form-section-label">Cliente</p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Tipo de cliente</label>
+          <select
+            class="form-control"
+            name="modoCliente"
+            [(ngModel)]="modoCliente"
+            (ngModelChange)="onModoClienteChange()"
+            [disabled]="editando">
+            <option value="existente">Cliente existente</option>
+            <option value="nuevo">Cliente nuevo</option>
+          </select>
+        </div>
+        @if(modoCliente === 'existente'){
+        <div class="col-md-8">
+          <label class="form-label fw-semibold">Cliente</label>
+          <select
+            class="form-control"
+            name="idCliente"
+            #idCliente="ngModel"
+            [(ngModel)]="reserva.idCliente"
+            (ngModelChange)="onClienteChange()"
+            [disabled]="editando"
+            [required]="!editando">
+            <option [ngValue]="null">Seleccione un cliente</option>
+            @for(cliente of clientes; track cliente.idcliente){
+            <option [ngValue]="cliente.idcliente">{{ cliente.nombre }} — {{ cliente.identificador }}</option>
+            }
+          </select>
+          @if(idCliente.invalid && idCliente.touched){
+            <small class="invalid-feedback d-block">Seleccioná un cliente.</small>
+          }
+        </div>
+        }
+      </div>
+
+      @if(modoCliente === 'nuevo'){
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Nombre</label>
+          <input
+            class="form-control"
+            name="nombreCliente"
+            #nombreCliente="ngModel"
+            [(ngModel)]="reserva.nombreCliente"
+            [disabled]="editando"
+            placeholder="Nombre completo"
+            [required]="!editando"
+            pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,45}$">
+          @if(nombreCliente.invalid && nombreCliente.touched){
+            <small class="invalid-feedback d-block">
+              @if(nombreCliente.errors?.['required']){ El nombre es obligatorio. }
+              @else { Solo letras y espacios, mínimo 3 caracteres. }
+            </small>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Identificación</label>
+          <input
+            class="form-control"
+            name="identificadorCliente"
+            #identificadorCliente="ngModel"
+            [(ngModel)]="reserva.identificadorCliente"
+            [disabled]="editando"
+            placeholder="1-2345-6789"
+            [required]="!editando"
+            pattern="^[A-Za-z0-9\-]{5,25}$">
+          @if(identificadorCliente.invalid && identificadorCliente.touched){
+            <small class="invalid-feedback d-block">
+              @if(identificadorCliente.errors?.['required']){ La identificación es obligatoria. }
+              @else { Formato esperado: 1-2345-6789 o AB1234567}
+            </small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Fecha de nacimiento</label>
+          <input
+            type="date"
+            class="form-control"
+            name="fechaNacCliente"
+            #fechaNacCliente="ngModel"
+            [(ngModel)]="reserva.fechaNacCliente"
+            [disabled]="editando"
+            [required]="!editando">
+          @if(fechaNacCliente.invalid && fechaNacCliente.touched){
+            <small class="invalid-feedback d-block">La fecha de nacimiento es obligatoria.</small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Teléfono</label>
+          <input
+            class="form-control"
+            name="telefonoCliente"
+            #telefonoCliente="ngModel"
+            [(ngModel)]="reserva.telefonoCliente"
+            [disabled]="editando"
+            placeholder="+506 8888 0000"
+            [required]="!editando"
+            pattern="^[+]?[\d\s\-\(\)\.]{7,20}$">
+          @if(telefonoCliente.invalid && telefonoCliente.touched){
+            <small class="invalid-feedback d-block">
+              @if(telefonoCliente.errors?.['required']){ El teléfono es obligatorio. }
+              @else { Formato inválido. Ejemplo: +506 8888-0000 }
+            </small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Nacionalidad</label>
+          <input
+            class="form-control"
+            name="nacionalidadCliente"
+            #nacionalidadCliente="ngModel"
+            [(ngModel)]="reserva.nacionalidadCliente"
+            [disabled]="editando"
+            placeholder="Costarricense"
+            [required]="!editando"
+            pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,25}$">
+          @if(nacionalidadCliente.invalid && nacionalidadCliente.touched){
+            <small class="invalid-feedback d-block">
+              @if(nacionalidadCliente.errors?.['required']){ La nacionalidad es obligatoria. }
+              @else { Solo letras, mínimo 3 caracteres y máximo 25. }
+            </small>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- EMPRESA -->
+      <p class="form-section-label">Empresa</p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Empresa cliente</label>
+          <select
+            class="form-control"
+            [class.input-readonly]="modoCliente === 'existente'"
+            name="idEmpresaCliente"
+            [(ngModel)]="reserva.idEmpresaCliente"
+            [disabled]="editando || modoCliente === 'existente'">
+            <option [ngValue]="null">Sin empresa</option>
+            @for(empresa of empresas; track empresa.idempresacliente){
+            <option [ngValue]="empresa.idempresacliente">{{ empresa.razonsocial }}</option>
+            }
+          </select>
+          @if(modoCliente === 'existente'){
+            <small class="text-muted">La empresa se toma automáticamente del cliente seleccionado.</small>
+          }
+        </div>
+      </div>
+
+      <!-- DETALLE -->
+      <p class="form-section-label">Detalle de la reserva</p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Estado</label>
+          <select
+            class="form-control"
+            name="idEstadoReserva"
+            #idEstadoReserva="ngModel"
+            [(ngModel)]="reserva.idEstadoReserva"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(estado of estadosReserva; track estado.idestadoreserva){
+            <option [ngValue]="estado.idestadoreserva">{{ estado.nombre }}</option>
+            }
+          </select>
+          @if(idEstadoReserva.invalid && idEstadoReserva.touched){
+            <small class="invalid-feedback d-block">Seleccioná un estado.</small>
+          }
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Fecha del tour</label>
+          <input
+            type="date"
+            class="form-control"
+            name="fechaTour"
+            #fechaTour="ngModel"
+            [(ngModel)]="reserva.fechaTour"
+            required>
+          @if(fechaTour.invalid && fechaTour.touched){
+            <small class="invalid-feedback d-block">La fecha del tour es obligatoria.</small>
+          }
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Tour</label>
+          <select
+            class="form-control"
+            name="idTour"
+            #idTour="ngModel"
+            [(ngModel)]="reserva.idTour"
+            (ngModelChange)="onTourChange()"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(tour of tours; track tour.idtour){
+            <option [ngValue]="tour.idtour">{{ tour.nombre }}</option>
+            }
+          </select>
+          @if(idTour.invalid && idTour.touched){
+            <small class="invalid-feedback d-block">Seleccioná un tour.</small>
+          }
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-semibold">Precio</label>
+          <input
+            type="number"
+            step="0.01"
+            class="form-control input-readonly"
+            name="precio"
+            #precio="ngModel"
+            [(ngModel)]="reserva.precio"
+            readonly
+            required
+            min="0">
+          @if(precio.invalid && precio.touched){
+            <small class="invalid-feedback d-block">
+              @if(precio.errors?.['required']){ El precio es obligatorio. }
+            </small>
+          }
+        </div>
+      </div>
+
+      <!-- PERSONAL -->
+      <p class="form-section-label">Personal asignado</p>
+      <div class="row g-3 mb-3">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Guía</label>
+          <select class="form-control" name="idGuia" [(ngModel)]="reserva.idGuia">
+            <option [ngValue]="null">Sin asignar</option>
+            @for(guia of guias; track guia.idguia){
+            <option [ngValue]="guia.idguia">{{ guia.nombre }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Chofer</label>
+          <select class="form-control" name="idChofer" [(ngModel)]="reserva.idChofer">
+            <option [ngValue]="null">Sin asignar</option>
+            @for(chofer of choferes; track chofer.idchofer){
+            <option [ngValue]="chofer.idchofer">{{ chofer.nombre }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Ubicación</label>
+          <select
+            class="form-control"
+            name="idUbicacion"
+            #idUbicacion="ngModel"
+            [(ngModel)]="reserva.idUbicacion"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(ubicacion of ubicaciones; track ubicacion.idubicacion){
+            <option [ngValue]="ubicacion.idubicacion">{{ ubicacion.nombre }}</option>
+            }
+          </select>
+          @if(idUbicacion.invalid && idUbicacion.touched){
+            <small class="invalid-feedback d-block">Seleccioná una ubicación.</small>
+          }
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Idioma</label>
+          <select
+            class="form-control"
+            name="idIdioma"
+            #idIdioma="ngModel"
+            [(ngModel)]="reserva.idIdioma"
+            required>
+            <option [ngValue]="null">Seleccione</option>
+            @for(idioma of idiomas; track idioma.ididioma){
+            <option [ngValue]="idioma.ididioma">{{ idioma.nombre }}</option>
+            }
+          </select>
+          @if(idIdioma.invalid && idIdioma.touched){
+            <small class="invalid-feedback d-block">Seleccioná un idioma.</small>
+          }
+        </div>
+      </div>
+
+      <!-- PARTICIPANTES -->
+      @if(!editando){
+      <div class="d-flex justify-content-between align-items-center mt-4 mb-3 pt-3 border-top">
+        <div>
+          <p class="form-section-label mb-0">Participantes adicionales</p>
+          <p class="text-muted small mb-0">{{ participantes.length }} agregados</p>
+        </div>
+        <button type="button" class="btn btn-success btn-sm" (click)="agregarParticipante()">
+          + Agregar participante
+        </button>
+      </div>
+
+      @if(participantes.length > 0){
+      <div class="alert alert-info py-2 mb-3 small">
+        <div class="d-flex gap-3">
+          <span>
+            <strong>Participantes agregados:</strong> {{ participantes.length + 1 }}
+          </span>
+          <span>
+            <strong>Subtotal estimado:</strong> ₡{{ (participantes.length + 1) * reserva.precio }}
+          </span>
+        </div>
+      </div>}
+
+      @for(participante of participantes; track $index){
+      <div class="participante-card mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="participante-num">Participante {{ $index + 1 }}</span>
+          <button
+            type="button"
+            class="btn btn-delete btn-sm px-2"
+            (click)="eliminarParticipante($index)"
+            title="Eliminar">
+
+            <i class="bi bi-trash"></i>
+
+          </button>
+        </div>
+        <div class="row g-2">
+          <div class="col-md-5">
+            <label class="form-label fw-semibold small">Nombre</label>
+            <input
+              class="form-control form-control-sm"
+              name="participanteNombre{{ $index }}"
+              #participanteNombre="ngModel"
+              [(ngModel)]="participante.nombre"
+              placeholder="Nombre completo"
+              required
+              pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,45}$">
+            @if(participanteNombre.invalid && participanteNombre.touched){
+              <small class="invalid-feedback d-block">
+                @if(participanteNombre.errors?.['required']){ El nombre es obligatorio. }
+                @else { Solo letras y espacios, mínimo 3 caracteres. }
+              </small>
+            }
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold small">Identificación</label>
+            <input
+              class="form-control form-control-sm"
+              name="participanteIdentificador{{ $index }}"
+              #participanteIdentificador="ngModel"
+              [(ngModel)]="participante.identificador"
+              placeholder="1-2345-6789"
+              required
+              pattern="^[A-Za-z0-9\-]{5,25}$">
+            @if(participanteIdentificador.invalid && participanteIdentificador.touched){
+              <small class="invalid-feedback d-block">
+                @if(participanteIdentificador.errors?.['required']){ La identificación es obligatoria. }
+                @else { Formato esperado: 1-2345-6789 o AB1234567}
+              </small>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold small">Fecha de nacimiento</label>
+            <input
+              type="date"
+              class="form-control form-control-sm"
+              name="participanteFechaNac{{ $index }}"
+              #participanteFechaNac="ngModel"
+              [(ngModel)]="participante.fechaNac"
+              required>
+            @if(participanteFechaNac.invalid && participanteFechaNac.touched){
+              <small class="invalid-feedback d-block">La fecha de nacimiento es obligatoria.</small>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold small">Teléfono</label>
+            <input
+              class="form-control form-control-sm"
+              name="participanteTelefono{{ $index }}"
+              #participanteTelefono="ngModel"
+              [(ngModel)]="participante.telefono"
+              placeholder="+506 8888 0000"
+              required
+              pattern="^[+]?[\d\s\-\(\)\.]{7,20}$">
+            @if(participanteTelefono.invalid && participanteTelefono.touched){
+              <small class="invalid-feedback d-block">
+                @if(participanteTelefono.errors?.['required']){ El teléfono es obligatorio. }
+                @else { Formato inválido. Ejemplo: +506 8888-0000 }
+              </small>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold small">Nacionalidad</label>
+            <input
+              class="form-control form-control-sm"
+              name="participanteNacionalidad{{ $index }}"
+              #participanteNacionalidad="ngModel"
+              [(ngModel)]="participante.nacionalidad"
+              placeholder="Costarricense"
+              required
+              pattern="^[A-Za-záéíóúÁÉÍÓÚüÜñÑ\s]{3,25}$">
+            @if(participanteNacionalidad.invalid && participanteNacionalidad.touched){
+              <small class="invalid-feedback d-block">
+                @if(participanteNacionalidad.errors?.['required']){ La nacionalidad es obligatoria. }
+                @else { Solo letras, mínimo 3 caracteres. }
+              </small>
+            }
+          </div>
+        </div>
+      </div>
+      }
+      }
+      
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-success" [disabled]="reservaForm.invalid">
+          {{ editando ? 'Actualizar reserva' : 'Guardar reserva' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="card shadow p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="mb-0">Reservas registradas</h3>
+        <p class="text-muted small mb-0">{{ reservasFiltradas.length }} registros</p>
+      </div>
+    </div>
+
+   <div class="row mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por cliente
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroCliente"
+          placeholder="Nombre del cliente">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por tour
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroTour"
+          placeholder="Nombre del tour">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [(ngModel)]="ordenCampo">
+
+          <option value="cliente">
+            Cliente
+          </option>
+
+          <option value="tour">
+            Tour
+          </option>
+
+          <option value="fecha">
+            Fecha del tour
+          </option>
+
+          <option value="estado">
+            Estado
+          </option>
+
+          <option value="precio">
+            Precio
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th style="width:42px">#</th>
+            <th (click)="ordenarPor('cliente')" style="cursor:pointer">
+              Cliente
+            </th>
+
+            <th (click)="ordenarPor('tour')" style="cursor:pointer">
+              Tour
+            </th>
+
+            <th (click)="ordenarPor('fecha')" style="cursor:pointer">
+              Fecha
+            </th>
+
+            <th (click)="ordenarPor('estado')" style="cursor:pointer">
+              Estado
+            </th>
+
+            <th (click)="ordenarPor('precio')" style="cursor:pointer">
+              Precio
+            </th>
+            <th>Personas</th>
+            <th>Total bruto</th>
+            <th>Guía</th>
+            <th>Chofer</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(item of reservasFiltradas; track item.idreserva){
+          <tr>
+            <td class="text-muted small">{{ item.idreserva }}</td>
+            <td class="fw-semibold">{{ item.clientes?.String }}</td>
+            <td>{{ item.tour }}</td>
+            <td class="text-muted">{{ item.fechatour | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="estado-badge estado-{{ getEstadoClass(item.estadoreserva) }}">
+                {{ item.estadoreserva }}
+              </span>
+            </td>
+            <td>₡{{ item.preciounitario }}</td>
+            <td class="text-muted">{{ item.cantidadpersonas }}</td>
+            <td class="fw-semibold" style="color:#14532d">
+            ₡{{ getTotalBruto(item) }}
+            </td>
+            <td class="text-muted">{{ item.guia?.String || '—' }}</td>
+            <td class="text-muted">{{ item.chofer?.String || '—' }}</td>
+            <td class="text-end">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn btn-edit btn-sm px-2" (click)="editarReserva(item)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  class="btn btn-delete btn-sm px-2"
+                  (click)="seleccionarReservaEliminar(item.idreserva)"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEliminarReserva"
+                  title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+          @empty{
+          <tr>
+            <td colspan="11" class="text-center text-muted py-4">
+              No hay reservas registradas
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3 pt-3 border-top">
+      <a class="btn btn-back" [routerLink]="['/admin']">Regresar al panel</a>
+    </div>
+
+  </div>
+
+</div>
+<!-- MODAL: ELIMINAR RESERVA -->
+<div class="modal fade" id="modalEliminarReserva" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-muted">
+        ¿Desea eliminar esta reserva?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-delete" data-bs-dismiss="modal" (click)="confirmarEliminarReserva()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,285 @@
+<section class="admin-header">
+  <div class="container">
+    <h1>Administración de Vehículos</h1>
+  </div>
+</section>
+
+<div class="container py-5">
+
+  @if(mensaje){
+  <div class="alert alert-success shadow-sm mb-4">
+    {{ mensaje }}
+  </div>
+  }
+  @if(mensajeError){
+  <div class="alert alert-danger shadow-sm mb-4">
+    {{ mensajeError }}
+  </div>
+}
+
+  <!-- FORMULARIO -->
+  <div class="card shadow p-4 mb-5">
+
+    <h3 class="mb-1">
+      @if(editando){ Editar vehículo } @else { Nuevo vehículo }
+    </h3>
+    <p class="text-muted small mb-4">
+      @if(editando){ Modificá la información del vehículo seleccionado. } @else { Registrá un nuevo vehículo para la operación de tours. }
+    </p>
+
+    <form #vehiculoForm="ngForm" (ngSubmit)="guardarVehiculo()">
+
+      <!-- INFORMACIÓN DEL VEHÍCULO -->
+      <p class="form-section-label">Información del vehículo</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Matrícula</label>
+          <input
+            class="form-control"
+            name="matricula"
+            #matricula="ngModel"
+            [(ngModel)]="vehiculo.matricula"
+            placeholder="ABC-123"
+            required
+            pattern="^[A-Za-z0-9\-]{4,20}$">
+          @if(matricula.invalid && matricula.touched){
+            <small class="invalid-feedback d-block">
+              @if(matricula.errors?.['required']){ La matrícula es obligatoria. }
+              @else { Formato inválido. Ej: ABC-123 }
+            </small>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Modelo</label>
+          <input
+            class="form-control"
+            name="modelo"
+            #modelo="ngModel"
+            [(ngModel)]="vehiculo.modelo"
+            placeholder="Toyota Hiace"
+            required
+            minlength="2"
+            maxlength="25">
+          @if(modelo.invalid && modelo.touched){
+            <small class="invalid-feedback d-block">
+              @if(modelo.errors?.['required']){ El modelo es obligatorio. }
+              @else { El modelo debe tener al menos 2 caracteres y maximo 25. }
+            </small>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Capacidad</label>
+          <input
+            type="number"
+            class="form-control"
+            name="capacidad"
+            #capacidad="ngModel"
+            [(ngModel)]="vehiculo.capacidad"
+            placeholder="Cantidad de pasajeros"
+            required
+            min="1">
+          @if(capacidad.invalid && capacidad.touched){
+            <small class="invalid-feedback d-block">
+              @if(capacidad.errors?.['required']){ La capacidad es obligatoria. }
+              @else { La capacidad debe ser mayor a 0. }
+            </small>
+          }
+        </div>
+      </div>
+
+      <!-- CHOFER -->
+      <p class="form-section-label">Asignación de chofer</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Chofer asignado</label>
+          <select
+            class="form-control"
+            name="idChofer"
+            [(ngModel)]="vehiculo.idChofer">
+            <option [ngValue]="null">Seleccione un chofer</option>
+            @for(chofer of choferes; track chofer.idchofer){
+            <option [ngValue]="chofer.idchofer">{{ chofer.nombre }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success" [disabled]="vehiculoForm.invalid">
+          {{ editando ? 'Actualizar vehículo' : 'Guardar vehículo' }}
+        </button>
+        @if(editando){
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+        }
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="card shadow p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="mb-0">Vehículos registrados</h3>
+        <p class="text-muted small mb-0">{{ vehiculosFiltrados.length }} registros</p>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por matrícula
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroMatricula"
+          (input)="aplicarFiltros()"
+          placeholder="ABC-123">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por modelo
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroModelo"
+          (input)="aplicarFiltros()"
+          placeholder="Toyota">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [ngModel]="columnaOrden"
+          (ngModelChange)="ordenar($event)">
+
+          <option value="matricula">
+            Matrícula
+          </option>
+
+          <option value="modelo">
+            Modelo
+          </option>
+
+          <option value="capacidad">
+            Capacidad
+          </option>
+
+          <option value="chofer">
+            Chofer
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th style="width:80px">ID</th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenar('matricula')">
+              Matrícula
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenar('modelo')">
+              Modelo
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenar('capacidad')">
+              Capacidad
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenar('chofer')">
+              Chofer
+            </th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(item of vehiculosFiltrados; track item.idvehiculo){
+          <tr>
+            <td class="text-muted small">{{ item.idvehiculo }}</td>
+            <td class="fw-semibold">{{ item.matricula }}</td>
+            <td>{{ item.modelo }}</td>
+            <td>{{ item.capacidad }} pasajeros</td>
+            <td class="text-muted">{{ item.nombre_chofer }}</td>
+            <td class="text-end">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn btn-edit btn-sm px-2" (click)="editarVehiculo(item)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  class="btn btn-delete btn-sm px-2"
+                  (click)="seleccionarVehiculoEliminar(item.idvehiculo)"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEliminarVehiculo"
+                  title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+          @empty{
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">
+              No hay vehículos registrados
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3 pt-3 border-top">
+      <a class="btn btn-back" [routerLink]="['/admin']">Regresar al panel</a>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL: ELIMINAR VEHÍCULO -->
+<div class="modal fade" id="modalEliminarVehiculo" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-muted">
+        ¿Desea eliminar este vehículo?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-delete" data-bs-dismiss="modal" (click)="confirmarEliminarVehiculo()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,13 +3,11 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "cache": {
-      "enabled": false
-    }
+    "analytics": false
   },
   "newProjectRoot": "projects",
   "projects": {
-    "webapp": {
+    "TenorioNatureCenterWeb": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -28,8 +26,8 @@
               }
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ]
           },
           "configurations": {
@@ -60,10 +58,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "webapp:build:production"
+              "buildTarget": "TenorioNatureCenterWeb:build:production"
             },
             "development": {
-              "buildTarget": "webapp:build:development"
+              "buildTarget": "TenorioNatureCenterWeb:build:development"
             }
           },
           "defaultConfiguration": "development"

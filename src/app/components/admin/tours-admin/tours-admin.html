@@ -1,0 +1,327 @@
+<section class="admin-header">
+  <div class="container">
+    <h1>Administración de Tours</h1>
+  </div>
+</section>
+
+<div class="container py-5">
+
+  @if(mensaje){
+  <div class="alert alert-success shadow-sm mb-4">
+    {{ mensaje }}
+  </div>
+  }
+
+  <!-- FORMULARIO -->
+  <div class="card shadow p-4 mb-5">
+
+    <h3 class="mb-1">
+      @if(editando){ Editar tour } @else { Nuevo tour }
+    </h3>
+    <p class="text-muted small mb-4">
+      @if(editando){ Modificá la información del tour seleccionado. } @else { Registrá un nuevo tour disponible para reservas. }
+    </p>
+
+    <form #tourForm="ngForm" (ngSubmit)="guardarTour()">
+
+      <!-- INFORMACIÓN GENERAL -->
+      <p class="form-section-label">Información general</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Nombre del tour</label>
+          <input
+            class="form-control"
+            name="nombre"
+            #nombre="ngModel"
+            [(ngModel)]="tour.nombre"
+            placeholder="Nombre del tour"
+            required
+            minlength="3"
+            maxlength="45">
+          @if(nombre.invalid && nombre.touched){
+            <small class="invalid-feedback d-block">
+              @if(nombre.errors?.['required']){ El nombre del tour es obligatorio. }
+              @else { El nombre debe tener al menos 3 caracteres y máximo 45. }
+            </small>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Horario</label>
+          <input
+            class="form-control"
+            name="horario"
+            #horario="ngModel"
+            [(ngModel)]="tour.horario"
+            placeholder="Ej: 8:00 AM - 12:00 PM"
+            required
+            minlength="6"
+            maxlength="45">
+          @if(horario.invalid && horario.touched){
+            <small class="invalid-feedback d-block">El horario es obligatorio.</small>
+          }
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Descripción</label>
+        <textarea
+          class="form-control"
+          name="descripcion"
+          #descripcion="ngModel"
+          [(ngModel)]="tour.descripcion"
+          rows="4"
+          placeholder="Descripción del tour"
+          required
+          minlength="10"
+          maxlength="150"></textarea>
+        @if(descripcion.invalid && descripcion.touched){
+          <small class="invalid-feedback d-block">
+            @if(descripcion.errors?.['required']){ La descripción es obligatoria. }
+            @else { La descripción debe tener al menos 10 caracteres. }
+          </small>
+        }
+      </div>
+
+      <!-- DETALLES -->
+      <p class="form-section-label">Detalles del tour</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Duración (horas)</label>
+          <input
+            type="number"
+            class="form-control"
+            name="duracion"
+            #duracion="ngModel"
+            [(ngModel)]="tour.duracion"
+            placeholder="0"
+            required
+            min="1">
+          @if(duracion.invalid && duracion.touched){
+            <small class="invalid-feedback d-block">
+              @if(duracion.errors?.['required']){ La duración es obligatoria. }
+              @else { La duración debe ser mayor a 0. }
+            </small>
+          }
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Cupos máximos</label>
+          <input
+            type="number"
+            class="form-control"
+            name="cuposMaximos"
+            #cuposMaximos="ngModel"
+            [(ngModel)]="tour.cuposMaximos"
+            placeholder="0"
+            required
+            min="1">
+          @if(cuposMaximos.invalid && cuposMaximos.touched){
+            <small class="invalid-feedback d-block">
+              @if(cuposMaximos.errors?.['required']){ Los cupos máximos son obligatorios. }
+              @else { Los cupos deben ser mayores a 0. }
+            </small>
+          }
+        </div>
+      </div>
+
+      <!-- PRECIO -->
+      <p class="form-section-label">Precio</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Precio base</label>
+          <input
+            type="number"
+            step="0.01"
+            class="form-control"
+            name="precioBase"
+            #precioBase="ngModel"
+            [(ngModel)]="tour.precioBase"
+            placeholder="₡0.00"
+            required
+            min="0">
+          @if(precioBase.invalid && precioBase.touched){
+            <small class="invalid-feedback d-block">
+              @if(precioBase.errors?.['required']){ El precio base es obligatorio. }
+              @else { El valor no puede ser negativo. }
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success" [disabled]="tourForm.invalid">
+          {{ editando ? 'Actualizar tour' : 'Guardar tour' }}
+        </button>
+        @if(editando){
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+        }
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="card shadow p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="mb-0">Tours registrados</h3>
+        <p class="text-muted small mb-0">{{ toursFiltrados.length }} registros</p>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por nombre
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroNombre"
+          placeholder="Nombre del tour">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Buscar por horario
+        </label>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filtroHorario"
+          placeholder="Horario">
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label fw-semibold">
+          Ordenar por
+        </label>
+
+        <select
+          class="form-control"
+          [(ngModel)]="ordenCampo">
+
+          <option value="nombre">
+            Nombre
+          </option>
+
+          <option value="horario">
+            Horario
+          </option>
+
+          <option value="duracion">
+            Duración
+          </option>
+
+          <option value="cupos">
+            Cupos máximos
+          </option>
+
+          <option value="precio">
+            Precio
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th style="width:80px">ID</th>
+            <th>Nombre</th>
+            <th>Horario</th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenarPor('duracion')">
+              Duración
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenarPor('cupos')">
+              Cupos
+            </th>
+            <th
+              style="cursor:pointer"
+              (click)="ordenarPor('precio')">
+              Precio
+            </th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(item of toursFiltrados; track item.idtour){
+          <tr>
+            <td class="text-muted small">{{ item.idtour }}</td>
+            <td class="fw-semibold">{{ item.nombre }}</td>
+            <td class="text-muted">{{ item.horario }}</td>
+            <td>{{ item.duracion }} hrs</td>
+            <td>{{ item.cuposmaximos }}</td>
+            <td class="fw-semibold" style="color:#14532d">₡{{ item.preciobase }}</td>
+            <td class="text-end">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn btn-edit btn-sm px-2" (click)="editarTour(item)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  class="btn btn-delete btn-sm px-2"
+                  (click)="seleccionarTourEliminar(item.idtour)"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalEliminarTour"
+                  title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+          @empty{
+          <tr>
+            <td colspan="7" class="text-center text-muted py-4">
+              No hay tours registrados
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3 pt-3 border-top">
+      <a class="btn btn-back" [routerLink]="['/admin']">Regresar al panel</a>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- MODAL: ELIMINAR TOUR -->
+<div class="modal fade" id="modalEliminarTour" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-muted">
+        ¿Desea eliminar este tour?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-delete" data-bs-dismiss="modal" (click)="confirmarEliminarTour()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

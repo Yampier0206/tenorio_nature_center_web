@@ -1,78 +1,313 @@
-<div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">UNA Blog</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+
+    <div class="container">
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center gap-2">
+            <img src="/logoPrincipal.png" alt="Logo Tenorio Nature Center" class="logo">
+            <span class="brand-text">
+                TENORIO NATURE CENTER
+            </span>
+        </a>
+
+        <!-- BOTON MOBILE -->
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+        >
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- MENU -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link">Home <span class="sr-only"></span></a>
-            </li>
-            <li class="nav-item">
-                <div class="subnav">
-                    <button class="subnav-btn">
-                        Categorias
-                    </button>
-                    <div class="subnav-content">
-                        <span>
-                            @for(item of categories();track $index){
-                                <a [routerLink]="['/categoria/'+item.id]">{{item.name}}</a>
-                            }
-                        </span>
-                    </div>
-                </div>
-            </li>
-            <!--Se muestra si no ha iniciado sesion-->
-            @if(!currentUser()){
-                <li class="nav-item">
-                    <a [routerLink]="['/register']" class="nav-link">Registro</a>
-                </li>
-                
-                <li class="nav-item">
-                    <a [routerLink]="['/login']" class="nav-link">Iniciar sesión</a>
-                </li>
-            }@else {
-                <!--Se muestra si el usuario esta autenticado-->
 
+            <ul class="navbar-nav mx-auto">
+
+                <!-- Inicio -->
                 <li class="nav-item">
-                    <a class="nav-link">Crear categoria</a>
+                    <a class="nav-link" [routerLink]="['/']">
+                        Inicio
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a [routerLink]="['/nuevo-post']" class="nav-link">Crear publicación</a>
+
+                <!-- Tours -->
+                <li class="nav-item dropdown">
+                    <a 
+                        class="nav-link dropdown-toggle"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        >
+                        Tours
+                    </a>
+                    <ul class="dropdown-menu">
+
+                        @for(item of tours; track $index){
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    [routerLink]="['/tour', item.idtour]"
+                                >
+                                    {{item.nombre}}
+                                </a>
+                            </li>
+
+                        }
+
+                    </ul>
                 </li>
-                <!--//-->
-                @if(currentUser()?.role === 'ADMIN_ROLE'){
+
+                <!-- Choferes -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                    >
+                        Choferes
+                    </a>
+
+                    <ul class="dropdown-menu">
+
+                        @for(item of choferes; track $index){
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    [routerLink]="['/chofer', item.idchofer]"
+                                >
+                                    {{item.nombre}}
+                                </a>
+                            </li>
+
+                        }
+
+                    </ul>
+
+                </li>
+
+                <!-- Vehículos -->
+                <li class="nav-item dropdown">
+                    <a 
+                        class="nav-link dropdown-toggle"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                    >
+                        Vehículos
+                    </a>
+
+                    <ul class="dropdown-menu">
+
+                        @for(item of vehiculos; track $index){
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    [routerLink]="['/vehiculo', item.idvehiculo]"
+                                >
+                                    {{item.modelo}}
+                                </a>
+                            </li>
+
+                        }
+
+                    </ul>
+
+                </li>
+
+                <!-- Guías -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                    >
+                        Guías
+                    </a>
+                    <ul class="dropdown-menu">
+                        @for(item of guias; track $index){
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    [routerLink]="['/guia', item.idguia]"
+                                >
+                                    {{item.nombre}}
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+
+                <!-- Ubicaciones -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                    >
+                        Ubicaciones
+                    </a>
+
+                    <ul class="dropdown-menu">
+
+                        @for(item of ubicaciones; track $index){
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    [routerLink]="['/ubicacion', item.idubicacion]"
+                                >
+                                    {{item.nombre}}
+                                </a>
+                            </li>
+
+                        }
+
+                    </ul>
+
+                </li>
+
+            </ul>
+
+            <!-- Usuario -->
+            <ul class="navbar-nav">
+
+                @if(!authService.currentUser()){
+
                     <li class="nav-item">
-                        <a [routerLink]="['/users-management']" class="nav-link">
-                            Administración de usuarios
+                        <a
+                            class="btn btn-success rounded-pill px-4"
+                            [routerLink]="['/login']"
+                        >
+                            Iniciar sesión
                         </a>
                     </li>
-                }
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{currentUser()?.name}}
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item">Cambiar contraseña</a> 
-                    @if(currentUser()?.role==='ADMIN_ROLE'){
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item">Configuración</a>
-                        <a class="dropdown-item">Administración de usuarios</a>
-                    }       
-                    
-                    </div>
-                </li>     
-            }            
-            
-            </ul>    
-        </div>
-    </nav>
-    <main>
-        <router-outlet></router-outlet>
-    </main>
-    <footer>
 
-    </footer>
-</div>
+                }@else {
+
+                    <li class="nav-item dropdown">
+
+                        <a
+                         class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                        >
+                            @if(authService.currentUser()?.imagen){
+                                <img 
+                                    [src]="url + 'usuario/download/' + authService.currentUser()?.imagen"
+                                    style="width:35px; height:35px; border-radius:50%; object-fit:cover;"
+                                >
+                            }@else{
+                                <i class="bi bi-person-circle" style="font-size:1.5rem;"></i>
+                            }
+                            {{authService.currentUser()?.nombre}}
+                        </a>
+
+                        <ul class="dropdown-menu">
+
+                            <li>
+                                <a class="dropdown-item"
+                                    [routerLink]="['/perfil']"
+                                >
+                                    Mi Perfil
+                                </a>
+                            </li>
+
+                            @if (authService.isClient()){
+
+                            <li>
+                                <a class="dropdown-item"
+                                    [routerLink]="['/reservas']"
+                                >
+                                    Mis Reservas
+                                </a>
+                            </li>
+                        }
+
+                            @if(authService.isAdmin()){
+
+                                <li><hr class="dropdown-divider"></li>
+
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        [routerLink]="['/admin']"
+                                    >
+                                        Administración
+                                    </a>
+                                </li>
+
+                            }
+                            <!-- LOGOUT -->
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    (click)="authService.logout()"
+                                    [routerLink]="['/login']"
+                                >
+                                    Cerrar sesión
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                }
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- CONTENIDO -->
+<main>
+
+    <router-outlet></router-outlet>
+
+</main>
+
+<!-- FOOTER -->
+<footer 
+    class="footer-custom mt-5"
+>
+
+    <div class="container text-center">
+
+        <h5>Tenorio Nature Center</h5>
+
+        <div class="footer-info">
+
+            <p>
+                <i class="bi bi-telephone-fill"></i>
+                Número telefónico: 8640-3743
+            </p>
+
+            <p>
+                <i class="bi bi-instagram"></i>
+                Instagram: @tourjavier
+            </p>
+
+            <p>
+                <i class="bi bi-envelope-fill"></i>
+                Correo: tourjavier@icloud.com
+            </p>
+
+        </div>
+
+        <hr>
+
+        <p class="mb-0">
+            © 2026 Tenorio Nature Center. Todos los derechos reservados.
+        </p>
+
+    </div>
+
+</footer>

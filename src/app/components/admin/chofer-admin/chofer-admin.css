@@ -1,0 +1,114 @@
+.admin-header{
+    background: linear-gradient(
+        135deg,
+        #1f4d3a,
+        #1f3d2f
+    );
+
+    color: white;
+    padding: 100px 0 80px;
+    text-align: center;
+}
+
+.admin-header h1{
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.card{
+    border: none;
+    border-radius: 20px;
+}
+
+.form-control{
+    border-radius: 12px;
+}
+
+.btn-success{
+    background-color: #14532d;
+    border-color: #14532d;
+}
+
+.btn-success:hover{
+    background-color: #166534;
+    border-color: #166534;
+}
+
+.table{
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.table thead{
+    background-color: #1f2937;
+    color: white;
+}
+
+.table td,
+.table th{
+    vertical-align: middle;
+}
+
+.btn-warning{
+    color: white;
+}
+
+.container{
+    max-width: 1200px;
+}
+
+.btn-edit{
+    background-color: #dcfce7;
+    border-color: #dcfce7;
+    color: #166534;
+}
+
+.btn-edit:hover{
+    background-color: #bbf7d0;
+    border-color: #bbf7d0;
+}
+
+.btn-delete{
+    background-color: #fee2e2;
+    border-color: #fee2e2;
+    color: #991b1b;
+}
+
+.btn-delete:hover{
+    background-color: #fecaca;
+    border-color: #fecaca;
+    color: #7f1d1d;
+}
+
+.btn-back{
+    background-color: #14532d;
+    border-color: #14532d;
+    color: white;
+}
+
+.btn-back:hover{
+    background-color: #1f2937;
+    border-color: #1f2937;
+    color: white;
+}
+
+.btn-sm.px-2 {
+  width: 34px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+.licencia-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
